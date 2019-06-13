@@ -7,7 +7,7 @@
 get_node_names(models.dir)
 }
 \arguments{
-\item{models.dir}{a dir with \emph{.gitsbe} files/models}
+\item{models.dir}{string. A dir with \emph{.gitsbe} files/models}
 }
 \value{
 a character vector of the node names (protein and/or gene names)

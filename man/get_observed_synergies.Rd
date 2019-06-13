@@ -2,7 +2,7 @@
 % Please edit documentation in R/input.R
 \name{get_observed_synergies}
 \alias{get_observed_synergies}
-\title{Load observed synergies}
+\title{Load the observed synergies data}
 \usage{
 get_observed_synergies(file, drug.combinations.tested = NULL)
 }
@@ -10,7 +10,7 @@ get_observed_synergies(file, drug.combinations.tested = NULL)
 \item{file}{string. The name of the file, can be a full path. See example
 below for the format of an observed synergies file.}
 
-\item{drug.combinations.tested}{a character vector with the drug combinations
+\item{drug.combinations.tested}{a character vector with drug combinations
 as elements. Default value: NULL.}
 }
 \value{

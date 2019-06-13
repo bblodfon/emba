@@ -2,15 +2,34 @@
 % Please edit documentation in R/plot.R
 \name{make_barplot_on_models_stats}
 \alias{make_barplot_on_models_stats}
-\title{models.stats is the result of `table(num.vector)`
-Use `threshold` when there too many categories and the graph appears too dense
-`cont.values` is used for trimming the digits of continuous values on the x-axis}
+\title{Bar plot of model stats}
 \usage{
 make_barplot_on_models_stats(models.stats, cell.line, title, xlab, ylab,
   cont.values = FALSE, threshold = 0)
 }
+\arguments{
+\item{models.stats}{table object, the result of using \link[base]{table} on
+a (numeric) vector. Usually it represents some models statistics summary -
+counts for each TP prediction value for example.}
+
+\item{cell.line}{string. The name of the cell line to be used in the title
+of the produced plot. Default value: NULL (the cell line name will not be
+added to the title)}
+
+\item{title}{string. The title of the plot}
+
+\item{xlab}{string. The title of the x-axis}
+
+\item{ylab}{string. The title of the y-axis}
+
+\item{cont.values}{logical. If TRUE, the values of the x-axis will be trimmed
+to 3 digits after the decimal point. Default value: FALSE.}
+
+\item{threshold}{integer. Values from the \code{model.stats} that are \emph{less
+or equal} to the threshold will be pruned. Use it when there too many
+categories and the graph appears too dense. Default value: 0}
+}
 \description{
-models.stats is the result of `table(num.vector)`
-Use `threshold` when there too many categories and the graph appears too dense
-`cont.values` is used for trimming the digits of continuous values on the x-axis
+Use this function to produce a bar plot when the input is a \link[base]{table}
+command to a numeric vector
 }

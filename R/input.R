@@ -1,4 +1,4 @@
-#' Load model predictions to data.frame
+#' Load the models predictions data
 #'
 #' Use this function to read a file that has the model predictions data
 #' and output it to a \code{data.frame} object.
@@ -6,8 +6,8 @@
 #' @param mode.predictions.file a tab-delimited file (for the specific format
 #' check the example below)
 #'
-#' @return a \code{data.frame} object with rows as the models and columns the
-#' drug combinations. Possible values for each \strong{model-drug combination
+#' @return a \code{data.frame} object with rows the models and columns the
+#' drug combinations. Possible values for each \emph{model-drug combination
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
@@ -38,7 +38,7 @@ get_model_predictions = function(model.predictions.file) {
   return(model.data)
 }
 
-#' Load observed synergies
+#' Load the observed synergies data
 #'
 #' Use this function to read a file that has the observed synergies data and
 #' output it to a character vector. If \code{drug.combinations.tested}
@@ -47,7 +47,7 @@ get_model_predictions = function(model.predictions.file) {
 #'
 #' @param file string. The name of the file, can be a full path. See example
 #' below for the format of an observed synergies file.
-#' @param drug.combinations.tested a character vector with the drug combinations
+#' @param drug.combinations.tested a character vector with drug combinations
 #' as elements. Default value: NULL.
 #'
 #' @return a character vector with elements the drug combinations that were
@@ -73,33 +73,25 @@ get_observed_synergies =
     return(observed.synergies)
 }
 
-#' @importFrom usefun remove_commented_and_empty_lines
-get_consensus_steady_state = function(steady.state.file) {
-  #print(paste("Reading consensus steady state file:", steady.state.file))
-
-  lines = readLines(steady.state.file)
-  lines = remove_commented_and_empty_lines(lines)
-  consensus.steady.state = build_consensus_steady_state_vector(lines)
-
-  return(consensus.steady.state)
-}
-
-build_consensus_steady_state_vector = function(lines) {
-  node.names = character(0)
-  activity.states = character(0)
-  for (line in lines) {
-    values = strsplit(line, "\t")[[1]]
-    node.names = c(node.names, values[1])
-    activity.states = c(activity.states, values[2])
-  }
-  activity.states = as.numeric(activity.states)
-  stopifnot(length(activity.states) == length(node.names))
-
-  names(activity.states) = node.names
-  return(activity.states)
-}
-
-# Return a matrix (nxm): n models, m nodes
+#' Load the models stable state data
+#'
+#' Use this function to merge the stable states from all models into a single
+#' matrix. The models stable states are loaded from \emph{.gitsbe} files that can
+#' be found inside the given \code{models.dir} directory.
+#'
+#' @param models.dir string. A dir with \emph{.gitsbe} files/models
+#'
+#' @return a matrix (nxm) with n models and m nodes. The row names of the matrix
+#' specify the models' names whereas the column names specify the name of the
+#' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
+#' element} are either \emph{0} (inactive node) or \emph{1} (active node).
+#'
+#' @examples
+#'
+#' models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
+#' models.stable.state = get_stable_state_from_models_dir(models.dir)
+#'
+#' @export
 get_stable_state_from_models_dir = function(models.dir) {
   files = list.files(models.dir)
   model.stable.states = character(length(files))
@@ -122,9 +114,38 @@ get_stable_state_from_models_dir = function(models.dir) {
   return(t(df))
 }
 
-# Return a matrix (nxm): n models, m nodes
+#' Load the models equation data
+#'
+#' Use this function to merge the link operator data used in the boolean equations
+#' of the models into a single matrix. Every boolean model is defined by a series
+#' of boolean equations in the form \eqn{Target *= (Activator OR Activator OR...)
+#' AND NOT (Inhibitor OR Inhibitor OR...)"}. The \strong{link operator} can be
+#' either \emph{AND NOT}, \emph{OR NOT} or non-existent if the target has only
+#' activating regulators or only inhibiting ones. The models are loaded from
+#' \emph{.gitsbe} files that can be found inside the given \code{models.dir}
+#' directory.
+#'
+#' @param models.dir string. A dir with \emph{.gitsbe} files/models
+#' @param remove.equations.without.link.operator logical. Should we keep the
+#' nodes (columns in the returned matrix) which do not have both type of
+#' regulators (so no link operator)? Default value: TRUE (remove these nodes).
+#'
+#' @return a matrix (nxm) with n models and m nodes. The row names of the matrix
+#' specify the models' names whereas the column names specify the name of the
+#' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
+#' element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
+#' (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
+#' both activating and inhibiting regulators (no link operator).
+#'
+#' @examples
+#'
+#' models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
+#' models.equations = get_equations_from_models_dir(models.dir)
+#' models.equations.with.extra.nodes = get_equations_from_models_dir(models.dir, FALSE)
+#'
+#' @export
 get_equations_from_models_dir =
-  function(models.dir, remove.equations.without.link.operator) {
+  function(models.dir, remove.equations.without.link.operator = TRUE) {
     files = list.files(models.dir)
     node.names = get_node_names(models.dir)
 
@@ -176,14 +197,13 @@ get_fitness_from_models_dir = function(models.dir) {
   return(model.fitness)
 }
 
-
 #' Get the node names
 #'
 #' This function uses the first .gitsbe file that it finds inside the given
 #' directory to output a vector of the network node names (which should be the
 #' same for every model)
 #'
-#' @param models.dir a dir with \emph{.gitsbe} files/models
+#' @param models.dir string. A dir with \emph{.gitsbe} files/models
 #'
 #' @return a character vector of the node names (protein and/or gene names)
 #'
@@ -201,11 +221,32 @@ get_node_names = function(models.dir) {
   return(node.names)
 }
 
+#' Get the model names
+#'
+#' @param models.dir string. A dir with \emph{.gitsbe} files/models
+#'
+#' @return a character vector of the model names, corresponding to the names
+#' of the \emph{.gitsbe} files.
+#'
+#' @examples
+#'
+#' models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
+#' models = get_model_names(models.dir)
+#'
+#' @export
 get_model_names = function(models.dir) {
   return(list.files(models.dir))
 }
 
-# OR => 1, AND => 0
+#' Assign link operator value to boolean equation
+#'
+#' @param equation string. The boolean equation in the form
+#' \eqn{Target *= (Activator OR Activator OR...)
+#' AND NOT (Inhibitor OR Inhibitor OR...)"}
+#'
+#' @return \strong{1} if the \code{equation} has the '\emph{or not}' link operator,
+#' \strong{0} if the \code{equation} has the '\emph{and not}' link operator and
+#' \strong{NA} if it has neither.
 assign_value_to_equation = function(equation) {
   if (grepl(".*or not.*", equation)) {
     return(1)
@@ -214,9 +255,66 @@ assign_value_to_equation = function(equation) {
   } else return(NA)
 }
 
-is_correct_synergy = function(drug.comb, observed.synergies) {
-  return(is.element(drug.comb, observed.synergies) |
-           is.element(get_alt_drugname(drug.comb), observed.synergies))
+#' A title
+#'
+#' gettin somethign
+#'
+#'
+#'
+#' @importFrom usefun remove_commented_and_empty_lines
+get_consensus_steady_state = function(steady.state.file) {
+  #print(paste("Reading consensus steady state file:", steady.state.file))
+
+  lines = readLines(steady.state.file)
+  lines = remove_commented_and_empty_lines(lines)
+  consensus.steady.state = build_consensus_steady_state_vector(lines)
+
+  return(consensus.steady.state)
+}
+
+build_consensus_steady_state_vector = function(lines) {
+  node.names = character(0)
+  activity.states = character(0)
+  for (line in lines) {
+    values = strsplit(line, "\t")[[1]]
+    node.names = c(node.names, values[1])
+    activity.states = c(activity.states, values[2])
+  }
+  activity.states = as.numeric(activity.states)
+  stopifnot(length(activity.states) == length(node.names))
+
+  names(activity.states) = node.names
+  return(activity.states)
+}
+
+#' Is drug combination element of given vector?
+#'
+#' Use this function to determine if a drug combination is part of a vector of
+#' other drug combinations. We take care only of pair-wise drug combinations and
+#' an internal check is done for alternative drug names, e.g. we check if
+#' \emph{A-B} combination is included, but also for \emph{B-A}.
+#'
+#' @param drug.comb a string in the form \emph{A-B} (no spaces between the names
+#' and the hyphen '-')
+#' @param comb.vector a character vector of drug combinations, each one in the
+#' form \emph{drugname.1-drugname.2}
+#'
+#' @return logical, depending if the drug combination is element of the given
+#' vector or not.
+#'
+#' @examples
+#' # TRUE
+#' is_comb_element_of("A-B", c("E-F", "A-B"))
+#' is_comb_element_of("B-A", c("E-F", "A-B"))
+#'
+#' # FALSE
+#' is_comb_element_of("A-B", c("E-F", "A-D"))
+#' is_comb_element_of("A-B", c())
+#'
+#' @export
+is_comb_element_of = function(drug.comb, comb.vector) {
+  return(is.element(drug.comb, comb.vector) |
+           is.element(get_alt_drugname(drug.comb), comb.vector))
 }
 
 #' Validate observed synergies data
@@ -239,6 +337,21 @@ validate_observed_synergies_data =
     }
 }
 
+#' Get alternative drug name
+#'
+#' Use this function on a string \emph{A-B} that represents a drug combination,
+#' to get the reverse combination name - \emph{B-A} - for testing/checking data.
+#'
+#' @param drug.comb a string in the form \emph{drugname.1-drugname.2} (no
+#' spaces between the names and the hyphen '-')
+#'
+#' @return the alternative, yet equivalent drug combination
+#'
+#' @examples
+#' drug.comb = "A-B"
+#' alt.drug.comb = get_alt_drugname(drug.comb)
+#'
+#' @export
 get_alt_drugname = function(drug.comb) {
   drug.list = unlist(strsplit(drug.comb,"-"))
   drug.comb.alt = paste0(drug.list[2], "-", drug.list[1])

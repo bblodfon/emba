@@ -1,8 +1,26 @@
-# `drug.comb.set` is a list, whose every element is
-# a drug combination string
-count_models_that_predict_synergy_set =
-  function(drug.comb.set, model.predictions) {
-    synergy.vector = unlist(drug.comb.set)
+#' Count models that predict list of synergies
+#'
+#' Use this function to find the number of models that predict a given list of
+#' drug combinations (usually the ones found as synergies).
+#'
+#' @param drug.comb.list a list with (synergistic) drug combinations as elements
+#' (each drug combination is a string in the form \emph{A-B} - no spaces between
+#' the names and the hyphen '-')
+#' @param model.predictions a \code{data.frame} object with rows as the models
+#' and columns the drug combinations tested. Possible values for each
+#' \emph{model-drug combination element} are either \emph{0} (no synergy
+#' predicted), \emph{1} (synergy was predicted) or \emph{NA}
+#'
+#' @return the number of models that predict the given drug combination set
+#' (have a value of 1 in the respective columns of the \code{model.predictions}
+#' data.frame). If the given set is empty, we return the number of models that
+#' predicted no synergies at all (after the \emph{NA} values are discarded, the
+#' row in the \code{model.predictions} data.frame is all zeros)
+#'
+#' @export
+count_models_that_predict_synergies =
+  function(drug.comb.list, model.predictions) {
+    synergy.vector = unlist(drug.comb.list)
     if (length(synergy.vector) == 0) {
       count = sum(apply(model.predictions, 1, function(x) {
         all(x == 0, na.rm = T)
@@ -18,8 +36,24 @@ count_models_that_predict_synergy_set =
     return(count)
 }
 
-# `num.low` is the number of true positives for the 'bad' models
-# `num.high` is the number of true positives for the 'good' models
+#' Get the average activity difference based on the number of true positives
+#'
+#' This function splits the models to good and bad based on the number of true
+#' positive predictions: \emph{num.high} TPs (good) vs \emph{num.low} TPs (bad).
+#' Then, for each network node, finds the average activity in each of the two
+#' classes and then subtracts the 'bad' average activity value from the good
+#'
+#' @param models s
+#' @param models.synergies.tp a
+#' @param models.stable.state ert
+#' @param num.low integer. The number of true positives representing the 'bad'
+#' model class
+#' @param num.high integer. The number of true positives representing the 'good'
+#' model class. This number has to be strictly higher than \code{num.low}
+#'
+#' @return
+#'
+#' @export
 get_avg_activity_diff_based_on_tp_predictions =
   function(models, models.synergies.tp, models.stable.state, num.low, num.high) {
     if (num.low >= num.high) {

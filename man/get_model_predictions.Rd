@@ -2,7 +2,7 @@
 % Please edit documentation in R/input.R
 \name{get_model_predictions}
 \alias{get_model_predictions}
-\title{Load model predictions to data.frame}
+\title{Load the models predictions data}
 \usage{
 get_model_predictions(model.predictions.file)
 }
@@ -11,8 +11,8 @@ get_model_predictions(model.predictions.file)
 check the example below)}
 }
 \value{
-a \code{data.frame} object with rows as the models and columns the
-drug combinations. Possible values for each \strong{model-drug combination
+a \code{data.frame} object with rows the models and columns the
+drug combinations. Possible values for each \emph{model-drug combination
 element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 predicted) or \emph{NA} (couldn't find stable states in either the drug
 combination inhibited model or in any of the two single-drug inhibited models)

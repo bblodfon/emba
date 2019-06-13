@@ -20,13 +20,35 @@ plot_mcc_classes_hist = function(models.mcc.no.nan.sorted, models.cluster.ids,
          col = rainbow.colors, lty = 1, lwd = 10)
 }
 
-#' models.stats is the result of `table(num.vector)`
-#' Use `threshold` when there too many categories and the graph appears too dense
-#' `cont.values` is used for trimming the digits of continuous values on the x-axis
+#' Bar plot of model stats
+#'
+#' Use this function to produce a bar plot when the input is a \link[base]{table}
+#' command to a numeric vector
+#'
+#' @param models.stats table object, the result of using \link[base]{table} on
+#' a (numeric) vector. Usually it represents some models statistics summary -
+#' counts for each TP prediction value for example.
+#' @param cell.line string. The name of the cell line to be used in the title
+#' of the produced plot. Default value: NULL (the cell line name will not be
+#' added to the title)
+#' @param title string. The title of the plot
+#' @param xlab string. The title of the x-axis
+#' @param ylab string. The title of the y-axis
+#' @param cont.values logical. If TRUE, the values of the x-axis will be trimmed
+#' to 3 digits after the decimal point. Default value: FALSE.
+#' @param threshold integer. Values from the \code{model.stats} that are \emph{less
+#' or equal} to the threshold will be pruned. Use it when there too many
+#' categories and the graph appears too dense. Default value: 0
 #'
 #' @importFrom graphics barplot axis par
+#'
+#' @export
 make_barplot_on_models_stats =
   function(models.stats, cell.line, title, xlab, ylab, cont.values = FALSE, threshold = 0) {
+    if (!is.null(cell.line))
+      cell.line.text = paste0(" (", cell.line, ")")
+    else
+      cell.line.text = ""
 
     # Find is there is just one `NaN` category
     there.is.one.NaN.category = FALSE
@@ -57,7 +79,7 @@ make_barplot_on_models_stats =
     bp = barplot(models.stats, col = "cornflowerblue",
                  names.arg = x.axis.values, yaxt = "n",
                  ylim = c(0, max(y.axis.values) + 500),
-                 main = paste0(title, " (", cell.line, ")"),
+                 main = paste0(title, cell.line.text),
                  xlab = xlab, ylab = ylab)
     axis(2, at = y.axis.values, las = 1)
 
@@ -70,6 +92,19 @@ make_barplot_on_models_stats =
     }
 }
 
+#' Get the refined x-axis values
+#'
+#' This function returns the x-axis values that are going to be used by
+#' \link[emba]{make_barplot_on_models_stats} to render the bar plot.
+#'
+#' @param models.stats table object, the result of using \link[base]{table} on
+#' a (numeric) vector. Usually it represents some models statistics summary -
+#' counts for each TP prediction value for example.
+#' @param there.is.one.NaN.category logical. Is there one \emph{NaN} category?
+#' (check is done before on the \emph{names} attribute of the \code{models.stats})
+#' @param cont.values logical. If TRUE, the values of the x-axis will be trimmed
+#' to 3 digits after the decimal point. Otherwise, they will be returned as they
+#' are.
 get_x_axis_values =
   function(models.stats, there.is.one.NaN.category, cont.values) {
     if (there.is.one.NaN.category) {
@@ -84,27 +119,49 @@ get_x_axis_values =
     }
 }
 
+#' Bar plot of observed synergy subsets
+#'
+#' Use this function to easily make a barplot that shows the amount of models
+#' that predicted each synergy subset out of the set of all observed synergies.
+#'
+#' @param synergy.subset.stats integer vector with values the amount of models
+#' that predicted each synergy subset, defined as a comma-seperated string of
+#' drug combinations in the \emph{names} attribute of the vector
+#' @param threshold.for.subset.removal integer. Use it to discard elements of
+#' the \code{synergy.subset.stats} vector that are stricly less than the
+#' specified threshold
+#' @param bottom.margin integer used to vertically fit in the names of the drug
+#' combinations in the x-axis (specified in inches). The best \code{bottom.margin}
+#' value depends on the \emph{maximum size} of a synergy subset as defined in the
+#' \code{names} attribute of the \code{synergy.subset.stats}.
+#' Some rules of thumb are:
+#' size = 1 => bottom.margin = 4,
+#' size = 2 => bottom.margin = 6,
+#' size = 3 => bottom.margin = 9,
+#' size = 4 => bottom.margin = 12, etc.
+#' @param cell.line string. The name of the cell line to be used in the title
+#' of the produced plot. Default value: NULL (the cell line name will not be
+#' added to the title).
+#'
+#' @export
 make_barplot_on_synergy_subset_stats =
   function(synergy.subset.stats, threshold.for.subset.removal, bottom.margin,
-           cell.line) {
-    # If the number of models that predicted a specific synergy set is less
-    # than the `threshold.for.subset.removal` then discard it
+           cell.line = NULL) {
+    if (!is.null(cell.line))
+      cell.line.text = paste0(" (", cell.line, ")")
+    else
+      cell.line.text = ""
+
     synergy.subset.stats = synergy.subset.stats[
       !synergy.subset.stats < threshold.for.subset.removal
     ]
 
-    # To fit in the names of the drug combinations, specify in inches the bottom
-    # margin of the plot depending on the maximum size of a synergy subset:
-    # size: 1 => bottom.margin = 4
-    # size: 2 => bottom.margin = 6
-    # size: 3 => bottom.margin = 9
-    # size: 4 => bottom.margin = 12, etc.
     par(mar = c(bottom.margin, 4, 4, 2)) # c(bottom, left, top, right)
 
     y.axis.values = pretty(synergy.subset.stats)
     bp = barplot(synergy.subset.stats, col = "green", space = 0.5, las = 2,
                  main = paste0("Model Synergy Predictions per Observed Synergy",
-                                " Subset", " (", cell.line, ")"),
+                                " Subset", cell.line.text),
                  ylab = "Number of models", yaxt = "n",
                  ylim = c(0, max(y.axis.values) + 500))
     axis(2, at = y.axis.values, las = 1)
@@ -112,6 +169,13 @@ make_barplot_on_synergy_subset_stats =
     add_numbers_above_the_bars(synergy.subset.stats, bp, color = "red")
 }
 
+#' Add numbers horizontally above the bars of a barplot
+#'
+#' @param stats a numeric vector
+#' @param bp the result of \strong{\code{barplot}} command, usually a numeric
+#' vector or matrix
+#' @param color string. The color for the numbers
+#'
 #' @importFrom graphics text
 add_numbers_above_the_bars = function(stats, bp, color) {
   for (i in 1:length(stats)) {
