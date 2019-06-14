@@ -2,10 +2,32 @@
 % Please edit documentation in R/plot.R
 \name{get_node_colors}
 \alias{get_node_colors}
-\title{`net` is an igraph network object with node labels as: `V(net)$name`}
+\title{Get the node colors}
 \usage{
 get_node_colors(net, diff, col)
 }
+\arguments{
+\item{net}{an igraph graph object with the node names defined in \code{V(net)$name}}
+
+\item{diff}{numeric vector. Every value is in the [-1,1] interval and
+represents the average activity difference of each node. The node names have
+to be specified in the \emph{names} attribute of the given \code{diff} vector
+and have to be the same as in \code{V(net)$name}.}
+
+\item{col}{a character vector of colors to do the color interpolation in the
+[-1,1] interval. Usually a two-element vector specifying the colors matching
+the start and end of the interval (-1 and 1 respectively) or a three-element
+vector specifying the colors matching the values -1, 0 and 1 (can be more of
+course, you get the idea).}
+}
+\value{
+a character vector of hex color codes where the \emph{names} attribute
+corresponds to the nodes of the given igraph object. Will be used to fill in
+the \code{V(net)$color} property or the \code{net} object.
+}
 \description{
-`net` is an igraph network object with node labels as: `V(net)$name`
+This function splits the [-1,1] interval into \strong{2000} smaller
+ones and matches each value of the \code{diff} vector to a specific hex color
+code, using a spline interpolation of the colors as defined in the \code{col}
+parameter.
 }

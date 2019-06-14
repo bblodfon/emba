@@ -9,6 +9,5 @@ biomarkers from an ensemble of boolean models of cancer cell networks.
 ## Install
 
 ```
-library(devtools)
-install_github("bblodfon/emba")
+devtools::install_github("bblodfon/emba")
 ```

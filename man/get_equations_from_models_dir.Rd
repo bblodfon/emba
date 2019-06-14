@@ -36,6 +36,7 @@ directory.
 
 models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
 models.equations = get_equations_from_models_dir(models.dir)
-models.equations.with.extra.nodes = get_equations_from_models_dir(models.dir, FALSE)
+models.equations.with.extra.nodes =
+  get_equations_from_models_dir(models.dir, FALSE)
 
 }

@@ -12,8 +12,8 @@ assign_value_to_equation(equation)
 AND NOT (Inhibitor OR Inhibitor OR...)"}}
 }
 \value{
-\strong{1} if the \code{equation} has the \emph{or not} link operator,
-\strong{0} if the \code{equation} has the \emph{and not} link operator and
+\strong{1} if the \code{equation} has the '\emph{or not}' link operator,
+\strong{0} if the \code{equation} has the '\emph{and not}' link operator and
 \strong{NA} if it has neither.
 }
 \description{

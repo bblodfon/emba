@@ -2,10 +2,29 @@
 % Please edit documentation in R/input.R
 \name{construct_network}
 \alias{construct_network}
-\title{Construct Network}
+\title{Construct igraph network graph}
 \usage{
-construct_network(topology.file, models.dir)
+construct_network(topology.file, models.dir = NULL)
+}
+\arguments{
+\item{topology.file}{string. The name of the .sif file (can be a full path
+name).}
+
+\item{models.dir}{string. A dir with \emph{.gitsbe} files/models. Default
+value: NULL. If specified, it is used for the validation of the node names.}
+}
+\value{
+an igraph graph object representing the network as defined in the
+topology file
 }
 \description{
-Construct Network
+Use this function to create an igraph graph object based on the topology .sif
+file given. It automatically sets various visualization graph properties and
+checks if the node names from the topology file are the same as in the models
+inside the given \code{models.dir} (if not NULL).
+}
+\seealso{
+\code{\link[igraph]{graph_from_data_frame}},
+\code{\link[emba]{get_edges_from_topology_file}},
+\code{\link[emba]{get_node_names}}
 }

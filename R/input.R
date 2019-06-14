@@ -19,7 +19,6 @@
 #' model.predictions = get_model_predictions(model.predictions.file)
 #'
 #' @importFrom utils read.table
-#'
 #' @export
 get_model_predictions = function(model.predictions.file) {
   #print(paste("Reading model predictions file:", model.predictions.file))
@@ -141,7 +140,8 @@ get_stable_state_from_models_dir = function(models.dir) {
 #'
 #' models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
 #' models.equations = get_equations_from_models_dir(models.dir)
-#' models.equations.with.extra.nodes = get_equations_from_models_dir(models.dir, FALSE)
+#' models.equations.with.extra.nodes =
+#'   get_equations_from_models_dir(models.dir, FALSE)
 #'
 #' @export
 get_equations_from_models_dir =
@@ -358,19 +358,39 @@ get_alt_drugname = function(drug.comb) {
   return(drug.comb.alt)
 }
 
-#' Construct Network
+#' Construct igraph network graph
+#'
+#' Use this function to create an igraph graph object based on the topology .sif
+#' file given. It automatically sets various visualization graph properties and
+#' checks if the node names from the topology file are the same as in the models
+#' inside the given \code{models.dir} (if not NULL).
+#'
+#' @param topology.file string. The name of the .sif file (can be a full path
+#' name).
+#' @param models.dir string. A dir with \emph{.gitsbe} files/models. Default
+#' value: NULL. If specified, it is used for the validation of the node names.
+#'
+#' @return an igraph graph object representing the network as defined in the
+#' topology file
+#'
+#' @seealso \code{\link[igraph]{graph_from_data_frame}},
+#' \code{\link[emba]{get_edges_from_topology_file}},
+#' \code{\link[emba]{get_node_names}}
 #'
 #' @importFrom igraph graph_from_data_frame V V<- E E<-
 #' @importFrom utils read.table
-construct_network = function(topology.file, models.dir) {
+#' @export
+construct_network = function(topology.file, models.dir = NULL) {
   edges = get_edges_from_topology_file(topology.file)
 
   net = graph_from_data_frame(edges, directed = TRUE)
 
-  # check the vertices/node names
-  vertices = V(net)$name
-  nodes = get_node_names(models.dir)
-  stopifnot(nodes %in% vertices)
+  # check the vertices/node names if models.dir is not NULL
+  if (!is.null(models.dir)) {
+    vertices = V(net)$name
+    nodes = get_node_names(models.dir)
+    stopifnot(all(sort(nodes) == sort(vertices)))
+  }
 
   # set visualization graph properties
   E(net)$width = 1.5
@@ -382,6 +402,22 @@ construct_network = function(topology.file, models.dir) {
   return(net)
 }
 
+#' Get the edges from a specified topology
+#'
+#' Use this function to read a topology .sif file (either space or tab-delimited)
+#' and get a matrix of network edges specifying the source and target name, the
+#' regulation effect (activation or inhibition) and the color (green or red) of
+#' each interaction.
+#'
+#' @param topology.file string. The name of the .sif file (can be a full path
+#' name).
+#'
+#' @return a matrix with as many rows as in the .sif topology file (each row is
+#' an edge) and 4 columns defining the source and target node name, the
+#' regulation (activation or inhibition) and the color (green or red) of the
+#' signed interaction.
+#'
+#' @export
 get_edges_from_topology_file = function(topology.file) {
   #print(paste("Reading topology file:", topology.file))
 

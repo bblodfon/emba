@@ -41,7 +41,6 @@ plot_mcc_classes_hist = function(models.mcc.no.nan.sorted, models.cluster.ids,
 #' categories and the graph appears too dense. Default value: 0
 #'
 #' @importFrom graphics barplot axis par
-#'
 #' @export
 make_barplot_on_models_stats =
   function(models.stats, cell.line, title, xlab, ylab, cont.values = FALSE, threshold = 0) {
@@ -184,19 +183,32 @@ add_numbers_above_the_bars = function(stats, bp, color) {
   }
 }
 
-#' plot network using the `visNetwork` library
+#' Plot the graph of average state differences (visNetwork)
 #'
-#' A description
+#' This function uses the \code{\link[visNetwork]{visNetwork}} package to plot a
+#' network of nodes. The nodes are positioned according to the specified coordinates
+#' given by the \code{layout} parameter and the colors are derived using the
+#' \code{diff} values and the \code{\link{get_node_colors}} function. The color
+#' of each node indicates how much more inhibited or active that node is, when
+#' comparing the average model classified in the 'good' category vs the average
+#' 'bad' one.
 #'
-#' @param net a net
-#' @param diff a diff
-#' @param layout layout
-#' @param title a title
+#' @param net igraph graph object (to be translated to a \emph{visNetwork} object)
+#' @param diff numeric vector. Every value is in the [-1,1] interval and
+#' represents the average activity difference of each node. The node names have
+#' to be specified in the \emph{names} attribute of the given vector. For example,
+#' \code{diff} could be the result of using the function
+#' \code{\link[emba]{get_avg_activity_diff_based_on_specific_synergy_prediction}}.
+#' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
+#' of the nodes (n) in the \code{net} igraph object
+#' @param title string. The title of the visNetwork plot
+#'
+#' @family network ploting functions
 #'
 #' @importFrom magrittr %>%
 #' @importFrom visNetwork toVisNetworkData visNetwork visLegend
 #' @export
-plot_network_vis = function(net, diff, layout, title) {
+plot_avg_state_diff_graph_vis = function(net, diff, layout, title) {
   data = toVisNetworkData(net)
   nodes = data$nodes
   edges = data$edges
@@ -228,11 +240,35 @@ plot_network_vis = function(net, diff, layout, title) {
               main = "Good model activity state", zoom = FALSE)
 }
 
-#' plot network using the `igraph` library
+#' Plot the graph of average state differences
+#'
+#' This function uses the \code{\link[igraph]{igraph}} package to plot a network
+#' of nodes. The nodes are positioned according to the specified coordinates
+#' given by the \code{layout} parameter and the colors are derived using the
+#' \code{diff} values and the \code{\link{get_node_colors}} function. The color
+#' of each node indicates how much more inhibited or active that node is, when
+#' comparing the average model classified in the 'good' category vs the average
+#' 'bad' one.
+#'
+#' @param net igraph graph object
+#' @param diff numeric vector. Every value is in the [-1,1] interval and
+#' represents the average activity difference of each node. The node names have
+#' to be specified in the \emph{names} attribute of the given vector. For example,
+#' \code{diff} could be the result of using the function
+#' \code{\link[emba]{get_avg_activity_diff_based_on_tp_predictions}}.
+#' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
+#' of the nodes (n) in the \code{net} igraph object
+#' @param title string. The title of the igraph plot
+#'
+#' @family network ploting functions
+#'
+#' @seealso
+#' \code{\link{get_node_colors}}
 #'
 #' @importFrom igraph plot.igraph V
 #' @importFrom graphics legend
-plot_network = function(net, diff, layout, title) {
+#' @export
+plot_avg_state_diff_graph = function(net, diff, layout, title) {
   # colors for nodes (to be interpolated) matching one-to-one the diff values
   col = c("tomato", "grey", "gold")
   V(net)$color = get_node_colors(net, diff, col)
@@ -241,15 +277,36 @@ plot_network = function(net, diff, layout, title) {
   par(mar = c(0, 0, 1, 0)) # c(bottom, left, top, right)
   plot.igraph(net, asp = 0, layout = layout, main = title)
   legend(x = -1.1, y = -0.7, pch = 21, col = "#777777",
-        legend = c("More inhibited","No difference", "More activated"),
+        legend = c("More inhibited", "No difference", "More activated"),
         title = expression(bold("Good model activity state")),
         pt.bg = col, pt.cex = 2, cex = 0.8, bty = "n", ncol = 1)
 }
 
-#' `net` is an igraph network object with node labels as: `V(net)$name`
+#' Get the node colors
+#'
+#' This function splits the [-1,1] interval into \strong{2000} smaller
+#' ones and matches each value of the \code{diff} vector to a specific hex color
+#' code, using a spline interpolation of the colors as defined in the \code{col}
+#' parameter.
+#'
+#' @param net an igraph graph object with the node names defined in \code{V(net)$name}
+#' @param diff numeric vector. Every value is in the [-1,1] interval and
+#' represents the average activity difference of each node. The node names have
+#' to be specified in the \emph{names} attribute of the given \code{diff} vector
+#' and have to be the same as in \code{V(net)$name}.
+#' @param col a character vector of colors to do the color interpolation in the
+#' [-1,1] interval. Usually a two-element vector specifying the colors matching
+#' the start and end of the interval (-1 and 1 respectively) or a three-element
+#' vector specifying the colors matching the values -1, 0 and 1 (can be more of
+#' course, you get the idea).
+#'
+#' @return a character vector of hex color codes where the \emph{names} attribute
+#' corresponds to the nodes of the given igraph object. Will be used to fill in
+#' the \code{V(net)$color} property or the \code{net} object.
 #'
 #' @importFrom igraph V
 #' @importFrom grDevices colorRampPalette
+#' @export
 get_node_colors = function(net, diff, col) {
   # 2000 equal-sized intervals for values between [-1,1]
   # for significance up to the 3rd decimal
@@ -277,14 +334,26 @@ get_node_colors = function(net, diff, col) {
   return(diff.colors[node.names])
 }
 
-# `diff.df` is a data.frame whose rows are classification group comparisons
-# with their name set in the `rownames()` and the columns are the network's
-# node names. This function is used to use `plot.network` multiple times on
-# different `diff` vectors
-plot_diff_df = function(net, diff.df, layout) {
+#' Plot the graphs of many average state differences vectors
+#'
+#' This function presents a convenient way to use many times the
+#' \code{\link{plot_avg_state_diff_graph}} function.
+#'
+#' @param net igraph graph object
+#' @param diff.df a data.frame whose rows are vectors of average node activity state
+#' differences between two groups of models based on some kind of classification
+#' (e.g. number of TP predictions) and whose names are set in the \code{rownames}
+#' attribute of the data frame. The columns represent the network's node names.
+#' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
+#' of the nodes (n) in the \code{net} igraph object
+#'
+#' @family network ploting functions
+#'
+#' @export
+plot_avg_state_diff_graphs = function(net, diff.df, layout) {
   for (row.index in 1:nrow(diff.df)) {
-    plot_network(net, diff.df[row.index, ], layout = layout,
-                 title = rownames(diff.df)[row.index])
+    plot_avg_state_diff_graph(net, diff.df[row.index, ], layout = layout,
+                              title = rownames(diff.df)[row.index])
   }
 }
 

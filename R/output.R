@@ -11,7 +11,6 @@
 #' HTML document
 #'
 #' @importFrom usefun pretty_print_string print_empty_line
-#'
 #' @export
 print_model_and_drug_stats =
   function(drug.combs, models, nodes, html.output) {
