@@ -282,6 +282,56 @@ plot_avg_state_diff_graph = function(net, diff, layout, title) {
         pt.bg = col, pt.cex = 2, cex = 0.8, bty = "n", ncol = 1)
 }
 
+#' Plot the graph of average link operator differences (igraph)
+#'
+#' This function uses the \code{\link[igraph]{igraph}} package to plot a network
+#' of nodes. The nodes are positioned according to the specified coordinates
+#' given by the \code{layout} parameter and the colors are derived using the
+#' \code{diff} values and the \code{\link{get_node_colors}} function. The color
+#' of each node indicates if the node's boolean function has on average the
+#' \emph{AND NOT} or the \emph{OR NOT} link operator when comparing the average
+#' model classified in the 'good' category vs the average bad' one. A non-colored
+#' node (white) will indicate nodes that do not have the link operator in their
+#' respective boolean equation (where they function as the target).
+#'
+#' @param net igraph graph object
+#' @param diff numeric vector. Every value is in the [-1,1] interval and
+#' represents the average link operator value difference of each node. The node
+#' names have to be specified in the \emph{names} attribute of the given vector.
+#' For example, \code{diff} could be the result of using the function
+#' \code{\link[emba]{get_avg_link_operator_diff_mat_based_on_tp_predictions}} and
+#' getting one vector row from the output matrix.
+#' A value closer to -1 means that the 'good' models have more of the \emph{AND NOT}
+#' link operator in their respective boolean equations while a value closer to 1
+#' means that the 'good' models have more of the \emph{OR NOT} link operator.
+
+#' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
+#' of the nodes (n) in the \code{net} igraph object
+#' @param title string. The title of the igraph plot
+#'
+#' @family network ploting functions
+#'
+#' @seealso
+#' \code{\link{get_node_colors}}
+#'
+#' @importFrom igraph plot.igraph V
+#' @importFrom graphics legend
+#' @export
+plot_avg_link_operator_diff_graph = function(net, diff, layout, title) {
+  # colors for nodes (to be interpolated) matching one-to-one the diff values
+  col = c("tomato", "grey", "gold")
+  col.2 = c("tomato", "gold", "grey", "white")
+  V(net)$color = get_node_colors(net, diff, col)
+
+  # plot the network
+  par(mar = c(0, 0, 1, 0)) # c(bottom, left, top, right)
+  plot.igraph(net, asp = 0, layout = layout, main = title)
+  legend(x = -1.1, y = -0.6, pch = 21, col = "#777777",
+         legend = c("AND NOT", "OR NOT", "No difference", "no link operator"),
+         title = expression(bold("Good model link operator")),
+         pt.bg = col.2, pt.cex = 2, cex = 0.8, bty = "n", ncol = 1)
+}
+
 #' Get the node colors
 #'
 #' This function splits the [-1,1] interval into \strong{2000} smaller
@@ -302,7 +352,9 @@ plot_avg_state_diff_graph = function(net, diff, layout, title) {
 #'
 #' @return a character vector of hex color codes where the \emph{names} attribute
 #' corresponds to the nodes of the given igraph object. Will be used to fill in
-#' the \code{V(net)$color} property or the \code{net} object.
+#' the \code{V(net)$color} property of the \code{net} object. If there are nodes
+#' that are part of the network object \code{net} but not present in the \code{diff}
+#' vector, then a \emph{NA} value will be given for the color of these nodes.
 #'
 #' @importFrom igraph V
 #' @importFrom grDevices colorRampPalette
@@ -329,8 +381,12 @@ get_node_colors = function(net, diff, col) {
   diff.colors = color.values[interval.ids]
   names(diff.colors) = names(diff)
 
-  # re-order based on the net object's node sequence
+  # check that nodes for whom you found the colors are part of the net object nodes
   node.names = V(net)$name
+  stopifnot(all(names(diff.colors) %in% node.names))
+
+  # re-order based on the net object's node sequence
+  # For the net object nodes that are not in the 'colored' nodes, we get NA values
   return(diff.colors[node.names])
 }
 
@@ -340,12 +396,12 @@ get_node_colors = function(net, diff, col) {
 #' \code{\link{plot_avg_state_diff_graph}} function.
 #'
 #' @param net igraph graph object
-#' @param diff.mat a matrix whose rows are vectors of average node activity
-#' state differences between two groups of models based on some kind of classification
+#' @param diff.mat a matrix whose rows are \strong{vectors of average node activity
+#' state differences} between two groups of models based on some kind of classification
 #' (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-#' attribute of the data frame (usually denoting the diffferent classification
+#' attribute of the matrix (usually denoting the diffferent classification
 #' groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
-#' that predicted 2 TP synergies, if the classfication is done by number of TP
+#' that predicted 2 TP synergies, if the classification is done by number of TP
 #' predictions). The columns represent the network's node names.
 #' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
 #' of the nodes (n) in the \code{net} igraph object
@@ -357,6 +413,32 @@ plot_avg_state_diff_graphs = function(net, diff.mat, layout) {
   for (row.index in 1:nrow(diff.mat)) {
     plot_avg_state_diff_graph(net, diff.mat[row.index, ], layout = layout,
                               title = rownames(diff.mat)[row.index])
+  }
+}
+
+#' Plot the graphs from an average link operator differences matrix
+#'
+#' This function presents a convenient way to use many times the
+#' \code{\link{plot_avg_link_operator_diff_graph}} function.
+#'
+#' @param net igraph graph object
+#' @param diff.mat a matrix whose rows are \strong{vectors of average node link
+#' operator differences} between two groups of models based on some kind of
+#' classification (e.g. number of TP predictions) and whose names are set in the \code{rownames}
+#' attribute of the matrix (usually denoting the diffferent classification
+#' groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
+#' that predicted 2 TP synergies, if the classification is done by number of TP
+#' predictions). The columns represent the network's node names.
+#' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
+#' of the nodes (n) in the \code{net} igraph object
+#'
+#' @family network ploting functions
+#'
+#' @export
+plot_avg_link_operator_diff_graphs = function(net, diff.mat, layout) {
+  for (row.index in 1:nrow(diff.mat)) {
+    plot_avg_link_operator_diff_graph(net, diff.mat[row.index, ], layout = layout,
+                                      title = rownames(diff.mat)[row.index])
   }
 }
 

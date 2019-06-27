@@ -24,9 +24,9 @@ are either \emph{0} (inactive node) or \emph{1} (active node).}
 a matrix whose rows are \strong{vectors of average node activity
 state differences} between two groups of models based on some kind of classification
 (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-attribute of the data frame (usually denoting the diffferent classification
+attribute of the matrix (usually denoting the diffferent classification
 groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
-that predicted 2 TP synergies, if the classfication is done by number of TP
+that predicted 2 TP synergies, if the classification is done by number of TP
 predictions). The columns represent the network's node names. Values are in
 the [-1,1] interval.
 }

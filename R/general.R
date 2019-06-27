@@ -52,16 +52,18 @@
 #'   Rows represent the diffferent classification groups, e.g. (1,2) means the
 #'   models that predicted 1 TP synergy vs the models that predicted 2 TP
 #'   synergies and the columns represent the network's node names.
+#'   Values are in the [-1,1] interval.
 #'   \item \code{biomarkers.tp.active}: a character vector whose elements are
 #'   the names of the \emph{active state} biomarkers.
 #'   \item \code{biomarkers.tp.inhibited}: a character vector whose elements are
 #'   the names of the \emph{inhibited state} biomarkers.
 #'   \item \code{diff.link.tp.mat}: a matrix whose rows are \strong{vectors of
-#'   average node link operator differences} between two groups of models based
-#'   on some kind of classification (e.g. number of TP predictions) and whose
-#'   names are set in the \code{rownames} attribute of the data frame (usually
-#'   denoting the diffferent classification groups). The columns represent the
-#'   network's node names. Values are in the [-1,1] interval.
+#'   average node link operator differences}  between two groups of models where
+#'   the classification was based on the number of true positives classification.
+#'   Rows represent the diffferent classification groups, e.g. (1,2) means the
+#'   models that predicted 1 TP synergy vs the models that predicted 2 TP
+#'   synergies and the columns represent the network's node names.
+#'   Values are in the [-1,1] interval.
 #'   \item \code{biomarkers.tp.or}: a character vector whose elements are
 #'   the names of the \emph{OR} link operator biomarkers.
 #'   \item \code{biomarkers.tp.and}: a character vector whose elements are

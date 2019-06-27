@@ -23,7 +23,9 @@ course, you get the idea).}
 \value{
 a character vector of hex color codes where the \emph{names} attribute
 corresponds to the nodes of the given igraph object. Will be used to fill in
-the \code{V(net)$color} property or the \code{net} object.
+the \code{V(net)$color} property of the \code{net} object. If there are nodes
+that are part of the network object \code{net} but not present in the \code{diff}
+vector, then a \emph{NA} value will be given for the color of these nodes.
 }
 \description{
 This function splits the [-1,1] interval into \strong{2000} smaller
