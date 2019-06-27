@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot_avg_state_diff_graph}
 \alias{plot_avg_state_diff_graph}
-\title{Plot the graph of average state differences}
+\title{Plot the graph of average state differences (igraph)}
 \usage{
 plot_avg_state_diff_graph(net, diff, layout, title)
 }

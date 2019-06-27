@@ -49,8 +49,8 @@ get_model_predictions = function(model.predictions.file) {
 #' @param drug.combinations.tested a character vector with drug combinations
 #' as elements. Default value: NULL.
 #'
-#' @return a character vector with elements the drug combinations that were
-#' found as synergistic
+#' @return a character vector with elements the names of the drug combinations
+#' that were found as synergistic
 #'
 #' @examples
 #' observed.synergies.file = system.file("extdata", "observed_synergies",
@@ -113,7 +113,7 @@ get_stable_state_from_models_dir = function(models.dir) {
   return(t(df))
 }
 
-#' Load the models equation data
+#' Load the models boolean equation link operator data
 #'
 #' Use this function to merge the link operator data used in the boolean equations
 #' of the models into a single matrix. Every boolean model is defined by a series
@@ -139,12 +139,12 @@ get_stable_state_from_models_dir = function(models.dir) {
 #' @examples
 #'
 #' models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
-#' models.equations = get_equations_from_models_dir(models.dir)
-#' models.equations.with.extra.nodes =
-#'   get_equations_from_models_dir(models.dir, FALSE)
+#' models.link.operator = get_equations_from_models_dir(models.dir)
+#' models.link.operator.with.extra.nodes =
+#'   get_link_operators_from_models_dir(models.dir, FALSE)
 #'
 #' @export
-get_equations_from_models_dir =
+get_link_operators_from_models_dir =
   function(models.dir, remove.equations.without.link.operator = TRUE) {
     files = list.files(models.dir)
     node.names = get_node_names(models.dir)
@@ -158,7 +158,7 @@ get_equations_from_models_dir =
       lines = readLines(paste0(models.dir, "/", file))
       equations = grep("equation:", lines, value = TRUE)
       values = sapply(equations, function(equation) {
-        assign_value_to_equation(equation)})
+        assign_link_operator_value_to_equation(equation)})
       datalist[[i]] = values
     }
 
@@ -247,7 +247,7 @@ get_model_names = function(models.dir) {
 #' @return \strong{1} if the \code{equation} has the '\emph{or not}' link operator,
 #' \strong{0} if the \code{equation} has the '\emph{and not}' link operator and
 #' \strong{NA} if it has neither.
-assign_value_to_equation = function(equation) {
+assign_link_operator_value_to_equation = function(equation) {
   if (grepl(".*or not.*", equation)) {
     return(1)
   } else if (grepl(".*and not.*", equation)) {

@@ -240,7 +240,7 @@ plot_avg_state_diff_graph_vis = function(net, diff, layout, title) {
               main = "Good model activity state", zoom = FALSE)
 }
 
-#' Plot the graph of average state differences
+#' Plot the graph of average state differences (igraph)
 #'
 #' This function uses the \code{\link[igraph]{igraph}} package to plot a network
 #' of nodes. The nodes are positioned according to the specified coordinates
@@ -334,26 +334,29 @@ get_node_colors = function(net, diff, col) {
   return(diff.colors[node.names])
 }
 
-#' Plot the graphs of many average state differences vectors
+#' Plot the graphs from an average state differences matrix
 #'
 #' This function presents a convenient way to use many times the
 #' \code{\link{plot_avg_state_diff_graph}} function.
 #'
 #' @param net igraph graph object
-#' @param diff.df a data.frame whose rows are vectors of average node activity state
-#' differences between two groups of models based on some kind of classification
+#' @param diff.mat a matrix whose rows are vectors of average node activity
+#' state differences between two groups of models based on some kind of classification
 #' (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-#' attribute of the data frame. The columns represent the network's node names.
+#' attribute of the data frame (usually denoting the diffferent classification
+#' groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
+#' that predicted 2 TP synergies, if the classfication is done by number of TP
+#' predictions). The columns represent the network's node names.
 #' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
 #' of the nodes (n) in the \code{net} igraph object
 #'
 #' @family network ploting functions
 #'
 #' @export
-plot_avg_state_diff_graphs = function(net, diff.df, layout) {
-  for (row.index in 1:nrow(diff.df)) {
-    plot_avg_state_diff_graph(net, diff.df[row.index, ], layout = layout,
-                              title = rownames(diff.df)[row.index])
+plot_avg_state_diff_graphs = function(net, diff.mat, layout) {
+  for (row.index in 1:nrow(diff.mat)) {
+    plot_avg_state_diff_graph(net, diff.mat[row.index, ], layout = layout,
+                              title = rownames(diff.mat)[row.index])
   }
 }
 

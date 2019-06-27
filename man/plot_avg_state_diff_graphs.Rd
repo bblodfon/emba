@@ -2,17 +2,20 @@
 % Please edit documentation in R/plot.R
 \name{plot_avg_state_diff_graphs}
 \alias{plot_avg_state_diff_graphs}
-\title{Plot the graphs of many average state differences vectors}
+\title{Plot the graphs from an average state differences matrix}
 \usage{
-plot_avg_state_diff_graphs(net, diff.df, layout)
+plot_avg_state_diff_graphs(net, diff.mat, layout)
 }
 \arguments{
 \item{net}{igraph graph object}
 
-\item{diff.df}{a data.frame whose rows are vectors of average node activity state
-differences between two groups of models based on some kind of classification
+\item{diff.mat}{a matrix whose rows are vectors of average node activity
+state differences between two groups of models based on some kind of classification
 (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-attribute of the data frame. The columns represent the network's node names.}
+attribute of the data frame (usually denoting the diffferent classification
+groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
+that predicted 2 TP synergies, if the classfication is done by number of TP
+predictions). The columns represent the network's node names.}
 
 \item{layout}{a (nx2) numeric matrix of x-y coordinates (2 columns) for each
 of the nodes (n) in the \code{net} igraph object}

@@ -1,3 +1,102 @@
+#' Subset the model predictions to the (true) observed synergies
+#'
+#' @param model.predictions a \code{data.frame} object with rows the models and
+#' columns the drug combinations. Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#' @param observed.synergies a character vector with elements the names of the
+#' drug combinations that were found as synergistic
+#'
+#' @return a \code{data.frame} object with rows the models
+#' and columns the drug combinations that were found/observed as \strong{synergistic}
+#' (\emph{positive results}). Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#'
+#' @export
+get_observed_model_predictions = function(model.predictions, observed.synergies) {
+  drug.combinations.tested = colnames(model.predictions)
+  return(model.predictions[,sapply(drug.combinations.tested, function(drug.comb) {
+    is_comb_element_of(drug.comb, observed.synergies)
+  })])
+}
+
+#' Subset the model predictions to the (false) non-observed synergies
+#'
+#' @param model.predictions a \code{data.frame} object with rows the models and
+#' columns the drug combinations. Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#' @param observed.synergies a character vector with elements the names of the
+#' drug combinations that were found as synergistic
+#'
+#' @return a \code{data.frame} object with rows the models
+#' and columns the drug combinations that were found/observed as \strong{non-synergistic}
+#' (\emph{negative results}). Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#'
+#' @export
+get_unobserved_model_predictions = function(model.predictions, observed.synergies) {
+  drug.combinations.tested = colnames(model.predictions)
+  return(model.predictions[,sapply(drug.combinations.tested, function(drug.comb) {
+    !is_comb_element_of(drug.comb, observed.synergies)
+  })])
+}
+
+#' Find the number of predictive models for every synergy subset
+#'
+#' Use this function to find for each possible subset of drug combinations out
+#' of a given list of synergies, the number of models that predicted it given
+#' the models' predictions. So, if for example the set of synergies is this one:
+#' \{'A-B','C-D','E-F'\}, we want to know how many models predicted none of them,
+#' just the single subsets (e.g. the \{'A-B'\}),
+#' the two-element subsets (e.g. the \{'A-B','C-D'\}) and all 3 of them.
+#'
+#' @param model.predictions a \code{data.frame} object with rows the models and
+#' columns the drug combinations. Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models).
+#' @param synergies a character vector with elements the synergistic drug
+#' combinations. Note that these synergies should be a subset of the column
+#' names of the \code{model.predictions} data.frame.
+#'
+#' @return an integer vector with elements the number of models the predicted
+#' each synergy subset. The \emph{names} attribute has the names of each
+#' synergistic drug combination subset, which are the drug combinations comma
+#' separated (e.g. 'A-B,C-D').
+#'
+#' @importFrom rje powerSet
+#' @export
+get_synergy_subset_stats = function(model.predictions, synergies) {
+  # check: the predicted synergies is a subset of the observed (positive) ones
+  stopifnot(all(synergies %in% colnames(model.predictions)))
+
+  # get the powerset
+  synergies.powerset = powerSet(synergies)
+
+  # order by subset size and give the list better names
+  synergies.powerset = synergies.powerset[
+    order(sapply(synergies.powerset, length))
+  ]
+  names(synergies.powerset) =
+    sapply(synergies.powerset, function(drug.comb.set) {
+      paste(drug.comb.set, collapse = ",")
+    })
+
+  synergy.subset.stats =
+    sapply(synergies.powerset, function(drug.comb.set) {
+      count_models_that_predict_synergies(drug.comb.set, model.predictions)
+    })
+
+  return(synergy.subset.stats)
+}
+
 #' Count models that predict list of synergies
 #'
 #' Use this function to find the number of models that predict a given list of
@@ -36,293 +135,47 @@ count_models_that_predict_synergies =
     return(count)
 }
 
-#' Get the average activity difference based on the number of true positives
+#' Calculate the Matthews correlation coefficient for each model
 #'
-#' This function splits the models to good and bad based on the number of true
-#' positive predictions: \emph{num.high} TPs (good) vs \emph{num.low} TPs (bad).
-#' Then, for each network node, it finds the node's average activity in each of
-#' the two classes (a value in the [0,1] interval) and then subtracts the
-#' 'bad' average activity value from the good' one.
+#' @param observed.model.predictions \code{data.frame} object with rows the models
+#' and columns the drug combinations that were found as \strong{synergistic}
+#' (\emph{positive results}). Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#' @param unobserved.model.predictions \code{data.frame} object with rows the models
+#' and columns the drug combinations that were found as \strong{non-synergistic}
+#' (\emph{negative results}). Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#' @param number.of.drug.comb.tested numeric. The total number of drug
+#' combinations tested, which should be equal to the sum of the columns of the
+#' \code{observed.model.predictions} and the \code{unobserved.model.predictions}.
 #'
-#' @param models character vector. The model names.
-#' @param models.synergies.tp an integer vector of TP values. The \emph{names}
-#' attribute holds the models' names and have to be in the same order as in the
-#' \code{models} parameter.
-#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names (same order as in the \code{models}
-#' parameter) whereas the column names specify the name of the network nodes
-#' (gene, proteins, etc.). Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node).
-#' @param num.low integer. The number of true positives representing the 'bad'
-#' model class.
-#' @param num.high integer. The number of true positives representing the 'good'
-#' model class. This number has to be strictly higher than \code{num.low}.
+#' @return a numeric vector of MCC values, each value being in the [-1,1]
+#' interval or \emph{NaN}. The \emph{names} attribute holds the models' names.
 #'
-#' @return a numeric vector with values in the [-1,1] interval (minimum and maximum
-#' average difference) and with the \emph{names} attribute representing the name
-#' of the nodes.
-#'
-#' So, if a node has a value close to -1 it means that on average,
-#' this node is more \strong{inhibited} in the 'good' models compared to the
-#' 'bad' ones while a value closer to 1 means that the node is more \strong{activated}
-#' in the 'good' models. A value closer to 0 indicates that the activity of that
-#' node is \strong{not so much different} between the 'good' and 'bad' models and
-#' so it won't not be a node of interest when searching for indicators of better
-#' performance (higher number of true positives) in the good models.
-#'
-#' @family get average activity difference functions
+#' @family confusion matrix calculation functions
 #'
 #' @export
-get_avg_activity_diff_based_on_tp_predictions =
-  function(models, models.synergies.tp, models.stable.state, num.low, num.high) {
-    if (num.low >= num.high) {
-      stop("`num.low` needs to be smaller than `num.high`")
-    }
+calculate_models_mcc = function(observed.model.predictions, unobserved.model.predictions,
+                                number.of.drug.comb.tested) {
+    # Count the true positives (TP)
+    models.synergies.tp = calculate_models_synergies_tp(observed.model.predictions)
 
-    good.models = models[models.synergies.tp == num.high]
-    bad.models  = models[models.synergies.tp == num.low]
-
-    # `good.models` != `bad.models` (disjoing sets of models)
-    stopifnot(!(good.models %in% bad.models))
-
-    # small number of models in some category: TP analysis not good :)
-    stopifnot(length(good.models) > 1)
-    stopifnot(length(bad.models) > 1)
-
-    good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
-    bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
-
-    return(good.avg.activity - bad.avg.activity)
-}
-
-#'`class.id.low` is the `mcc.interval` id for the 'bad' models
-#' `class.id.high` is the `mcc.interval` id for the 'good' models
-#'
-#' @family get average activity difference functions
-get_avg_activity_diff_based_on_mcc_classification =
-  function(models, models.mcc, mcc.intervals, models.stable.state,
-           class.id.low, class.id.high) {
-    if (class.id.low >= class.id.high) {
-      stop("`class.id.low` needs to be smaller than `class.id.high`")
-    }
-
-    mcc.interval.low = mcc.intervals[class.id.low, ]
-    mcc.interval.high = mcc.intervals[class.id.high, ]
-
-    # find the 'good' models
-    max.value = max(mcc.intervals, na.rm = TRUE)
-    if (mcc.interval.high[2] == max.value) {
-      good.models =
-        get_models_based_on_mcc_interval(models, models.mcc, mcc.interval.high,
-                                         include.high.value = TRUE)
-    } else {
-      good.models =
-        get_models_based_on_mcc_interval(models, models.mcc, mcc.interval.high)
-    }
-
-    # find the 'bad' models
-    if (is.na(mcc.interval.low[1])) {
-      # the `NaN` MCC scored models (can only be 'bad' ones)
-      bad.models = models[is.na(models.mcc)]
-    } else {
-      bad.models =
-        get_models_based_on_mcc_interval(models, models.mcc, mcc.interval.low)
-    }
-
-    # `good.models` != `bad.models` (disjoing sets of models)
-    stopifnot(!(good.models %in% bad.models))
-    # small number of models in some category: need to redefine the MCC intervals
-    stopifnot(length(good.models) > 1)
-    stopifnot(length(bad.models) > 1)
-
-    good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
-    bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
-
-    return(good.avg.activity - bad.avg.activity)
-}
-
-#' Title mcc
-#'
-#' @family get average activity difference functions
-get_avg_activity_diff_based_on_mcc_clustering =
-  function(models.mcc, models.mcc.no.nan.sorted, models.stable.state,
-           mcc.class.ids, models.cluster.ids, class.id.low, class.id.high) {
-    if (class.id.low >= class.id.high) {
-      stop("`class.id.low` needs to be smaller than `class.id.high`")
-    }
-
-    bad.class.id  = mcc.class.ids[class.id.low]
-    good.class.id = mcc.class.ids[class.id.high]
-
-    # find the 'good' models
-    good.models = get_models_based_on_mcc_class_id(
-      good.class.id, models.cluster.ids, models.mcc.no.nan.sorted
-    )
-
-    # find the 'bad' models
-    if(is.nan(bad.class.id)) {
-      # the `NaN` MCC scored models (can only be 'bad' ones)
-      bad.models = names(models.mcc)[is.nan(models.mcc)]
-    } else {
-      bad.models =
-        get_models_based_on_mcc_class_id(
-          bad.class.id, models.cluster.ids, models.mcc.no.nan.sorted
-        )
-    }
-
-    # `good.models` != `bad.models` (disjoing sets of models)
-    stopifnot(!(good.models %in% bad.models))
-    # small number of models in some category: need to redefine the MCC intervals
-    stopifnot(length(good.models) > 1)
-    stopifnot(length(bad.models) > 1)
-
-    good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
-    bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
-
-    return(good.avg.activity - bad.avg.activity)
-}
-
-# `models.cluster.ids` is a vector specifying the class id of the MCC score
-# as defined in the `models.mcc` (one-to-one)
-get_models_based_on_mcc_class_id =
-  function(class.id, models.cluster.ids, models.mcc) {
-    return(names(models.mcc[models.cluster.ids == class.id]))
-  }
-
-#' @importFrom usefun is_between
-get_models_based_on_mcc_interval =
-  function(models, models.mcc, mcc.interval, include.high.value = FALSE) {
-    res = sapply(models.mcc, is_between, low.thres = mcc.interval[1],
-                 high.thres = mcc.interval[2], include.high.value)
-    # exclude the NA values
-    res.pruned = res[!is.na(res)]
-    models.pruned = models[!is.na(res)]
-
-    return(models.pruned[res.pruned])
-}
-
-#' Example use: `drug.comb` = "AK-PD"
-#'
-#' @family get average activity difference functions
-#'
-#' @importFrom usefun is_empty
-get_avg_activity_diff_based_on_specific_synergy_prediction =
-  function(model.predictions, models.stable.state, drug.comb) {
-    good.models = rownames(model.predictions)[
-      model.predictions[, drug.comb] == 1 & !is.na(model.predictions[, drug.comb])
-    ]
-    bad.models  = rownames(model.predictions)[
-      model.predictions[, drug.comb] == 0 & !is.na(model.predictions[, drug.comb])
-    ]
-    # na.models = rownames(model.predictions)[is.na(model.predictions[, drug.comb])]
-
-    # check: no empty list of either good or bad models
-    stopifnot(!is_empty(bad.models))
-    stopifnot(!is_empty(good.models))
-
-    if (length(good.models) == 1) {
-      good.avg.activity = models.stable.state[good.models, ]
-    } else {
-      good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
-    }
-
-    if (length(bad.models) == 1) {
-      bad.avg.activity = models.stable.state[bad.models, ]
-    } else {
-      bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
-    }
-
-    return(good.avg.activity - bad.avg.activity)
-}
-
-#' To get meaningful results, one set must be a subset of the other
-#' Example use:
-#' synergy.set.str = "A-B,A-D,B-D,P-S"
-#' synergy.subset.str = "A-B,B-D,P-S"
-
-#' @family get average activity difference functions
-#'
-#' @importFrom usefun outersect is_empty
-get_avg_activity_diff_based_on_diff_synergy_prediction =
-  function(synergy.set.str, synergy.subset.str, model.predictions,
-           models.stable.state) {
-
-    synergy.set = unlist(strsplit(synergy.set.str, split = ","))
-    synergy.subset = unlist(strsplit(synergy.subset.str, split = ","))
-
-    # some checks
-    stopifnot(length(synergy.subset) > 0,
-              length(synergy.set) > length(synergy.subset))
-    stopifnot(all(synergy.subset %in% synergy.set))
-
-    # find models that predict the `synergy.set`
-    if (length(synergy.set) == 1) {
-      models.synergy.set = rownames(model.predictions)[
-        model.predictions[, synergy.set] == 1 &
-        !is.na(model.predictions[, synergy.set])]
-    } else {
-      models.synergy.set = rownames(model.predictions)[
-        apply(model.predictions[, synergy.set], 1,
-              function(x) all(x == 1 & !is.na(x)))]
-    }
-
-    # find models that predict the `synergy.subset`
-    if (length(synergy.subset) == 1) {
-      models.synergy.subset = rownames(model.predictions)[
-        model.predictions[, synergy.subset] == 1 &
-        !is.na(model.predictions[, synergy.subset])]
-    } else {
-      models.synergy.subset = rownames(model.predictions)[
-        apply(model.predictions[, synergy.subset], 1,
-              function(x) all(x == 1 & !is.na(x)))]
-    }
-
-    common.models = intersect(models.synergy.set, models.synergy.subset)
-    good.models = common.models
-    bad.models  = outersect(models.synergy.set, models.synergy.subset)
-
-    # check: no good model inside the bad model list
-    stopifnot(all(!(good.models %in% bad.models)))
-
-    # check: no empty list of either good or bad models
-    stopifnot(!is_empty(bad.models))
-    stopifnot(!is_empty(good.models))
-
-    if (length(good.models) == 1) {
-      good.avg.activity = models.stable.state[good.models, ]
-    } else {
-      good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
-    }
-
-    if (length(bad.models) == 1) {
-      bad.avg.activity = models.stable.state[bad.models, ]
-    } else {
-      bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
-    }
-
-    return(good.avg.activity - bad.avg.activity)
-}
-
-calculate_models_mcc =
-  function(observed.model.predictions, unobserved.model.predictions,
-           models.synergies.tp, number.of.drug.comb.tested) {
     # Count the false negatives (FN)
-    models.synergies.fn = apply(observed.model.predictions, 1, function(x) {
-      sum( x == 0 | is.na(x) )
-    })
+    models.synergies.fn = calculate_models_synergies_fn(observed.model.predictions)
+
+    # Count the False Positives (FP)
+    models.synergies.fp = calculate_models_synergies_fp(unobserved.model.predictions)
+
+    # Count the True Negatives (TN)
+    models.synergies.tn = calculate_models_synergies_tn(unobserved.model.predictions)
 
     # P = TP + FN (Positives)
     positives = ncol(observed.model.predictions)
     models.synergies.p = models.synergies.tp + models.synergies.fn
-
-    # Count the predictions of the non-observed synergies per model (FP)
-    models.synergies.fp =
-      calculate_models_synergies_fp(unobserved.model.predictions)
-
-    # Count the True Negatives (TN)
-    models.synergies.tn = apply(unobserved.model.predictions, 1, function(x) {
-      sum( x == 0 | is.na(x))
-    })
 
     # N = FP + TN (Negatives)
     negatives = ncol(unobserved.model.predictions)
@@ -340,83 +193,134 @@ calculate_models_mcc =
     return(models.mcc)
 }
 
-calculate_models_synergies_fp = function(unobserved.model.predictions) {
-  # Count the predictions of the non-observed synergies per model (FP)
-  models.synergies.fp = apply(unobserved.model.predictions, 1, sum, na.rm = T)
-  return(models.synergies.fp)
+
+#' Count the predictions of the observed synergies per model (TP)
+#'
+#' Since the given \code{observed.model.predictions} data.frame has only the
+#' positive results, this function returns the total number of 1's in each row.
+#'
+#' @param observed.model.predictions \code{data.frame} object with rows the models
+#' and columns the drug combinations that were found/observed as \strong{synergistic}
+#' (\emph{positive results}). Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#'
+#' @return an integer vector with elements the number of true positive predictions
+#' per model. The model names are given in the \emph{names} attribute (same order
+#' as in the \emph{rownames} attribute of the observed.model.predictions
+#' \code{data.frame}).
+#'
+#' @family confusion matrix calculation functions
+#'
+#' @export
+calculate_models_synergies_tp = function(observed.model.predictions) {
+  return(apply(observed.model.predictions, 1, sum, na.rm = T))
 }
 
-# inputs are vectors of same size and one-to-one value correspondence
+#' Count the non-synergies of the observed synergies per model (FN)
+#'
+#' Since the given \code{observed.model.predictions} data.frame has only the
+#' positive results, this function returns the total number of 0's \emph{and}
+#' NA's in each row.
+#'
+#' @param observed.model.predictions \code{data.frame} object with rows the models
+#' and columns the drug combinations that were found/observed as \strong{synergistic}
+#' (\emph{negative results}). Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#'
+#' @return an integer vector with elements the number of false negative predictions
+#' per model. The model names are given in the \emph{names} attribute (same order
+#' as in the \emph{rownames} attribute of the observed.model.predictions
+#' \code{data.frame}).
+#'
+#' @family confusion matrix calculation functions
+#'
+#' @export
+calculate_models_synergies_fn = function(observed.model.predictions) {
+  return(apply(observed.model.predictions, 1, function(x) {
+    sum( x == 0 | is.na(x) )
+  }))
+}
+
+#' Count the predictions of the non-synergistic drug combinations per model (FP)
+#'
+#' Since the given \code{unobserved.model.predictions} data.frame has only the
+#' negative results, this function returns the total number of 1's in each row.
+#'
+#' @param unobserved.model.predictions \code{data.frame} object with rows the models
+#' and columns the drug combinations that were found/observed as \strong{non-synergistic}
+#' (\emph{negative results}). Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#'
+#' @return an integer vector with elements the number of false positive predictions
+#' per model. The model names are given in the \emph{names} attribute (same order
+#' as in the \emph{rownames} attribute of the unobserved.model.predictions
+#' \code{data.frame}).
+#'
+#' @family confusion matrix calculation functions
+#'
+#' @export
+calculate_models_synergies_fp = function(unobserved.model.predictions) {
+  return(apply(unobserved.model.predictions, 1, sum, na.rm = T))
+}
+
+#' Count the non-synergies of the non-synergistic drug combinations per model (TN)
+#'
+#' Since the given \code{unobserved.model.predictions} data.frame has only the
+#' negative results, this function returns the total number of 0's \emph{and}
+#' NA's in each row.
+#'
+#' @param unobserved.model.predictions \code{data.frame} object with rows the models
+#' and columns the drug combinations that were found/observed as \strong{non-synergistic}
+#' (\emph{negative results}). Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#'
+#' @return an integer vector with elements the number of true negative predictions
+#' per model. The model names are given in the \emph{names} attribute (same order
+#' as in the \emph{rownames} attribute of the unobserved.model.predictions
+#' \code{data.frame}).
+#'
+#' @family confusion matrix calculation functions
+#'
+#' @export
+calculate_models_synergies_tn = function(unobserved.model.predictions) {
+  return(apply(unobserved.model.predictions, 1, function(x) {
+    sum( x == 0 | is.na(x))
+  }))
+}
+
+#' Calculate the Matthews correlation coefficient vector
+#'
+#' Use this function to calculate the MCC values given vectors of \emph{TP} (true
+#' positives), \emph{FP} (false positives), \emph{TN} (true negatives), \emph{FN}
+#' (false negatives), \emph{P} (positives) and \emph{N} (negatives). Note that
+#' the input vectors have to be of the same size and have one-to-one value
+#' correspondence for the output MCC vector values to make sense.
+#'
+#' @param tp numeric vector of TPs
+#' @param tn numeric vector of TNs
+#' @param fp numeric vector of FPs
+#' @param fn numeric vector of FNs
+#' @param p numeric vector of Ps (p = tp + fn)
+#' @param n numeric vector of Ns (n = tn + fp)
+#'
+#' @return a numeric vector of MCC values, each value being in the [-1,1]
+#' interval or \emph{NaN}.
+#'
+#' @family confusion matrix calculation functions
+#'
+#' @export
 calculate_mcc = function(tp, tn, fp, fn, p, n) {
   return(
     (tp * tn - fp * fn) / sqrt((tp + fp) * p * n * (tn + fn))
   )
-}
-
-get_mcc_intervals = function(mcc.values, interval.size) {
-  min.mcc = min(mcc.values, na.rm = TRUE)
-  max.mcc = max(mcc.values, na.rm = TRUE)
-  mcc.points = seq(-1.0, 1.0, interval.size)
-  mcc.points.pruned = mcc.points[min.mcc < (mcc.points + interval.size) &
-                                 mcc.points < (max.mcc + interval.size)]
-
-  mcc.intervals =
-    matrix(numeric(), nrow = length(mcc.points.pruned) - 1, ncol = 2)
-  for (i in 1:nrow(mcc.intervals)) {
-    mcc.intervals[i, 1] = mcc.points.pruned[i]
-    mcc.intervals[i, 2] = mcc.points.pruned[i + 1]
-  }
-
-  return(mcc.intervals)
-}
-
-get_mcc_classes = function(mcc.intervals) {
-  number.of.intervals = nrow(mcc.intervals)
-  mcc.classes = character(number.of.intervals)
-
-  for (i in 1:number.of.intervals) {
-    mcc.interval = mcc.intervals[i,]
-    low.value = mcc.interval[1]
-    high.value = mcc.interval[2]
-    if (is.na(low.value)) mcc.classes[i] = "NaN"
-    else if (i != number.of.intervals)
-      mcc.classes[i] = paste0("[", low.value, ", " , high.value, ")")
-    else
-      mcc.classes[i] = paste0("[", low.value, ", " , high.value, "]")
-  }
-
-  return(mcc.classes)
-}
-
-# `diff.res` is a 2-dim matrix (rows = classification group matchings,
-# columns = nodes)
-# `type` = active or inhibited
-# If there is at least one value in a column that surpasses the threshold given,
-# the corresponding node is return as a biomarker
-get_biomarkers = function(diff.res, threshold, type) {
-  dimen = dim(diff.res)
-  rows = dimen[1]
-  nodes.num = dimen[2]
-
-  biomarkers = character(0)
-  for(node.index in 1:nodes.num) {
-    node.name = colnames(diff.res)[node.index]
-    for (row.index in 1:rows) {
-      if (type == "active") {
-        if (diff.res[row.index, node.index] > threshold) {
-          biomarkers = c(biomarkers, node.name)
-          break
-        }
-      } else { # inhibited
-        if (diff.res[row.index, node.index] < -threshold) {
-          biomarkers = c(biomarkers, node.name)
-          break
-        }
-      }
-    }
-  }
-
-  return(biomarkers)
 }
 
 # adds one more row to the `biomarkers.synergy.res` data.frame with the

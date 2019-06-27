@@ -14,8 +14,8 @@ below for the format of an observed synergies file.}
 as elements. Default value: NULL.}
 }
 \value{
-a character vector with elements the drug combinations that were
-found as synergistic
+a character vector with elements the names of the drug combinations
+that were found as synergistic
 }
 \description{
 Use this function to read a file that has the observed synergies data and
