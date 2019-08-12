@@ -30,6 +30,6 @@ or equal} to the threshold will be pruned. Use it when there too many
 categories and the graph appears too dense. Default value: 0}
 }
 \description{
-Use this function to produce a bar plot when the input is a \link[base]{table}
-command to a numeric vector
+Use this function to produce a bar plot when the input is the result of using
+the \link[base]{table} function to a numeric vector
 }

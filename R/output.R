@@ -30,7 +30,7 @@ print_model_stats = function(models, nodes, html.output) {
   pretty_print_string(paste("Number of nodes:", nodes), with.gt = FALSE)
 }
 
-#' egrweqe
+#' TO BE DELETED !!! ???
 #'
 #' @importFrom usefun pretty_print_string print_empty_line
 print_mcc_classification_info = function(mcc.classes, html.output) {

@@ -3,6 +3,7 @@
 #' @importFrom grDevices rainbow
 #' @importFrom graphics legend
 #' @importFrom Ckmeans.1d.dp ahist
+#' @export
 plot_mcc_classes_hist = function(models.mcc.no.nan.sorted, models.cluster.ids,
                                  num.of.classes, mcc.class.ids) {
   min.x.value = round(min(models.mcc.no.nan.sorted) - 0.1, digits = 1)
@@ -22,8 +23,8 @@ plot_mcc_classes_hist = function(models.mcc.no.nan.sorted, models.cluster.ids,
 
 #' Bar plot of model stats
 #'
-#' Use this function to produce a bar plot when the input is a \link[base]{table}
-#' command to a numeric vector
+#' Use this function to produce a bar plot when the input is the result of using
+#' the \link[base]{table} function to a numeric vector
 #'
 #' @param models.stats table object, the result of using \link[base]{table} on
 #' a (numeric) vector. Usually it represents some models statistics summary -

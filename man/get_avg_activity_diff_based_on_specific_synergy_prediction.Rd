@@ -12,8 +12,12 @@
 Example use: `drug.comb` = "AK-PD"
 }
 \seealso{
-Other average activity difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
-  \code{\link{get_avg_activity_diff_based_on_mcc_classification}},
-  \code{\link{get_avg_activity_diff_based_on_mcc_clustering}}
+Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
+  \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
 }
-\concept{average activity difference functions}
+\concept{average data difference functions}

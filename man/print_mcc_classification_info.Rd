@@ -2,10 +2,10 @@
 % Please edit documentation in R/output.R
 \name{print_mcc_classification_info}
 \alias{print_mcc_classification_info}
-\title{egrweqe}
+\title{TO BE DELETED !!! ???}
 \usage{
 print_mcc_classification_info(mcc.classes, html.output)
 }
 \description{
-egrweqe
+TO BE DELETED !!! ???
 }

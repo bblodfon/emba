@@ -2,18 +2,69 @@
 % Please edit documentation in R/diff.R
 \name{get_avg_activity_diff_based_on_mcc_clustering}
 \alias{get_avg_activity_diff_based_on_mcc_clustering}
-\title{Title mcc}
+\title{Get the average activity difference based on MCC clustering}
 \usage{
 get_avg_activity_diff_based_on_mcc_clustering(models.mcc,
-  models.mcc.no.nan.sorted, models.stable.state, mcc.class.ids,
-  models.cluster.ids, class.id.low, class.id.high)
+  models.stable.state, mcc.class.ids, models.cluster.ids, class.id.low,
+  class.id.high)
+}
+\arguments{
+\item{models.mcc}{a numeric vector of Matthews Correlation Coefficient (MCC)
+scores, one for each model. The \emph{names} attribute holds the models' names.
+Can be the result of using the function \code{\link[emba]{calculate_models_mcc}}.}
+
+\item{models.stable.state}{a matrix (nxm) with n models and m nodes. The row
+names of the matrix specify the models' names (same order as in the \code{models.mcc}
+parameter) whereas the column names specify the name of the network nodes
+(gene, proteins, etc.). Possible values for each \emph{model-node element}
+are either \emph{0} (inactive node) or \emph{1} (active node).}
+
+\item{mcc.class.ids}{a numeric vector of group/class ids starting from NaN if
+models with NaN MCC score are included or 1 otherwise. E.g. c(1,2,3), where
+we have 3 MCC classes and no NaN values.}
+
+\item{models.cluster.ids}{a numeric vector of cluster ids assigned to each
+model. It is the result of using \code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}
+with input the sorted vector of the models' MCC values with no NaNs included.}
+
+\item{class.id.low}{integer. This number specifies the MCC class id of the
+'bad' models.}
+
+\item{class.id.high}{integer. This number specifies the MCC class id of the
+'good' models and needs to be strictly higher than \code{class.id.low}.}
+}
+\value{
+a numeric vector with values in the [-1,1] interval (minimum and maximum
+possible average difference) and with the \emph{names} attribute representing the name
+of the nodes.
 }
 \description{
-Title mcc
+This function splits the models to good and bad based on an MCC value
+clustering method: \emph{class.id.high} denotes the group id with the higher MCC
+values (good model group) vs \emph{class.id.low} which denotes the group id with
+the lower MCC values (bad model group). Then, for each network node, the function
+finds the node's average activity in each of the two classes (a value in
+the [0,1] interval) and then subtracts the bad class average activity value from
+the good one.
 }
+\section{Details}{
+
+So, if a node has a value close to -1 it means that on average,
+this node is more \strong{inhibited} in the 'good' models compared to the
+'bad' ones while a value closer to 1 means that the node is more \strong{activated}
+in the 'good' models. A value closer to 0 indicates that the activity of that
+node is \strong{not so much different} between the 'good' and 'bad' models and
+so it won't not be a node of interest when searching for indicators of better
+performance (higher MCC score/class) in the good models.
+}
+
 \seealso{
-Other average activity difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
-  \code{\link{get_avg_activity_diff_based_on_mcc_classification}},
-  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}
+Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
+  \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
 }
-\concept{average activity difference functions}
+\concept{average data difference functions}

@@ -17,8 +17,12 @@ synergy.set.str = "A-B,A-D,B-D,P-S"
 synergy.subset.str = "A-B,B-D,P-S"
 }
 \seealso{
-Other average activity difference functions: \code{\link{get_avg_activity_diff_based_on_mcc_classification}},
-  \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
-  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}
+Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
+  \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
 }
-\concept{average activity difference functions}
+\concept{average data difference functions}

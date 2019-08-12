@@ -21,21 +21,28 @@ parameter) whereas the column names specify the name of the network nodes
 are either \emph{0} (inactive node) or \emph{1} (active node).}
 }
 \value{
-a matrix whose rows are \strong{vectors of average node activity
-state differences} between two groups of models based on some kind of classification
-(e.g. number of TP predictions) and whose names are set in the \code{rownames}
-attribute of the matrix (usually denoting the diffferent classification
-groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
-that predicted 2 TP synergies, if the classification is done by number of TP
-predictions). The columns represent the network's node names. Values are in
-the [-1,1] interval.
+a matrix whose rows are \strong{vectors of
+average node activity state differences} between two groups of models where
+the classification was based on the number of true positive predictions.
+Rows represent the diffferent classification group matchings, e.g. (1,2) means the
+models that predicted 1 TP synergy vs the models that predicted 2 TP
+synergies and the columns represent the network's node names.
+Values are in the [-1,1] interval.
 }
 \description{
-This function uses the \code{\link[emba]{get_avg_activity_diff_based_on_tp_predictions}}
-function on each row vector of the given \code{models.stable.state} matrix.
+This function finds all the TP values of the models given (e.g. 0,1,2,3),
+generates every pairwise combination (e.g. the group matchings: (0,1), (1,3),
+etc.) and uses the \code{\link[emba]{get_avg_activity_diff_based_on_tp_predictions}}
+function on each generated classification group matching, comparing thus all
+groups of models with different true positive (TP) values.
 }
 \seealso{
-Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
+Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
+  \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
   \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
 }
 \concept{average data difference functions}

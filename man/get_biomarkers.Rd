@@ -24,9 +24,9 @@ biomarkers are found.}
 a list with two elements:
  \itemize{
    \item \code{biomarkers.pos}: a character vector that includes the node
-   names that were found either as \emph{positive}
+   names of the \emph{positive} biomarkers
    \item \code{biomarkers.neg}: a character vector that includes the node
-   names that were found either as \emph{negative}
+   names of the \emph{negative} biomarkers
 }
 }
 \description{
@@ -38,8 +38,9 @@ the \code{diff.mat} matrix that surpasses the threshold given, then the
 corresponding node (name of the column) is return as a biomarker. This means
 that for a single node, if at least one value that represents an average data
 difference (for example, the average activity state difference) between any
-of the given classification group comparisons (below) the threshold (negative
-threshold), then a \emph{positive} (\emph{negative}) biomarker is reported.
+of the given classification group comparisons is above (below) the threshold
+(negative threshold), then a \emph{positive} (\emph{negative}) biomarker is
+reported.
 }
 \section{Details}{
 

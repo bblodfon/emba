@@ -28,7 +28,7 @@ model class. This number has to be strictly higher than \code{num.low}.}
 }
 \value{
 a numeric vector with values in the [-1,1] interval (minimum and maximum
-average difference) and with the \emph{names} attribute representing the name
+possible average difference) and with the \emph{names} attribute representing the name
 of the nodes.
 }
 \description{
@@ -50,7 +50,12 @@ performance (higher number of true positives) in the good models.
 }
 
 \seealso{
-Other average data difference functions: \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},
+Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
   \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
 }
 \concept{average data difference functions}

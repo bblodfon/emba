@@ -2,19 +2,15 @@
 % Please edit documentation in R/diff.R
 \name{get_avg_activity_diff_based_on_mcc_classification}
 \alias{get_avg_activity_diff_based_on_mcc_classification}
-\title{`class.id.low` is the `mcc.interval` id for the 'bad' models
+\title{TO BE DELETED !!! ???
+`class.id.low` is the `mcc.interval` id for the 'bad' models
 `class.id.high` is the `mcc.interval` id for the 'good' models}
 \usage{
 get_avg_activity_diff_based_on_mcc_classification(models, models.mcc,
   mcc.intervals, models.stable.state, class.id.low, class.id.high)
 }
 \description{
+TO BE DELETED !!! ???
 `class.id.low` is the `mcc.interval` id for the 'bad' models
 `class.id.high` is the `mcc.interval` id for the 'good' models
 }
-\seealso{
-Other average activity difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
-  \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
-  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}
-}
-\concept{average activity difference functions}
