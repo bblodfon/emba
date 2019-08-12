@@ -44,7 +44,7 @@ reported.
 }
 \section{Details}{
 
-This function uses the \code{\link{[emba](get_biomarkers_per_type)}} function
+This function uses the \code{\link[emba]{get_biomarkers_per_type}} function
 to get the biomarkers (nodes) of both types (positive and negative) from the
 average data differences matrix. If a node though is found to surpass the
 significance threshold
