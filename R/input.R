@@ -3,7 +3,7 @@
 #' Use this function to read a file that has the model predictions data
 #' and output it to a \code{data.frame} object.
 #'
-#' @param mode.predictions.file a tab-delimited file (for the specific format
+#' @param model.predictions.file a tab-delimited file (for the specific format
 #' check the example below)
 #'
 #' @return a \code{data.frame} object with rows the models and columns the
