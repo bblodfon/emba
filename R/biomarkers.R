@@ -66,7 +66,7 @@ get_biomarkers_per_type = function(diff.mat, threshold, type) {
 #' 0 and 1. The logic behind the biomarker selection is that if there is at
 #' least one value in a column of
 #' the \code{diff.mat} matrix that surpasses the threshold given, then the
-#' corresponding node (name of the column) is return as a biomarker. This means
+#' corresponding node (name of the column) is returned as a biomarker. This means
 #' that for a single node, if at least one value that represents an average data
 #' difference (for example, the average activity state difference) between any
 #' of the given classification group comparisons is above (below) the threshold
