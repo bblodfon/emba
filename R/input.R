@@ -139,7 +139,7 @@ get_stable_state_from_models_dir = function(models.dir) {
 #' @examples
 #'
 #' models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
-#' models.link.operator = get_equations_from_models_dir(models.dir)
+#' models.link.operator = get_link_operators_from_models_dir(models.dir)
 #' models.link.operator.with.extra.nodes =
 #'   get_link_operators_from_models_dir(models.dir, FALSE)
 #'
