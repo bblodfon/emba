@@ -59,12 +59,13 @@ performance (higher MCC score/class) in the good models.
 }
 
 \seealso{
-Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
-  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
+Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
   \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
   \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}},
   \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},
   \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction}},
   \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
 }
 \concept{average data difference functions}

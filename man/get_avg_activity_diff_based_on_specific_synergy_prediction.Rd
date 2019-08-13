@@ -2,22 +2,65 @@
 % Please edit documentation in R/diff.R
 \name{get_avg_activity_diff_based_on_specific_synergy_prediction}
 \alias{get_avg_activity_diff_based_on_specific_synergy_prediction}
-\title{Example use: `drug.comb` = "AK-PD"}
+\title{Get average activity difference based on specific synergy prediction}
 \usage{
 
   get_avg_activity_diff_based_on_specific_synergy_prediction(model.predictions,
   models.stable.state, drug.comb)
 }
-\description{
-Example use: `drug.comb` = "AK-PD"
+\arguments{
+\item{model.predictions}{a \code{data.frame} object with rows the models and
+columns the drug combinations. Possible values for each \emph{model-drug combination
+element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+predicted) or \emph{NA} (couldn't find stable states in either the drug
+combination inhibited model or in any of the two single-drug inhibited models)}
+
+\item{models.stable.state}{a matrix (nxm) with n models and m nodes. The row
+names of the matrix specify the models' names
+whereas the column names specify the name of the network nodes
+(gene, proteins, etc.). Possible values for each \emph{model-node element}
+are either \emph{0} (inactive node) or \emph{1} (active node).}
+
+\item{drug.comb}{string. The drug combination which will be used to split
+the models. It must be included in the column names of the \code{model.predictions}
+object.}
 }
+\value{
+a numeric vector with values in the [-1,1] interval (minimum and maximum
+possible average difference) and with the \emph{names} attribute representing
+the name of the nodes.
+}
+\description{
+Given a specific drug combination, this function splits the models to
+good (those that predicted that particular combination, i.e. found it
+as synergistic - a value of \emph{1} in the \code{model.predictions}) and
+bad (those that found it as non-synergistic - a value of \emph{0} in the
+\code{model.predictions}). The models whose predicted value for that synergy is marked as
+\emph{NA} are excluded from the analysis. Then, for each network node, the
+function finds the node's average activity in each of the two model groups (a
+value in the [0,1] interval) and then subtracts the bad group's average
+activity value from the good one.
+}
+\section{Details}{
+
+So, if a node has a value close to -1 it means that on average,
+this node is more \strong{inhibited} in the models that predicted the specific
+drug combination given, whereas a value closer to 1 means that the node is more
+\strong{activated} in these models. A value closer to 0 indicates that the activity of that
+node is \strong{not so much different} between the models that predicted the synergy and
+those that did not and so it won't not be a node of interest when searching
+for \emph{synergy biomarkers} - nodes whose activity is important for the manifestation
+of the synergy.
+}
+
 \seealso{
-Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_diff_synergy_prediction}},
-  \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
+Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
   \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
   \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}},
   \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},
   \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
+  \code{\link{get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction}},
   \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
 }
 \concept{average data difference functions}

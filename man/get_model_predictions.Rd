@@ -7,7 +7,7 @@
 get_model_predictions(model.predictions.file)
 }
 \arguments{
-\item{mode.predictions.file}{a tab-delimited file (for the specific format
+\item{model.predictions.file}{a tab-delimited file (for the specific format
 check the example below)}
 }
 \value{
