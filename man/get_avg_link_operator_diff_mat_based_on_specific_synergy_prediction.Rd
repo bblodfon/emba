@@ -57,7 +57,7 @@ be a node of interest when searching for \emph{synergy biomarkers} - nodes
 whose parameterization (value of the link operator) affects the manifestation
 of synergy. A value exactly equal to 0 can also mean that this node didn't
 not have a link operator in its boolean equation (making it thus a non-important
-node in that regard).
+node with regard to the parameterization).
 }
 
 \seealso{

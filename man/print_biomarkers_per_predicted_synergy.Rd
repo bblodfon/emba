@@ -2,11 +2,27 @@
 % Please edit documentation in R/output.R
 \name{print_biomarkers_per_predicted_synergy}
 \alias{print_biomarkers_per_predicted_synergy}
-\title{yeah baby}
+\title{Print biomarkers for each predicted synergy}
 \usage{
-print_biomarkers_per_predicted_synergy(biomarkers.dir, drug.comb,
-  predicted.synergies, html.output = TRUE)
+print_biomarkers_per_predicted_synergy(biomarkers.dir, predicted.synergies,
+  html.output = TRUE)
+}
+\arguments{
+\item{biomarkers.dir}{string. It specifies the full path name of the
+directory which holds the biomarker files for each drug combination in the
+\code{predicted.synergies}. The biomarker files must be formatted as:
+\emph{\%drug.comb\%_biomarkers_active} or
+\emph{\%drug.comb\%_biomarkers_inhibited}, where \%drug.comb\% is an element of
+the \code{predicted.synergies} vector. If the files are not properly formatted
+or don't even exist, zero biomarkers are reported.}
+
+\item{predicted.synergies}{a character vector of the synergies (drug
+combination names) that were predicted by \strong{at least one} of the models
+in the dataset.}
+
+\item{html.output}{logical. If TRUE, it makes the printed output nice for
+an HTML document. Default value: TRUE.}
 }
 \description{
-yeah baby
+Print biomarkers for each predicted synergy
 }
