@@ -402,22 +402,155 @@ get_models_based_on_mcc_class_id =
     return(names(models.mcc[models.cluster.ids == class.id]))
   }
 
+#' Get average activity difference matrix based on specific synergy prediction
+#'
+#' This function uses the \code{\link[emba]{get_avg_activity_diff_based_on_specific_synergy_prediction}}
+#' function on a vector of drug combinations that were observed as synergistic
+#' (e.g. by experiments) but also found as such by at least one of the models
+#' (these drug combinations are the \emph{predicted synergies}).
+#'
+#' @param model.predictions a \code{data.frame} object with rows the models and
+#' columns the drug combinations. Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
+#' names of the matrix specify the models' names
+#' whereas the column names specify the name of the network nodes
+#' (gene, proteins, etc.). Possible values for each \emph{model-node element}
+#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' @param predicted.synergies a character vector of the synergies (drug
+#' combination names) that were predicted by \strong{at least one} of the models
+#' in the dataset. It must be a subset of the column names (the drug combinations)
+#' of the \code{model.predictions} object.
+#'
+#' @return a matrix whose rows are \strong{vectors of
+#' average node activity state differences} between two groups of models where
+#' the classification for each individual row was based on the prediction or not
+#' of a specific synergistic drug combination.
+#' The row names are the predicted synergies, one per row, while the columns
+#' represent the network's node names. Values are in the [-1,1] interval.
+#'
+#' @family average data difference functions
+#' @export
+get_avg_activity_diff_mat_based_on_specific_synergy_prediction =
+  function(model.predictions, models.stable.state, predicted.synergies) {
+    stopifnot(all(predicted.synergies %in% colnames(model.predictions)))
 
+    diff.synergies.mat =
+      sapply(predicted.synergies, function(drug.comb) {
+        get_avg_activity_diff_based_on_specific_synergy_prediction(
+          model.predictions, models.stable.state, drug.comb)
+      })
+    diff.synergies.mat = t(diff.synergies.mat)
 
+    return(diff.synergies.mat)
+  }
 
+#' Get average link operator difference matrix based on specific synergy prediction
+#'
+#' This function uses the \code{\link[emba]{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}}
+#' function with the parameter \code{models.link.operator} as input in the place of
+#' \code{models.stable.state}, since the two matrices representing the two inputs
+#' have the same data format (rows represent models, columns represent nodes,
+#' and each value is a number in the [0,1] interval).
+#'
+#' @param model.predictions a \code{data.frame} object with rows the models and
+#' columns the drug combinations. Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#' @param models.link.operator matrix (nxm) with n models and m nodes. The row
+#' names of the matrix specify the models' names (same order as in the
+#' \code{models.mcc} parameter) whereas the column names specify the name of the
+#' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
+#' element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
+#' (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
+#' both activating and inhibiting regulators (no link operator).
+#' @param predicted.synergies a character vector of the synergies (drug
+#' combination names) that were predicted by \strong{at least one} of the models
+#' in the dataset. It must be a subset of the column names (the drug combinations)
+#' of the \code{model.predictions} object.
+#'
+#' @return a matrix whose rows are \strong{vectors of average node link operator
+#' differences} between two groups of models where the classification for each
+#' individual row was based on the prediction or not of a specific synergistic
+#' drug combination.
+#' The row names are the predicted synergies, one per row, while the columns
+#' represent the network's node names. Values are in the [-1,1] interval.
+#' the classification was based on the models' MCC values.
+#'
+#' @section Details:
+#' So, if a node has a value close to -1 it means that on average,
+#' this node's boolean equation has the \strong{AND NOT} link operator in the
+#' models that predicted the specified synergy while a value closer to 1 means that
+#' the node's boolean equation has mostly the \strong{OR NOT} link operator
+#' in these models. A value closer to 0 indicates that the link operator in
+#' the node's boolean equation is \strong{not so much different} between the
+#' models that predicted the synergy and those that did not and so it won't not
+#' be a node of interest when searching for \emph{synergy biomarkers} - nodes
+#' whose parameterization (value of the link operator) affects the manifestation
+#' of synergy. A value exactly equal to 0 can also mean that this node didn't
+#' not have a link operator in its boolean equation (making it thus a non-important
+#' node with regard to the parameterization).
+#'
+#' @family average data difference functions
+#' @export
+get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction =
+  function(model.predictions, models.link.operator, predicted.synergies) {
+    get_avg_activity_diff_mat_based_on_specific_synergy_prediction(
+      model.predictions, models.stable.state = models.link.operator,
+      predicted.synergies)
+  }
 
-
-
-
-
-
-#' Example use: `drug.comb` = "AK-PD"
+#' Get average activity difference based on specific synergy prediction
+#'
+#' Given a specific drug combination, this function splits the models to
+#' good (those that predicted that particular combination, i.e. found it
+#' as synergistic - a value of \emph{1} in the \code{model.predictions}) and
+#' bad (those that found it as non-synergistic - a value of \emph{0} in the
+#' \code{model.predictions}). The models whose predicted value for that synergy is marked as
+#' \emph{NA} are excluded from the analysis. Then, for each network node, the
+#' function finds the node's average activity in each of the two model groups (a
+#' value in the [0,1] interval) and then subtracts the bad group's average
+#' activity value from the good one.
+#'
+#' @param model.predictions a \code{data.frame} object with rows the models and
+#' columns the drug combinations. Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
+#' names of the matrix specify the models' names
+#' whereas the column names specify the name of the network nodes
+#' (gene, proteins, etc.). Possible values for each \emph{model-node element}
+#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' @param drug.comb string. The drug combination which will be used to split
+#' the models. It must be included in the column names of the \code{model.predictions}
+#' object.
+#'
+#' @return a numeric vector with values in the [-1,1] interval (minimum and maximum
+#' possible average difference) and with the \emph{names} attribute representing
+#' the name of the nodes.
+#'
+#' @section Details:
+#' So, if a node has a value close to -1 it means that on average,
+#' this node is more \strong{inhibited} in the models that predicted the specific
+#' drug combination given, whereas a value closer to 1 means that the node is more
+#' \strong{activated} in these models. A value closer to 0 indicates that the activity of that
+#' node is \strong{not so much different} between the models that predicted the synergy and
+#' those that did not and so it won't not be a node of interest when searching
+#' for \emph{synergy biomarkers} - nodes whose activity is important for the manifestation
+#' of the synergy.
 #'
 #' @family average data difference functions
 #'
 #' @importFrom usefun is_empty
+#' @export
 get_avg_activity_diff_based_on_specific_synergy_prediction =
   function(model.predictions, models.stable.state, drug.comb) {
+    stopifnot(drug.comb %in% colnames(model.predictions))
+
     good.models = rownames(model.predictions)[
       model.predictions[, drug.comb] == 1 & !is.na(model.predictions[, drug.comb])
       ]
@@ -445,14 +578,15 @@ get_avg_activity_diff_based_on_specific_synergy_prediction =
     return(good.avg.activity - bad.avg.activity)
   }
 
-#' To get meaningful results, one set must be a subset of the other
-#' Example use:
-#' synergy.set.str = "A-B,A-D,B-D,P-S"
-#' synergy.subset.str = "A-B,B-D,P-S"
 
-#' @family average data difference functions
-#'
-#' @importFrom usefun outersect is_empty
+
+# To get meaningful results, one set must be a subset of the other
+# Example use:
+# synergy.set.str = "A-B,A-D,B-D,P-S"
+# synergy.subset.str = "A-B,B-D,P-S"
+# @family average data difference functions
+#
+# @importFrom usefun outersect is_empty
 get_avg_activity_diff_based_on_diff_synergy_prediction =
   function(synergy.set.str, synergy.subset.str, model.predictions,
            models.stable.state) {
