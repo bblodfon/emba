@@ -21,29 +21,6 @@ print_model_and_drug_stats =
     pretty_print_string(paste("Number of nodes:", nodes), with.gt = FALSE)
 }
 
-#' smethign there
-#'
-#' @importFrom usefun pretty_print_string print_empty_line
-print_model_stats = function(models, nodes, html.output) {
-  pretty_print_string(paste("Number of models:", models), with.gt = TRUE)
-  print_empty_line(html.output)
-  pretty_print_string(paste("Number of nodes:", nodes), with.gt = FALSE)
-}
-
-#' TO BE DELETED !!! ???
-#'
-#' @importFrom usefun pretty_print_string print_empty_line
-print_mcc_classification_info = function(mcc.classes, html.output) {
-  number.of.mcc.classes = length(mcc.classes)
-  pretty_print_string(paste0("MCC values are split into ",
-                      number.of.mcc.classes, " classes:"))
-  print_empty_line(html.output)
-  for (i in 1:number.of.mcc.classes) {
-    pretty_print_string(paste0(i, ". ", mcc.classes[i]), with.gt = FALSE)
-    print_empty_line(html.output)
-  }
-}
-
 #' yeah baby
 #'
 #' @importFrom usefun pretty_print_string print_empty_line pretty_print_vector_values pretty_print_bold_string
