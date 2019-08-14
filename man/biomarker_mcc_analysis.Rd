@@ -103,9 +103,13 @@ a list with various elements:
 \description{
 Use this function to perform a full biomarker analysis on an ensemble boolean model
 dataset where the model classification is based on the \emph{Matthews correlation
-coefficient score (MCC)}.
+coefficient score (MCC)}. This analysis enables the discovery of \emph{performance
+biomarkers}, nodes whose activity and/or boolean model parameterization (link
+operator) affects the prediction performance of the models (as measured by
+the MCC score).
 }
 \seealso{
-Other general analysis functions: \code{\link{biomarker_tp_analysis}}
+Other general analysis functions: \code{\link{biomarker_synergy_analysis}},
+  \code{\link{biomarker_tp_analysis}}
 }
 \concept{general analysis functions}

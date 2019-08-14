@@ -2,7 +2,10 @@
 #'
 #' Use this function to perform a full biomarker analysis on an ensemble boolean model
 #' dataset where the model classification is based on the number of \emph{true
-#' positive} (TP) predictions.
+#' positive} (TP) predictions. This analysis enables the discovery of \emph{performance
+#' biomarkers}, nodes whose activity and/or boolean model parameterization (link
+#' operator) affects the prediction performance of the models (as measured by
+#' the number of TPs).
 #'
 #' @param model.predictions a \code{data.frame} object with rows the models and
 #' columns the drug combinations. Possible values for each \emph{model-drug combination
@@ -77,7 +80,6 @@
 #' }
 #'
 #' @family general analysis functions
-#'
 #' @export
 biomarker_tp_analysis =
   function(model.predictions, models.stable.state, models.link.operator = NULL,
@@ -153,7 +155,10 @@ biomarker_tp_analysis =
 #'
 #' Use this function to perform a full biomarker analysis on an ensemble boolean model
 #' dataset where the model classification is based on the \emph{Matthews correlation
-#' coefficient score (MCC)}.
+#' coefficient score (MCC)}. This analysis enables the discovery of \emph{performance
+#' biomarkers}, nodes whose activity and/or boolean model parameterization (link
+#' operator) affects the prediction performance of the models (as measured by
+#' the MCC score).
 #'
 #' @param model.predictions a \code{data.frame} object with rows the models and
 #' columns the drug combinations. Possible values for each \emph{model-drug combination
@@ -240,7 +245,6 @@ biomarker_tp_analysis =
 #' }
 #'
 #' @family general analysis functions
-#'
 #' @export
 biomarker_mcc_analysis =
   function(model.predictions, models.stable.state, models.link.operator = NULL,
@@ -316,3 +320,165 @@ biomarker_mcc_analysis =
 
   return(res.list)
 }
+
+#' Biomarker analysis per synergy predicted
+#'
+#' Use this function to discover \emph{synergy biomarkers}, i.e. nodes whose
+#' activity and/or boolean equation parameterization (link operator) affect the
+#' manifestation of synergies in the models. Models are classified based on
+#' whether they predict or not each of the predicted synergies.
+#'
+#' @param model.predictions a \code{data.frame} object with rows the models and
+#' columns the drug combinations. Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models).
+#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
+#' names of the matrix specify the models' names whereas the column names
+#' specify the name of the network nodes (gene, proteins, etc.).
+#' Possible values for each \emph{model-node element}
+#' are either \emph{0} (inactive node) or \emph{1} (active node). Note that the
+#' rows (models) have to be in the same order as in the \code{model.predictions}
+#' parameter.
+#' @param models.link.operator a matrix (nxm) with n models and m nodes. The row
+#' names of the matrix specify the models' names whereas the column names specify
+#' the name of the network nodes (gene, proteins, etc.). Possible values for each
+#' \emph{model-node element} are either \emph{0} (\strong{AND NOT} link operator),
+#' \emph{1} (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted
+#' by both activating and inhibiting regulators (no link operator). Default value:
+#' NULL (no analysis on the models parameterization regarding the mutation of the
+#' boolean equation link operator will be done).
+#' @param observed.synergies a character vector with elements the names of the
+#' drug combinations that were found as synergistic. This should be a subset of
+#' the tested drug combinations, that is the column names of the \code{model.predictions}
+#' parameter.
+#' @param threshold numeric. A number in the [0,1] interval, above which (or
+#' below its negative value) a biomarker will be registered in the returned result.
+#' Values closer to 1 translate to a more strict threshold and thus less
+#' biomarkers are found.
+#'
+#' @return a list with various elements:
+#' \itemize{
+#'   \item \code{observed.model.predictions}: the part of the \code{model.predictions}
+#'   data that includes the \code{observed.synergies}.
+#'   \item \code{unobserved.model.predictions}: the complementary part of the
+#'   \code{model.predictions} data that does not include the \code{observed.synergies}
+#'   \item \code{predicted.synergies}: a character vector of the synergies (drug
+#'   combination names) that were predicted by \strong{at least one} of the models
+#'   in the dataset.
+#'   \item \code{synergy.subset.stats}: an integer vector with elements the number
+#'   of models the predicted each \strong{observed synergy subset}.
+#'   \item \code{diff.state.synergies.mat}: a matrix whose rows are
+#'   \strong{vectors of average node activity state differences} between two
+#'   groups of models where the classification for each individual row was based
+#'   on the prediction or not of a specific synergistic drug combination. The
+#'   row names are the predicted synergies, one per row, while the columns
+#'   represent the network's node names. Values are in the [-1,1] interval.
+#'   \item \code{activity.biomarkers}: a list of lists. The tag (string) names
+#'   of the included lists are the predicted synergies and each such list
+#'   has as elements two character vectors: the \emph{biomarkers.active} and
+#'   \emph{biomarkers.inhibited}, which include the (string) names
+#'   of the \emph{active state} and \emph{inhibited state} biomarkers respectively
+#'   for the given \code{threshold} value.
+#'   \item \code{diff.link.synergies.mat}: a matrix whose rows are
+#'   \strong{vectors of average node link operator differences} between two
+#'   groups of models where the classification for each individual row was
+#'   based on the prediction or not of a specific synergistic drug combination.
+#'   The row names are the predicted synergies, one per row, while the columns
+#'   represent the network's node names. Values are in the [-1,1] interval.
+#'   \item \code{link.operator.biomarkers}: a list of lists. The tag (string) names
+#'   of the included lists are the predicted synergies and each such list
+#'   has as elements two character vectors: the \emph{biomarkers.or} and
+#'   \emph{biomarkers.and}, which include the (string) names
+#'   of the \emph{OR} and \emph{AND} link operator biomarkers respectively
+#'   for the given \code{threshold} value.
+#' }
+#'
+#' @family general analysis functions
+#' @export
+biomarker_synergy_analysis =
+  function(model.predictions, models.stable.state, models.link.operator = NULL,
+           observed.synergies, threshold) {
+    # check input
+    stopifnot(threshold >= 0 & threshold <= 1)
+    models = rownames(model.predictions)
+    stopifnot(all(models == rownames(models.stable.state)))
+
+    # Split model.predictions to positive (observed) and negative (non-observed) results
+    observed.model.predictions =
+      get_observed_model_predictions(model.predictions, observed.synergies)
+    unobserved.model.predictions =
+      get_unobserved_model_predictions(model.predictions, observed.synergies)
+
+    # check
+    stopifnot(ncol(observed.model.predictions)
+              + ncol(unobserved.model.predictions) == ncol(model.predictions))
+
+    # get the predicted synergies (at least one model should predict it)
+    predicted.synergies = names(which(colSums(observed.model.predictions, na.rm = TRUE) > 0))
+
+    # check: the predicted synergies is a subset of the observed ones
+    stopifnot(all(predicted.synergies %in% observed.synergies))
+
+    # Find the number of predictive models for every synergy subset
+    synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
+
+    # get the average activity state differences for each predicted synergy
+    diff.state.synergies.mat =
+      get_avg_activity_diff_mat_based_on_specific_synergy_prediction(
+        model.predictions, models.stable.state, predicted.synergies
+      )
+
+    # find the active and inhibited biomarkers for each predicted synergy
+    biomarkers.per.synergy.list = list()
+    for (drug.comb in predicted.synergies) {
+      res = list()
+      diff = diff.state.synergies.mat[drug.comb, ]
+
+      biomarkers.active = names(diff[diff > threshold])
+      biomarkers.inhibited = names(diff[diff < -threshold])
+
+      res$biomarkers.active = biomarkers.active
+      res$biomarkers.inhibited = biomarkers.inhibited
+      biomarkers.per.synergy.list[[drug.comb]] = res
+    }
+
+    # return all necessary data as elements of a list
+    res.list = list()
+    res.list$observed.model.predictions = observed.model.predictions
+    res.list$unobserved.model.predictions = unobserved.model.predictions
+    res.list$predicted.synergies = predicted.synergies
+    res.list$synergy.subset.stats = synergy.subset.stats
+    res.list$diff.state.synergies.mat = diff.state.synergies.mat
+    res.list$activity.biomarkers = biomarkers.per.synergy.list
+
+    if (!is.null(models.link.operator)) {
+      # check
+      stopifnot(all(models == rownames(models.link.operator)))
+
+      # get the average link operator differences for each predicted synergy
+      diff.link.synergies.mat =
+        get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction(
+          model.predictions, models.link.operator, predicted.synergies
+        )
+
+      # find the 'OR' and 'AND' biomarkers for each predicted synergy
+      biomarkers.per.synergy.list = list()
+      for (drug.comb in predicted.synergies) {
+        res = list()
+        diff = diff.link.synergies.mat[drug.comb, ]
+
+        biomarkers.or = names(diff[diff > threshold])
+        biomarkers.and = names(diff[diff < -threshold])
+
+        res$biomarkers.or = biomarkers.or
+        res$biomarkers.and = biomarkers.and
+        biomarkers.per.synergy.list[[drug.comb]] = res
+      }
+
+      res.list$diff.link.synergies.mat = diff.link.synergies.mat
+      res.list$link.operator.biomarkers = biomarkers.per.synergy.list
+    }
+
+    return(res.list)
+  }

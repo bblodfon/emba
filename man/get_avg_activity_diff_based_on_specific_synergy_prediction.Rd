@@ -49,8 +49,8 @@ drug combination given, whereas a value closer to 1 means that the node is more
 \strong{activated} in these models. A value closer to 0 indicates that the activity of that
 node is \strong{not so much different} between the models that predicted the synergy and
 those that did not and so it won't not be a node of interest when searching
-for \emph{synergy biomarkers} - nodes whose activity is important for the manifestation
-of the synergy.
+for \emph{synergy biomarkers} - nodes whose activity is important for the
+manifestation of the synergy.
 }
 
 \seealso{
