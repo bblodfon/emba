@@ -43,6 +43,7 @@ function on a vector of drug combinations that were observed as synergistic
 \seealso{
 Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
   \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_synergy_set_cmp}},
   \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
   \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
   \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},

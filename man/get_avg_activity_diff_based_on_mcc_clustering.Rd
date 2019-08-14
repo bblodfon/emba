@@ -39,7 +39,7 @@ possible average difference) and with the \emph{names} attribute representing th
 of the nodes.
 }
 \description{
-This function splits the models to good and bad based on an MCC value
+This function splits the models to 'good' and 'bad' based on an MCC value
 clustering method: \emph{class.id.high} denotes the group id with the higher MCC
 values (good model group) vs \emph{class.id.low} which denotes the group id with
 the lower MCC values (bad model group). Then, for each network node, the function
@@ -60,6 +60,7 @@ performance (higher MCC score/class) in the good models.
 
 \seealso{
 Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_synergy_set_cmp}},
   \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
   \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
   \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}},

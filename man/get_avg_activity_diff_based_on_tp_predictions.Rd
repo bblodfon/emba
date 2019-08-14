@@ -32,7 +32,7 @@ possible average difference) and with the \emph{names} attribute representing th
 of the nodes.
 }
 \description{
-This function splits the models to good and bad based on the number of true
+This function splits the models to 'good' and 'bad' based on the number of true
 positive predictions: \emph{num.high} TPs (good) vs \emph{num.low} TPs (bad).
 Then, for each network node, it finds the node's average activity in each of
 the two classes (a value in the [0,1] interval) and then subtracts the
@@ -52,6 +52,7 @@ performance (higher number of true positives) in the good models.
 \seealso{
 Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
   \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
+  \code{\link{get_avg_activity_diff_based_on_synergy_set_cmp}},
   \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
   \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}},
   \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},

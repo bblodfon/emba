@@ -105,7 +105,7 @@ get_avg_link_operator_diff_mat_based_on_tp_predictions =
 
 #' Get the average activity difference based on the number of true positives
 #'
-#' This function splits the models to good and bad based on the number of true
+#' This function splits the models to 'good' and 'bad' based on the number of true
 #' positive predictions: \emph{num.high} TPs (good) vs \emph{num.low} TPs (bad).
 #' Then, for each network node, it finds the node's average activity in each of
 #' the two classes (a value in the [0,1] interval) and then subtracts the
@@ -300,7 +300,7 @@ get_avg_link_operator_diff_mat_based_on_mcc_clustering =
 
 #' Get the average activity difference based on MCC clustering
 #'
-#' This function splits the models to good and bad based on an MCC value
+#' This function splits the models to 'good' and 'bad' based on an MCC value
 #' clustering method: \emph{class.id.high} denotes the group id with the higher MCC
 #' values (good model group) vs \emph{class.id.low} which denotes the group id with
 #' the lower MCC values (bad model group). Then, for each network node, the function
@@ -578,16 +578,58 @@ get_avg_activity_diff_based_on_specific_synergy_prediction =
     return(good.avg.activity - bad.avg.activity)
   }
 
-
-
-# To get meaningful results, one set must be a subset of the other
-# Example use:
-# synergy.set.str = "A-B,A-D,B-D,P-S"
-# synergy.subset.str = "A-B,B-D,P-S"
-# @family average data difference functions
-#
-# @importFrom usefun outersect is_empty
-get_avg_activity_diff_based_on_diff_synergy_prediction =
+#' Get the average activity difference based on the comparison of two synergy sets
+#'
+#' This function splits the models to 'good' and 'bad' based on the predictions
+#' of two different synergy sets, one of them being a subset of the other.
+#' The 'good' models are those that predict the \code{synergy.set.str}
+#' (e.g. "A-B,A-C,B-C") while the 'bad' models are those that predict the
+#' \code{synergy.subset.str} (e.g. "A-B,B-C"). Then, for each network node,
+#' the function finds the node's average activity in each of the two classes
+#' (a value in the [0,1] interval) and then subtracts the bad class average
+#' activity value from the good one.
+#'
+#' @param synergy.set.str a string of drug combinations, comma-seperated. The
+#' number of the specified combinations must be larger than the ones defined
+#' in the \code{synergy.subset.str} parameter. They also must be included in the
+#' tested drug combinations, i.e. the columns of the \code{model.predictions}
+#' parameter.
+#' @param synergy.subset.str a string of drug combinations, comma-seperated.
+#' There must be at least one combination defined and all of them should also
+#' be included in the \code{synergy.set.str} parameter.
+#' @param model.predictions a \code{data.frame} object with rows the models and
+#' columns the drug combinations. Possible values for each \emph{model-drug combination
+#' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
+#' predicted) or \emph{NA} (couldn't find stable states in either the drug
+#' combination inhibited model or in any of the two single-drug inhibited models)
+#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
+#' names of the matrix specify the models' names
+#' whereas the column names specify the name of the network nodes
+#' (gene, proteins, etc.). Possible values for each \emph{model-node element}
+#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#'
+#' @return a numeric vector with values in the [-1,1] interval (minimum and
+#' maximum possible average difference) and with the names attribute
+#' representing the name of the nodes.
+#'
+#' @section Details:
+#' So, if a node has a value close to -1 it means that on average,
+#' this node is more \strong{inhibited} in the models that predicted the extra
+#' synergy(-ies) that are included in the \code{synergy.set.str} but not in the
+#' \code{synergy.subset.str}, whereas a value closer to 1 means that the node is
+#' more \strong{activated} in these models. These nodes are \strong{potential
+#' biomarkers} because their activity state can influence the prediction
+#' performance of a model and make it predict the extra synergy(-ies).
+#' A value closer to 0 indicates that the activity of that
+#' node is \strong{not so much different} between the models that predicted the
+#' synergy set and those that predicted it's subset, so it won't not be a node
+#' of interest when searching for potential biomarkers for the extra synergy(-ies).
+#'
+#' @family average data difference functions
+#'
+#' @importFrom usefun outersect is_empty
+#' @export
+get_avg_activity_diff_based_on_synergy_set_cmp =
   function(synergy.set.str, synergy.subset.str, model.predictions,
            models.stable.state) {
 
@@ -598,6 +640,7 @@ get_avg_activity_diff_based_on_diff_synergy_prediction =
     stopifnot(length(synergy.subset) > 0,
               length(synergy.set) > length(synergy.subset))
     stopifnot(all(synergy.subset %in% synergy.set))
+    stopifnot(all(synergy.set %in% colnames(model.predictions)))
 
     # find models that predict the `synergy.set`
     if (length(synergy.set) == 1) {
