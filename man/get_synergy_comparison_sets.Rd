@@ -2,12 +2,25 @@
 % Please edit documentation in R/analysis.R
 \name{get_synergy_comparison_sets}
 \alias{get_synergy_comparison_sets}
-\title{helper function to check which synergy sets to compare (the small synergy set
-misses just one synergy from the larger set)}
+\title{Get synergy comparison sets}
 \usage{
 get_synergy_comparison_sets(synergy.subset.stats)
 }
+\arguments{
+\item{synergy.subset.stats}{integer vector with values the amount of models
+that predicted each synergy subset, defined as a comma-seperated string of
+drug combinations in the \emph{names} attribute of the vector. It can be the
+result of using the function \code{\link[emba]{get_synergy_subset_stats}}.}
+}
+\value{
+\code{data.frame} object with 3 columns. For each row, the 1st column defines a
+\emph{single synergy} of interest (e.g. drug combination "A-B"), the 2nd a
+\emph{synergy set} that includes the single one (e.g. the set "F-G,A-B,C-D")
+and the 3rd the \emph{synergy subset} of the \emph{set} that does not include
+the single synergy of the first column (e.g. "F-G,C-D").
+}
 \description{
-helper function to check which synergy sets to compare (the small synergy set
-misses just one synergy from the larger set)
+This helper function identifies pairs of (\emph{set}, \emph{subset}) for each
+synergy (implicity given throught the \code{synergy.subset.stats} object) where
+each respective \emph{subset} misses just one synergy from the larger \emph{set}.
 }
