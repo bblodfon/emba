@@ -59,24 +59,24 @@ a list with various elements:
   on the prediction or not of a specific synergistic drug combination. The
   row names are the predicted synergies, one per row, while the columns
   represent the network's node names. Values are in the [-1,1] interval.
-  \item \code{activity.biomarkers}: a list of lists. The tag (string) names
-  of the included lists are the predicted synergies and each such list
-  has as elements two character vectors: the \emph{biomarkers.active} and
-  \emph{biomarkers.inhibited}, which include the (string) names
-  of the \emph{active state} and \emph{inhibited state} biomarkers respectively
-  for the given \code{threshold} value.
+  \item \code{activity.biomarkers}: a \code{data.frame} object with rows
+  the \code{predicted synergies} and columns the nodes (column names of the
+  \code{models.stable.states} matrix). Possible values for each
+  \emph{synergy-node} element are either \emph{1} (\emph{active state}
+  biomarker), \emph{-1} (\emph{inhibited state} biomarker) or \emph{0} (not
+  a biomarker) for the given \code{threshold} value.
   \item \code{diff.link.synergies.mat}: a matrix whose rows are
   \strong{vectors of average node link operator differences} between two
   groups of models where the classification for each individual row was
   based on the prediction or not of a specific synergistic drug combination.
   The row names are the predicted synergies, one per row, while the columns
   represent the network's node names. Values are in the [-1,1] interval.
-  \item \code{link.operator.biomarkers}: a list of lists. The tag (string) names
-  of the included lists are the predicted synergies and each such list
-  has as elements two character vectors: the \emph{biomarkers.or} and
-  \emph{biomarkers.and}, which include the (string) names
-  of the \emph{OR} and \emph{AND} link operator biomarkers respectively
-  for the given \code{threshold} value.
+  \item \code{link.operator.biomarkers}: a \code{data.frame} object with rows
+  the \code{predicted synergies} and columns the nodes (column names of the
+  \code{models.link.operator} matrix). Possible values for each
+  \emph{synergy-node} element are either \emph{1} (\emph{OR} link operator
+  biomarker), \emph{-1} (\emph{AND} link operator biomarker) or \emph{0} (not
+  a biomarker) for the given \code{threshold} value.
 }
 }
 \description{

@@ -323,8 +323,160 @@ calculate_mcc = function(tp, tn, fp, fn, p, n) {
   )
 }
 
-# adds one more row to the `biomarkers.synergy.res` data.frame with the
-# performance-related biomarkers
+#' Update biomarker files for a specific synergy
+#'
+#' This function gets the (previously-found or 'old') synergy biomarkers from their
+#' respective files and if any of these files are empty (no 'old' biomarkers
+#' found) or non-existent, the 'new' biomarkers (given as input vector parameters) are
+#' automatically saved. When the 'new' biomarkers \strong{share common nodes}
+#' with the 'old' biomarkers, there exist 3
+#' possible ways to combine the results, given by the \code{method} parameter.
+#' If \strong{no common nodes} exist, no matter the \code{method} selected,
+#' the 'new' biomarkers are added to the 'old' ones.
+#'
+#' @param biomarkers.dir string. It specifies the full path name of the
+#' directory which holds the biomarker files for the synergistic drug combination
+#' specified in the parameter \code{drug.comb}. The biomarker files must be
+#' formatted as: \emph{\%drug.comb\%_biomarkers_active} or
+#' \emph{\%drug.comb\%_biomarkers_inhibited}, where \%drug.comb\% is the value
+#' of the \code{drug.comb} parameter.
+#' @param drug.comb string. The drug combination (e.g. "A-B") that will be used
+#' to identify the related biomarker files.
+#' @param biomarkers.active.new a numeric vector whose \emph{names} attribute
+#' includes the node names of the (newly found) \emph{active biomarkers} for the specified
+#' synergy. The values of the vector are the average activity difference of
+#' each node, derived from a comparison between 2 different groups of models.
+#' @param biomarkers.inhibited.new a numeric vector whose \emph{names} attribute
+#' includes the node names of the (newly found) \emph{inhibited biomarkers} for the specified
+#' synergy. The values of the vector are the average activity difference of
+#' each node, derived from a comparison between 2 different groups of models.
+#' @param method string. It specifies the method to use to update the biomarker
+#' files when there are \emph{common nodes} between the 'old' and 'new' biomarkers:
+#' \enumerate{
+#'   \item \code{replace}(DEFAULT): we discard the 'old' biomarkers and keep
+#'   only the 'new' ones
+#'   \item \code{prune.to.common}: we keep only the common biomarkers
+#'   \item \code{extend}: we add to the 'old' set of biomarkers the extra ones
+#'   from the 'new' set that are not non-common to the 'old' ones, extending
+#'   thus the 'old' biomarker set
+#' }
+#'
+#' @importFrom usefun save_vector_to_file add_vector_to_df
+#' @importFrom utils read.table
+#' @export
+update_biomarker_files =
+  function(biomarkers.dir, drug.comb, biomarkers.active.new,
+           biomarkers.inhibited.new, method = "replace") {
+    # check method
+    stopifnot(method %in% c("replace", "prune.to.common", "extend"))
+
+    # update the active biomarkers
+    active.biomarkers.file =
+      paste0(biomarkers.dir, drug.comb, "_biomarkers_active")
+
+    if (file.size(active.biomarkers.file) == 0
+        || !file.exists(active.biomarkers.file)) {
+      save_vector_to_file(vector = biomarkers.active.new,
+                          file = active.biomarkers.file,
+                          with.row.names = TRUE)
+    } else {
+      biomarkers.active.prev =
+        read.table(active.biomarkers.file, stringsAsFactors = FALSE)
+      biomarkers.active.prev.names = biomarkers.active.prev[,1]
+      biomarkers.active.new.names = names(biomarkers.active.new)
+
+      biomarkers.active.common = intersect(biomarkers.active.prev.names,
+                                           biomarkers.active.new.names)
+
+      if (length(biomarkers.active.common) == 0) {
+        biomarkers.active = add_vector_to_df(biomarkers.active.prev,
+                                             biomarkers.active.new)
+        biomarkers.active = transform(biomarkers.active,
+                                      V2 = as.numeric(biomarkers.active$V2))
+        save_vector_to_file(vector = biomarkers.active,
+                            file = active.biomarkers.file)
+      } else {
+        if (method == "replace") {
+          biomarkers.active = biomarkers.active.new
+          save_vector_to_file(vector = biomarkers.active,
+                              file = active.biomarkers.file,
+                              with.row.names = TRUE)
+        } else if (method == "extend") {
+          # find the extra 'new' biomarkers and add them to the 'old' ones
+          biomarkers.active.to.add = biomarkers.active.new[
+            !(biomarkers.active.new.names %in% biomarkers.active.prev.names)
+            ]
+          biomarkers.active = add_vector_to_df(biomarkers.active.prev,
+                                               biomarkers.active.to.add)
+          biomarkers.active = transform(biomarkers.active,
+                                        V2 = as.numeric(biomarkers.active$V2))
+          save_vector_to_file(vector = biomarkers.active,
+                              file = active.biomarkers.file)
+        } else if (method == "prune.to.common") {
+          biomarkers.active = biomarkers.active.new[biomarkers.active.common]
+          save_vector_to_file(vector = biomarkers.active,
+                              file = active.biomarkers.file,
+                              with.row.names = TRUE)
+        }
+      }
+    }
+
+    # update the inhibited biomarkers
+    inhibited.biomarkers.file =
+      paste0(biomarkers.dir, drug.comb, "_biomarkers_inhibited")
+
+    if (file.size(inhibited.biomarkers.file) == 0) {
+      save_vector_to_file(vector = biomarkers.inhibited.new,
+                          file = inhibited.biomarkers.file,
+                          with.row.names = TRUE)
+    } else {
+      biomarkers.inhibited.prev =
+        read.table(inhibited.biomarkers.file, stringsAsFactors = FALSE)
+      biomarkers.inhibited.prev.names = biomarkers.inhibited.prev[,1]
+      biomarkers.inhibited.new.names = names(biomarkers.inhibited.new)
+
+      biomarkers.inhibited.common = intersect(biomarkers.inhibited.prev.names,
+                                              biomarkers.inhibited.new.names)
+
+      if (length(biomarkers.inhibited.common) == 0) {
+        biomarkers.inhibited = add_vector_to_df(biomarkers.inhibited.prev,
+                                                biomarkers.inhibited.new)
+        biomarkers.inhibited = transform(biomarkers.inhibited,
+                                         V2 = as.numeric(biomarkers.inhibited$V2))
+        save_vector_to_file(vector = biomarkers.inhibited,
+                            file = inhibited.biomarkers.file)
+      } else {
+        if (method == "replace") {
+          biomarkers.inhibited = biomarkers.inhibited.new
+          save_vector_to_file(vector = biomarkers.inhibited,
+                              file = inhibited.biomarkers.file,
+                              with.row.names = TRUE)
+        } else if (method == "extend") {
+          # find the extra 'new' biomarkers and add them to the 'old' ones
+          biomarkers.inhibited.to.add = biomarkers.inhibited.new[
+            !(biomarkers.inhibited.new.names %in% biomarkers.inhibited.prev.names)
+            ]
+          biomarkers.inhibited = add_vector_to_df(biomarkers.inhibited.prev,
+                                                  biomarkers.inhibited.to.add)
+          biomarkers.inhibited = transform(biomarkers.inhibited,
+                                           V2 = as.numeric(biomarkers.inhibited$V2))
+          save_vector_to_file(vector = biomarkers.inhibited,
+                              file = inhibited.biomarkers.file)
+        } else if (method == "prune.to.common") {
+          biomarkers.inhibited = biomarkers.inhibited.new[biomarkers.inhibited.common]
+          save_vector_to_file(vector = biomarkers.inhibited,
+                              file = inhibited.biomarkers.file,
+                              with.row.names = TRUE)
+        }
+      }
+    }
+  }
+
+
+
+#' adds one more row to the `biomarkers.synergy.res` data.frame with the
+#' performance-related biomarkers
+#' @export
 add_performance_biomarkers =
   function(biomarkers.synergy.res, biomarkers.active, biomarkers.inhibited) {
     # initialize `row` data.frame

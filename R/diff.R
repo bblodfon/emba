@@ -165,7 +165,7 @@ get_avg_activity_diff_based_on_tp_predictions =
 #' Get average activity difference matrix based on MCC clustering
 #'
 #' This function splits the Matthews correlation coefficient (MCC) scores
-#' of the models to specific groups using the \code{Ckmeans.1d.dp}
+#' of the models to specific groups using the \pkg{Ckmeans.1d.dp}
 #' package for the clustering (groups are denoted by ids, e.g. NaN,1,2,3, etc.
 #' where a larger id corresponds to a group of models with higher MCC scores)
 #' and for each pairwise

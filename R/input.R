@@ -255,13 +255,7 @@ assign_link_operator_value_to_equation = function(equation) {
   } else return(NA)
 }
 
-#' A title
-#'
-#' gettin somethign
-#'
-#'
-#'
-#' @importFrom usefun remove_commented_and_empty_lines
+# @importFrom usefun remove_commented_and_empty_lines
 get_consensus_steady_state = function(steady.state.file) {
   #print(paste("Reading consensus steady state file:", steady.state.file))
 
@@ -378,7 +372,6 @@ get_alt_drugname = function(drug.comb) {
 #' \code{\link[emba]{get_node_names}}
 #'
 #' @importFrom igraph graph_from_data_frame V V<- E E<-
-#' @importFrom utils read.table
 #' @export
 construct_network = function(topology.file, models.dir = NULL) {
   edges = get_edges_from_topology_file(topology.file)
@@ -417,6 +410,7 @@ construct_network = function(topology.file, models.dir = NULL) {
 #' regulation (activation or inhibition) and the color (green or red) of the
 #' signed interaction.
 #'
+#' @importFrom utils read.table
 #' @export
 get_edges_from_topology_file = function(topology.file) {
   #print(paste("Reading topology file:", topology.file))
@@ -453,6 +447,7 @@ get_edges_from_topology_file = function(topology.file) {
 #' -1 (inhibited biomarker) or 0 (not a biomarker)
 #'
 #' @importFrom utils read.table
+#' @export
 get_biomarkers_per_synergy =
   function(predicted.synergies, biomarkers.dir, models.dir) {
     # initialize res data.frame
@@ -492,10 +487,10 @@ get_biomarkers_per_synergy =
     return(res)
 }
 
-#' `biomarkers.dirs` is a vector of the cell lines' biomarker directories
-#' and `type` can be either 'active' or 'inhibited'
-#'
-#' @importFrom utils read.table
+# `biomarkers.dirs` is a vector of the cell lines' biomarker directories
+# and `type` can be either 'active' or 'inhibited'
+#
+# @importFrom utils read.table
 get_perf_biomarkers_per_cell_line = function(biomarkers.dirs, type) {
   if (type == "active")
     biomarker.type.extension = "/biomarkers_active"
@@ -521,6 +516,7 @@ get_perf_biomarkers_per_cell_line = function(biomarkers.dirs, type) {
 # Returns a list of cell-line data frames with rows the true positive
 # predicted synergies for each cell line and columns the network nodes (same
 # for all). So, cell line (list) => biomarkers of a synergy (row of data.frame)
+# @importFrom utils read.table
 get_synergy_biomarkers_per_cell_line = function(biomarkers.dirs) {
   biomarkers.per.synergy = list()
   for (i in seq_along(biomarkers.dirs)) {

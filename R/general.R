@@ -374,27 +374,29 @@ biomarker_mcc_analysis =
 #'   on the prediction or not of a specific synergistic drug combination. The
 #'   row names are the predicted synergies, one per row, while the columns
 #'   represent the network's node names. Values are in the [-1,1] interval.
-#'   \item \code{activity.biomarkers}: a list of lists. The tag (string) names
-#'   of the included lists are the predicted synergies and each such list
-#'   has as elements two character vectors: the \emph{biomarkers.active} and
-#'   \emph{biomarkers.inhibited}, which include the (string) names
-#'   of the \emph{active state} and \emph{inhibited state} biomarkers respectively
-#'   for the given \code{threshold} value.
+#'   \item \code{activity.biomarkers}: a \code{data.frame} object with rows
+#'   the \code{predicted synergies} and columns the nodes (column names of the
+#'   \code{models.stable.states} matrix). Possible values for each
+#'   \emph{synergy-node} element are either \emph{1} (\emph{active state}
+#'   biomarker), \emph{-1} (\emph{inhibited state} biomarker) or \emph{0} (not
+#'   a biomarker) for the given \code{threshold} value.
 #'   \item \code{diff.link.synergies.mat}: a matrix whose rows are
 #'   \strong{vectors of average node link operator differences} between two
 #'   groups of models where the classification for each individual row was
 #'   based on the prediction or not of a specific synergistic drug combination.
 #'   The row names are the predicted synergies, one per row, while the columns
 #'   represent the network's node names. Values are in the [-1,1] interval.
-#'   \item \code{link.operator.biomarkers}: a list of lists. The tag (string) names
-#'   of the included lists are the predicted synergies and each such list
-#'   has as elements two character vectors: the \emph{biomarkers.or} and
-#'   \emph{biomarkers.and}, which include the (string) names
-#'   of the \emph{OR} and \emph{AND} link operator biomarkers respectively
-#'   for the given \code{threshold} value.
+#'   \item \code{link.operator.biomarkers}: a \code{data.frame} object with rows
+#'   the \code{predicted synergies} and columns the nodes (column names of the
+#'   \code{models.link.operator} matrix). Possible values for each
+#'   \emph{synergy-node} element are either \emph{1} (\emph{OR} link operator
+#'   biomarker), \emph{-1} (\emph{AND} link operator biomarker) or \emph{0} (not
+#'   a biomarker) for the given \code{threshold} value.
 #' }
 #'
 #' @family general analysis functions
+#'
+#' @importFrom usefun get_ternary_class_id
 #' @export
 biomarker_synergy_analysis =
   function(model.predictions, models.stable.state, models.link.operator = NULL,
@@ -430,18 +432,8 @@ biomarker_synergy_analysis =
       )
 
     # find the active and inhibited biomarkers for each predicted synergy
-    biomarkers.per.synergy.list = list()
-    for (drug.comb in predicted.synergies) {
-      res = list()
-      diff = diff.state.synergies.mat[drug.comb, ]
-
-      biomarkers.active = names(diff[diff > threshold])
-      biomarkers.inhibited = names(diff[diff < -threshold])
-
-      res$biomarkers.active = biomarkers.active
-      res$biomarkers.inhibited = biomarkers.inhibited
-      biomarkers.per.synergy.list[[drug.comb]] = res
-    }
+    activity.biomarkers = as.data.frame(
+      apply(diff.state.synergies.mat, c(1,2), get_ternary_class_id, threshold))
 
     # return all necessary data as elements of a list
     res.list = list()
@@ -450,7 +442,7 @@ biomarker_synergy_analysis =
     res.list$predicted.synergies = predicted.synergies
     res.list$synergy.subset.stats = synergy.subset.stats
     res.list$diff.state.synergies.mat = diff.state.synergies.mat
-    res.list$activity.biomarkers = biomarkers.per.synergy.list
+    res.list$activity.biomarkers = activity.biomarkers
 
     if (!is.null(models.link.operator)) {
       # check
@@ -463,21 +455,11 @@ biomarker_synergy_analysis =
         )
 
       # find the 'OR' and 'AND' biomarkers for each predicted synergy
-      biomarkers.per.synergy.list = list()
-      for (drug.comb in predicted.synergies) {
-        res = list()
-        diff = diff.link.synergies.mat[drug.comb, ]
-
-        biomarkers.or = names(diff[diff > threshold])
-        biomarkers.and = names(diff[diff < -threshold])
-
-        res$biomarkers.or = biomarkers.or
-        res$biomarkers.and = biomarkers.and
-        biomarkers.per.synergy.list[[drug.comb]] = res
-      }
+      link.operator.biomarkers = as.data.frame(
+        apply(diff.link.synergies.mat, c(1,2), get_ternary_class_id, threshold))
 
       res.list$diff.link.synergies.mat = diff.link.synergies.mat
-      res.list$link.operator.biomarkers = biomarkers.per.synergy.list
+      res.list$link.operator.biomarkers = link.operator.biomarkers
     }
 
     return(res.list)
