@@ -10,7 +10,7 @@ get_avg_activity_diff_mat_based_on_mcc_clustering(models.mcc,
 \arguments{
 \item{models.mcc}{a numeric vector of Matthews Correlation Coefficient (MCC)
 scores, one for each model. The \emph{names} attribute holds the models' names.
-Can be the result of using the function \code{\link[emba]{calculate_models_mcc}}.}
+Can be the result of using the function \code{\link{calculate_models_mcc}}.}
 
 \item{models.stable.state}{a matrix (nxm) with n models and m nodes. The row
 names of the matrix specify the models' names (same order as in the \code{models.mcc}
@@ -44,7 +44,7 @@ package for the clustering (groups are denoted by ids, e.g. NaN,1,2,3, etc.
 where a larger id corresponds to a group of models with higher MCC scores)
 and for each pairwise
 combination of group id matchings (e.g. (0,1), (1,3), etc.), it uses the
-\code{\link[emba]{get_avg_activity_diff_based_on_mcc_clustering}}
+\code{\link{get_avg_activity_diff_based_on_mcc_clustering}}
 function, comparing thus all groups of models that belong to different
 MCC classes.
 }

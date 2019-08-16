@@ -215,7 +215,7 @@ add_numbers_above_the_bars = function(stats, bp, color) {
 #' represents the average activity difference of each node. The node names have
 #' to be specified in the \emph{names} attribute of the given vector. For example,
 #' \code{diff} could be the result of using the function
-#' \code{\link[emba]{get_avg_activity_diff_based_on_specific_synergy_prediction}}.
+#' \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}.
 #' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
 #' of the nodes (n) in the \code{net} igraph object
 #' @param title string. The title of the visNetwork plot
@@ -272,7 +272,7 @@ plot_avg_state_diff_graph_vis = function(net, diff, layout, title) {
 #' represents the average activity difference of each node. The node names have
 #' to be specified in the \emph{names} attribute of the given vector. For example,
 #' \code{diff} could be the result of using the function
-#' \code{\link[emba]{get_avg_activity_diff_based_on_tp_predictions}}.
+#' \code{\link{get_avg_activity_diff_based_on_tp_predictions}}.
 #' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
 #' of the nodes (n) in the \code{net} igraph object
 #' @param title string. The title of the igraph plot
@@ -316,7 +316,7 @@ plot_avg_state_diff_graph = function(net, diff, layout, title) {
 #' represents the average link operator value difference of each node. The node
 #' names have to be specified in the \emph{names} attribute of the given vector.
 #' For example, \code{diff} could be the result of using the function
-#' \code{\link[emba]{get_avg_link_operator_diff_mat_based_on_tp_predictions}} and
+#' \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}} and
 #' getting one vector row from the output matrix.
 #' A value closer to -1 means that the 'good' models have more of the \emph{AND NOT}
 #' link operator in their respective boolean equations while a value closer to 1

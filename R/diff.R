@@ -2,7 +2,7 @@
 #'
 #' This function finds all the TP values of the models given (e.g. 0,1,2,3),
 #' generates every pairwise combination (e.g. the group matchings: (0,1), (1,3),
-#' etc.) and uses the \code{\link[emba]{get_avg_activity_diff_based_on_tp_predictions}}
+#' etc.) and uses the \code{\link{get_avg_activity_diff_based_on_tp_predictions}}
 #' function on each generated classification group matching, comparing thus all
 #' groups of models with different true positive (TP) values.
 #'
@@ -54,7 +54,7 @@ get_avg_activity_diff_mat_based_on_tp_predictions =
 
 #' Get average link operator difference matrix based on the number of true positives
 #'
-#' This function uses the \code{\link[emba]{get_avg_activity_diff_mat_based_on_tp_predictions}}
+#' This function uses the \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}}
 #' function with the parameter \code{models.link.operator} as input in the place of
 #' \code{models.stable.state}, since the two matrices representing the two inputs
 #' have the same data format (rows represent models, columns represent nodes,
@@ -170,13 +170,13 @@ get_avg_activity_diff_based_on_tp_predictions =
 #' where a larger id corresponds to a group of models with higher MCC scores)
 #' and for each pairwise
 #' combination of group id matchings (e.g. (0,1), (1,3), etc.), it uses the
-#' \code{\link[emba]{get_avg_activity_diff_based_on_mcc_clustering}}
+#' \code{\link{get_avg_activity_diff_based_on_mcc_clustering}}
 #' function, comparing thus all groups of models that belong to different
 #' MCC classes.
 #'
 #' @param models.mcc a numeric vector of Matthews Correlation Coefficient (MCC)
 #' scores, one for each model. The \emph{names} attribute holds the models' names.
-#' Can be the result of using the function \code{\link[emba]{calculate_models_mcc}}.
+#' Can be the result of using the function \code{\link{calculate_models_mcc}}.
 #' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
 #' names of the matrix specify the models' names (same order as in the \code{models.mcc}
 #' parameter) whereas the column names specify the name of the network nodes
@@ -241,7 +241,7 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
 
 #' Get average link operator difference matrix based on MCC clustering
 #'
-#' This function uses the \code{\link[emba]{get_avg_activity_diff_mat_based_on_mcc_clustering}}
+#' This function uses the \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}}
 #' function with the parameter \code{models.link.operator} as input in the place of
 #' \code{models.stable.state}, since the two matrices representing the two inputs
 #' have the same data format (rows represent models, columns represent nodes,
@@ -249,7 +249,7 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
 #'
 #' @param models.mcc a numeric vector of Matthews Correlation Coefficient (MCC)
 #' scores, one for each model. The \emph{names} attribute holds the models' names.
-#' Can be the result of using the function \code{\link[emba]{calculate_models_mcc}}.
+#' Can be the result of using the function \code{\link{calculate_models_mcc}}.
 #' @param models.link.operator matrix (nxm) with n models and m nodes. The row
 #' names of the matrix specify the models' names (same order as in the
 #' \code{models.mcc} parameter) whereas the column names specify the name of the
@@ -310,7 +310,7 @@ get_avg_link_operator_diff_mat_based_on_mcc_clustering =
 #'
 #' @param models.mcc a numeric vector of Matthews Correlation Coefficient (MCC)
 #' scores, one for each model. The \emph{names} attribute holds the models' names.
-#' Can be the result of using the function \code{\link[emba]{calculate_models_mcc}}.
+#' Can be the result of using the function \code{\link{calculate_models_mcc}}.
 #' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
 #' names of the matrix specify the models' names (same order as in the \code{models.mcc}
 #' parameter) whereas the column names specify the name of the network nodes
@@ -404,7 +404,7 @@ get_models_based_on_mcc_class_id =
 
 #' Get average activity difference matrix based on specific synergy prediction
 #'
-#' This function uses the \code{\link[emba]{get_avg_activity_diff_based_on_specific_synergy_prediction}}
+#' This function uses the \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}
 #' function on a vector of drug combinations that were observed as synergistic
 #' (e.g. by experiments) but also found as such by at least one of the models
 #' (these drug combinations are the \emph{predicted synergies}).
@@ -449,7 +449,7 @@ get_avg_activity_diff_mat_based_on_specific_synergy_prediction =
 
 #' Get average link operator difference matrix based on specific synergy prediction
 #'
-#' This function uses the \code{\link[emba]{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}}
+#' This function uses the \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}}
 #' function with the parameter \code{models.link.operator} as input in the place of
 #' \code{models.stable.state}, since the two matrices representing the two inputs
 #' have the same data format (rows represent models, columns represent nodes,

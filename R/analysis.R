@@ -472,27 +472,6 @@ update_biomarker_files =
     }
   }
 
-
-
-#' adds one more row to the `biomarkers.synergy.res` data.frame with the
-#' performance-related biomarkers
-#' @export
-add_performance_biomarkers =
-  function(biomarkers.synergy.res, biomarkers.active, biomarkers.inhibited) {
-    # initialize `row` data.frame
-    node.names = colnames(biomarkers.synergy.res)
-    row = as.data.frame(matrix(0, ncol = length(node.names), nrow = 1))
-    colnames(row) = node.names
-    rownames(row) = "PERF"
-
-    # add biomarkers
-    row[colnames(row) %in% biomarkers.active] = 1
-    row[colnames(row) %in% biomarkers.inhibited] = -1
-
-    res = rbind(row, biomarkers.synergy.res)
-    return(res)
-}
-
 # merge the results of the performance (active and inhibited) biomarkers
 # from each cell line to a common `data.frame` object
 merge_perf_biomarkers =
@@ -598,7 +577,7 @@ arrange_by_synergy =
 #' @param synergy.subset.stats integer vector with values the amount of models
 #' that predicted each synergy subset, defined as a comma-seperated string of
 #' drug combinations in the \emph{names} attribute of the vector. It can be the
-#' result of using the function \code{\link[emba]{get_synergy_subset_stats}}.
+#' result of using the function \code{\link{get_synergy_subset_stats}}.
 #'
 #' @return \code{data.frame} object with 3 columns. For each row, the 1st column defines a
 #' \emph{single synergy} of interest (e.g. drug combination "A-B"), the 2nd a

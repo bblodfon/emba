@@ -13,7 +13,7 @@ plot_avg_state_diff_graph_vis(net, diff, layout, title)
 represents the average activity difference of each node. The node names have
 to be specified in the \emph{names} attribute of the given vector. For example,
 \code{diff} could be the result of using the function
-\code{\link[emba]{get_avg_activity_diff_based_on_specific_synergy_prediction}}.}
+\code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}.}
 
 \item{layout}{a (nx2) numeric matrix of x-y coordinates (2 columns) for each
 of the nodes (n) in the \code{net} igraph object}

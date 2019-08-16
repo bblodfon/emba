@@ -35,7 +35,7 @@ The row names are the predicted synergies, one per row, while the columns
 represent the network's node names. Values are in the [-1,1] interval.
 }
 \description{
-This function uses the \code{\link[emba]{get_avg_activity_diff_based_on_specific_synergy_prediction}}
+This function uses the \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}
 function on a vector of drug combinations that were observed as synergistic
 (e.g. by experiments) but also found as such by at least one of the models
 (these drug combinations are the \emph{predicted synergies}).

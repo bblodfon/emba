@@ -368,8 +368,8 @@ get_alt_drugname = function(drug.comb) {
 #' topology file
 #'
 #' @seealso \code{\link[igraph]{graph_from_data_frame}},
-#' \code{\link[emba]{get_edges_from_topology_file}},
-#' \code{\link[emba]{get_node_names}}
+#' \code{\link{get_edges_from_topology_file}},
+#' \code{\link{get_node_names}}
 #'
 #' @importFrom igraph graph_from_data_frame V V<- E E<-
 #' @export
@@ -442,16 +442,43 @@ get_edges_from_topology_file = function(topology.file) {
   return(edges)
 }
 
-#' returns a data.frame, where the columns represent the network nodes, the rows
-#' represent the predicted synergies and the values can either 1 (active biomarker),
-#' -1 (inhibited biomarker) or 0 (not a biomarker)
+#' Get synergy biomarkers
+#'
+#' This function reads the synergy biomarker files inside the given directory and merges
+#' the results into a \code{data.frame} which it returns.
+#'
+#' @param predicted.synergies a character vector of the synergies (drug
+#' combination names) that were predicted by \strong{at least one} of the models
+#' in the dataset.
+#' @param biomarkers.dir string. It specifies the full path name of the
+#' directory which holds the biomarker files. The biomarker files must be
+#' formatted as: \emph{\%drug.comb\%_biomarkers_active} or
+#' \emph{\%drug.comb\%_biomarkers_inhibited}, where \%drug.comb\% is an element
+#' of the \code{predicted.synergies} vector.
+#' @param models.dir string. A directory with \emph{.gitsbe} files/models. It's
+#' needed in order to call \code{\link{get_node_names}}.
+#' @param node.names a character vector which has the names of the nodes. If it's
+#' not NULL, then it will be used instead of the \code{models.dir} parameter.
+#' The \code{node.names} should include all the nodes that are reported as
+#' biomarkers in the biomarker files inside the \code{biomarkers.dir} directory.
+#' Default value: NULL.
+#'
+#' @return a data.frame, whose columns represent the network nodes and the
+#' rows the predicted synergies. Possible values for each \emph{synergy-node}
+#' element are either \emph{1} (\emph{active state} biomarker), \emph{-1}
+#' (\emph{inhibited state} biomarker) or \emph{0} (not a biomarker).
 #'
 #' @importFrom utils read.table
 #' @export
-get_biomarkers_per_synergy =
-  function(predicted.synergies, biomarkers.dir, models.dir) {
+get_synergy_biomarkers_from_dir =
+  function(predicted.synergies, biomarkers.dir, models.dir, node.names = NULL) {
+    stopifnot(!is.null(models.dir) || !is.null(node.names))
+
+    # get the node names
+    if (is.null(node.names))
+      node.names = get_node_names(models.dir)
+
     # initialize res data.frame
-    node.names = get_node_names(models.dir)
     res = as.data.frame(matrix(0, ncol = length(node.names),
                                   nrow = length(predicted.synergies)))
     colnames(res) = node.names
@@ -462,7 +489,8 @@ get_biomarkers_per_synergy =
       active.biomarkers.file =
         paste0(biomarkers.dir, drug.comb, "_biomarkers_active")
 
-      if (file.size(active.biomarkers.file) != 0) {
+      if (file.exists(active.biomarkers.file)
+          && file.size(active.biomarkers.file) != 0) {
         biomarkers.active =
           read.table(active.biomarkers.file, stringsAsFactors = FALSE)
         biomarkers.active.names = biomarkers.active[,1]
@@ -474,7 +502,9 @@ get_biomarkers_per_synergy =
       # insert the inhibited biomarkers
       inhibited.biomarkers.file =
         paste0(biomarkers.dir, drug.comb, "_biomarkers_inhibited")
-      if (file.size(inhibited.biomarkers.file) != 0) {
+
+      if (file.exists(inhibited.biomarkers.file)
+          && file.size(inhibited.biomarkers.file) != 0) {
         biomarkers.inhibited =
           read.table(inhibited.biomarkers.file, stringsAsFactors = FALSE)
         biomarkers.inhibited.names = biomarkers.inhibited[,1]
@@ -490,7 +520,7 @@ get_biomarkers_per_synergy =
 # `biomarkers.dirs` is a vector of the cell lines' biomarker directories
 # and `type` can be either 'active' or 'inhibited'
 #
-# @importFrom utils read.table
+# @import utils read.table
 get_perf_biomarkers_per_cell_line = function(biomarkers.dirs, type) {
   if (type == "active")
     biomarker.type.extension = "/biomarkers_active"

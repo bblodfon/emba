@@ -32,7 +32,7 @@ Values are in the [-1,1] interval.
 \description{
 This function finds all the TP values of the models given (e.g. 0,1,2,3),
 generates every pairwise combination (e.g. the group matchings: (0,1), (1,3),
-etc.) and uses the \code{\link[emba]{get_avg_activity_diff_based_on_tp_predictions}}
+etc.) and uses the \code{\link{get_avg_activity_diff_based_on_tp_predictions}}
 function on each generated classification group matching, comparing thus all
 groups of models with different true positive (TP) values.
 }

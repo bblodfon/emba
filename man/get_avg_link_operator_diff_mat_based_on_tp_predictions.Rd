@@ -32,7 +32,7 @@ predictions). The columns represent the network's node names. Values are in
 the [-1,1] interval.
 }
 \description{
-This function uses the \code{\link[emba]{get_avg_activity_diff_mat_based_on_tp_predictions}}
+This function uses the \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}}
 function with the parameter \code{models.link.operator} as input in the place of
 \code{models.stable.state}, since the two matrices representing the two inputs
 have the same data format (rows represent models, columns represent nodes,

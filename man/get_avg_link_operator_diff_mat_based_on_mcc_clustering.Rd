@@ -10,7 +10,7 @@ get_avg_link_operator_diff_mat_based_on_mcc_clustering(models.mcc,
 \arguments{
 \item{models.mcc}{a numeric vector of Matthews Correlation Coefficient (MCC)
 scores, one for each model. The \emph{names} attribute holds the models' names.
-Can be the result of using the function \code{\link[emba]{calculate_models_mcc}}.}
+Can be the result of using the function \code{\link{calculate_models_mcc}}.}
 
 \item{models.link.operator}{matrix (nxm) with n models and m nodes. The row
 names of the matrix specify the models' names (same order as in the
@@ -40,7 +40,7 @@ belonged to the 2nd group. The columns represent the network's node names.
 Values are in the [-1,1] interval.
 }
 \description{
-This function uses the \code{\link[emba]{get_avg_activity_diff_mat_based_on_mcc_clustering}}
+This function uses the \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}}
 function with the parameter \code{models.link.operator} as input in the place of
 \code{models.stable.state}, since the two matrices representing the two inputs
 have the same data format (rows represent models, columns represent nodes,

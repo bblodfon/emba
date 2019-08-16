@@ -38,7 +38,7 @@ represent the network's node names. Values are in the [-1,1] interval.
 the classification was based on the models' MCC values.
 }
 \description{
-This function uses the \code{\link[emba]{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}}
+This function uses the \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}}
 function with the parameter \code{models.link.operator} as input in the place of
 \code{models.stable.state}, since the two matrices representing the two inputs
 have the same data format (rows represent models, columns represent nodes,

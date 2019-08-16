@@ -10,7 +10,7 @@ get_synergy_comparison_sets(synergy.subset.stats)
 \item{synergy.subset.stats}{integer vector with values the amount of models
 that predicted each synergy subset, defined as a comma-seperated string of
 drug combinations in the \emph{names} attribute of the vector. It can be the
-result of using the function \code{\link[emba]{get_synergy_subset_stats}}.}
+result of using the function \code{\link{get_synergy_subset_stats}}.}
 }
 \value{
 \code{data.frame} object with 3 columns. For each row, the 1st column defines a

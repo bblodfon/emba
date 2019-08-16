@@ -25,6 +25,6 @@ inside the given \code{models.dir} (if not NULL).
 }
 \seealso{
 \code{\link[igraph]{graph_from_data_frame}},
-\code{\link[emba]{get_edges_from_topology_file}},
-\code{\link[emba]{get_node_names}}
+\code{\link{get_edges_from_topology_file}},
+\code{\link{get_node_names}}
 }

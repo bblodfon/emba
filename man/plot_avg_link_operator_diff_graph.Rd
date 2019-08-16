@@ -13,7 +13,7 @@ plot_avg_link_operator_diff_graph(net, diff, layout, title)
 represents the average link operator value difference of each node. The node
 names have to be specified in the \emph{names} attribute of the given vector.
 For example, \code{diff} could be the result of using the function
-\code{\link[emba]{get_avg_link_operator_diff_mat_based_on_tp_predictions}} and
+\code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}} and
 getting one vector row from the output matrix.
 A value closer to -1 means that the 'good' models have more of the \emph{AND NOT}
 link operator in their respective boolean equations while a value closer to 1

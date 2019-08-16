@@ -74,7 +74,7 @@ get_biomarkers_per_type = function(diff.mat, threshold, type) {
 #' reported.
 #'
 #' @section Details:
-#' This function uses the \code{\link[emba]{get_biomarkers_per_type}} function
+#' This function uses the \code{\link{get_biomarkers_per_type}} function
 #' to get the biomarkers (nodes) of both types (positive and negative) from the
 #' average data differences matrix. If a node though is found to surpass the
 #' significance threshold
@@ -147,3 +147,44 @@ get_biomarkers = function(diff.mat, threshold) {
 
   return(res.list)
 }
+
+#' Add row to a biomarkers \code{data.frame}
+#'
+#' Use this function on a biomarkers \code{data.frame} object (with values only
+#' in the 3-element set \{-1,0,1\}) to add an extra first row with values from
+#' the \emph{active} and \emph{inhibited} biomarkers given (\code{biomarkers.active}
+#' and \code{biomarkers.inhibited} parameters).
+#'
+#' @param biomarkers.df a \code{data.frame} object with values only in the
+#' the 3-element set \{-1,0,1\}. The column names should be node names
+#' (gene, protein names, etc.).
+#' @param biomarkers.active a character vector whose elements are nodes that
+#' were found as active biomarkers. These biomarkers should be a subset of the
+#' column names (nodes) of the \code{biomarkers.df}.
+#' @param biomarkers.inhibited a character vector whose elements are nodes that
+#' were found as inhibited biomarkers. These biomarkers should be a subset of the
+#' column names (nodes) of the \code{biomarkers.df}.
+#' @param row.name string. The name of the new row that we will added.
+#' Default value: 'PERF' (referring to 'performance biomarkers')
+#'
+#' @export
+add_row_to_biomarkers_df =
+  function(biomarkers.df, biomarkers.active, biomarkers.inhibited,
+           row.name = "PERF") {
+    # some checks
+    node.names = colnames(biomarkers.df)
+    stopifnot(biomarkers.active %in% node.names,
+              biomarkers.inhibited %in% node.names)
+
+    # initialize `row` data.frame
+    row = as.data.frame(matrix(0, ncol = length(node.names), nrow = 1))
+    colnames(row) = node.names
+    rownames(row) = row.name
+
+    # add biomarkers
+    row[colnames(row) %in% biomarkers.active] = 1
+    row[colnames(row) %in% biomarkers.inhibited] = -1
+
+    res = rbind(row, biomarkers.df)
+    return(res)
+  }
