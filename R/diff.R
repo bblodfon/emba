@@ -33,8 +33,7 @@ get_avg_activity_diff_mat_based_on_tp_predictions =
     # check
     stopifnot(all(names(models.synergies.tp) == rownames(models.stable.state)))
 
-    # TODO check if `tp.values` misses some integers, does it affect results???
-    tp.values = unique(models.synergies.tp)
+    tp.values = sort(unique(models.synergies.tp))
     tp.values.comb = t(combn(tp.values, 2))
 
     diff.tp.mat = apply(tp.values.comb, 1, function(comb) {
