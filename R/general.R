@@ -194,8 +194,8 @@ biomarker_tp_analysis =
 #' @param include.NaN.mcc.class logical. Should the models that have NaN MCC value
 #' (e.g. TP+FP = 0, models that predicted no synergies at all) be classified together
 #' in one class - the 'NaN MCC Class' - and compared with the other model classes
-#' in the analysis? If \emph{TRUE}, then the number of total MCC classes will be
-#' \emph{num.of.mcc.classes + 1}.
+#' in the analysis? If \emph{TRUE} (default), then the number of total MCC classes
+#' will be \emph{num.of.mcc.classes + 1}.
 #'
 #' @return a list with various elements:
 #' \itemize{
