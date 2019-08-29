@@ -180,6 +180,25 @@ get_link_operators_from_models_dir =
     return(df)
 }
 
+#' Load the models fitness scores
+#'
+#' Use this function to merge the fitness scores from all models into a single
+#' vector (the fitness score is a value between 0 and 1 and denotes how close
+#' was the model fitted to one or more training data observations). Each model's
+#' fitness value is loaded from the respective \emph{.gitsbe} file that can be
+#' found inside the given \code{models.dir} directory.
+#'
+#' @param models.dir string. A dir with \emph{.gitsbe} files/models
+#'
+#' @return a numeric vector with elements the fitness scores and the names of the
+#' models included in the \emph{names} attribute.
+#'
+#' @examples
+#'
+#' models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
+#' models.fitness = get_fitness_from_models_dir(models.dir)
+#'
+#' @export
 get_fitness_from_models_dir = function(models.dir) {
   files = list.files(models.dir)
   model.fitness = character(length(files))
@@ -253,32 +272,6 @@ assign_link_operator_value_to_equation = function(equation) {
   } else if (grepl(".*and not.*", equation)) {
     return(0)
   } else return(NA)
-}
-
-# @importFrom usefun remove_commented_and_empty_lines
-get_consensus_steady_state = function(steady.state.file) {
-  #print(paste("Reading consensus steady state file:", steady.state.file))
-
-  lines = readLines(steady.state.file)
-  lines = remove_commented_and_empty_lines(lines)
-  consensus.steady.state = build_consensus_steady_state_vector(lines)
-
-  return(consensus.steady.state)
-}
-
-build_consensus_steady_state_vector = function(lines) {
-  node.names = character(0)
-  activity.states = character(0)
-  for (line in lines) {
-    values = strsplit(line, "\t")[[1]]
-    node.names = c(node.names, values[1])
-    activity.states = c(activity.states, values[2])
-  }
-  activity.states = as.numeric(activity.states)
-  stopifnot(length(activity.states) == length(node.names))
-
-  names(activity.states) = node.names
-  return(activity.states)
 }
 
 #' Is drug combination element of given vector?
