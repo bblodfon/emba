@@ -82,7 +82,7 @@ get_biomarkers_per_type = function(diff.mat, threshold, type) {
 #' in the category which corresponds to the \strong{comparison of the highest
 #' classification groups}. For example, if the data comes from a model performance
 #' classification based on the MCC score and in the comparison of the MCC classes
-#' (1,3) the node of interest had an average difference of −0.89 (a negative
+#' (1,3) the node of interest had an average difference of -0.89 (a negative
 #' biomarker) while for the comparison of the (3,4) MCC classes it had a value
 #' of 0.91 (a positive biomarker), then we will keep that node \emph{only as a
 #' positive biomarker}. The logic behind this is that
