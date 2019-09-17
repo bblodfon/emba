@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R: person("John", "Zobolas", role = c("aut", "cph", "cre"), 
   email = "bblodfon@gmail.com", comment = c(ORCID = "0000-0002-3609-8674"))
 Description: This package has several functions that help the analysis and 
-  visualization of an ensemble boolean models for biomarker discovery in 
+  visualization of an ensemble of boolean models for biomarker discovery in 
   cancer cell networks.
 License: MIT + file LICENSE
 URL: https://github.com/bblodfon/emba
@@ -22,7 +22,7 @@ Imports:
     visNetwork (>= 2.0.7),
     Ckmeans.1d.dp (>= 4.2.2),
     magrittr (>= 1.5),
-    usefun (>= 0.3.3)
+    usefun (>= 0.4.0)
 Remotes: 
     bblodfon/usefun
 Suggests: 
