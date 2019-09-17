@@ -1,6 +1,7 @@
 # emba
 
 <!-- badges: start -->
+[![Travis build status](https://travis-ci.org/bblodfon/emba.svg?branch=master)](https://travis-ci.org/bblodfon/emba)
 <!-- badges: end -->
 
 An R package which allows the analysis, visualization and discovery of 
