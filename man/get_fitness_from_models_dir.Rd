@@ -11,7 +11,7 @@ get_fitness_from_models_dir(models.dir)
 }
 \value{
 a numeric vector with elements the fitness scores and the names of the
-models in the \emph{names} attribute.
+models included in the \emph{names} attribute.
 }
 \description{
 Use this function to merge the fitness scores from all models into a single

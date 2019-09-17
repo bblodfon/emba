@@ -435,120 +435,50 @@ get_edges_from_topology_file = function(topology.file) {
   return(edges)
 }
 
-#' Get synergy biomarkers
+#' Get observed synergies per cell line
 #'
-#' This function reads the synergy biomarker files inside the given directory and merges
-#' the results into a \code{data.frame} which it returns.
+#' Use this function to get the observed synergies from the respective
+#' files inside the given list of cell line directories.
 #'
-#' @param predicted.synergies a character vector of the synergies (drug
-#' combination names) that were predicted by \strong{at least one} of the models
-#' in the dataset.
-#' @param biomarkers.dir string. It specifies the full path name of the
-#' directory which holds the biomarker files. The biomarker files must be
-#' formatted as: \emph{\%drug.comb\%_biomarkers_active} or
-#' \emph{\%drug.comb\%_biomarkers_inhibited}, where \%drug.comb\% is an element
-#' of the \code{predicted.synergies} vector.
-#' @param models.dir string. A directory with \emph{.gitsbe} files/models. It's
-#' needed in order to call \code{\link{get_node_names}}.
-#' @param node.names a character vector which has the names of the nodes. If it's
-#' not NULL, then it will be used instead of the \code{models.dir} parameter.
-#' The \code{node.names} should include all the nodes that are reported as
-#' biomarkers in the biomarker files inside the \code{biomarkers.dir} directory.
-#' Default value: NULL.
+#' @param cell.line.dirs a character vector of the cell line directories, in the
+#' form of \emph{\{path\}/cell_line_name}. The cell line name directory
+#' should be different for each element of the vector as we use it to fill in the
+#' \code{rownames} of the result \code{data.frame} object. Inside each cell line directory
+#' we read the observed synergies from a file called \emph{observed_synergies}
+#' (if it exists and is non-empty). This file has the names of the observed
+#' drug combinations, one in each line.
+#' @param drug.combos a character vector with elements the names of all the drug combinations
+#' that were tested in the analysis.
 #'
-#' @return a data.frame, whose columns represent the network nodes and the
-#' rows the predicted synergies. Possible values for each \emph{synergy-node}
-#' element are either \emph{1} (\emph{active state} biomarker), \emph{-1}
-#' (\emph{inhibited state} biomarker) or \emph{0} (not a biomarker).
+#' @return a data.frame, whose columns represent the drug combinations tested
+#' and the rows the cell lines. Possible values for each \emph{cell line-drug combination}
+#' element are either \emph{1} (an observed synergy) or \emph{0} (non-observed synergy).
 #'
-#' @importFrom utils read.table
+#' @importFrom usefun add_row_to_ternary_df
 #' @export
-get_synergy_biomarkers_from_dir =
-  function(predicted.synergies, biomarkers.dir, models.dir, node.names = NULL) {
-    stopifnot(!is.null(models.dir) || !is.null(node.names))
+get_observed_synergies_per_cell_line = function(cell.line.dirs, drug.combos) {
 
-    # get the node names
-    if (is.null(node.names))
-      node.names = get_node_names(models.dir)
+  # initialize res data.frame
+  res = as.data.frame(matrix(data = NA, nrow = 0, ncol = length(drug.combos)))
+  colnames(res) = drug.combos
 
-    # initialize res data.frame
-    res = as.data.frame(matrix(0, ncol = length(node.names),
-                                  nrow = length(predicted.synergies)))
-    colnames(res) = node.names
-    rownames(res) = predicted.synergies
+  for (cell.line.dir in cell.line.dirs) {
+    # observed synergies
+    observed.synergies.file = paste0(cell.line.dir, "/observed_synergies")
 
-    for (drug.comb in predicted.synergies) {
-      # insert the active biomarkers
-      active.biomarkers.file =
-        paste0(biomarkers.dir, drug.comb, "_biomarkers_active")
-
-      if (file.exists(active.biomarkers.file)
-          && file.size(active.biomarkers.file) != 0) {
-        biomarkers.active =
-          read.table(active.biomarkers.file, stringsAsFactors = FALSE)
-        biomarkers.active.names = biomarkers.active[,1]
-        # biomarkers.active.values = biomarkers.active[,2]
-
-        res[drug.comb, biomarkers.active.names] = 1
-      }
-
-      # insert the inhibited biomarkers
-      inhibited.biomarkers.file =
-        paste0(biomarkers.dir, drug.comb, "_biomarkers_inhibited")
-
-      if (file.exists(inhibited.biomarkers.file)
-          && file.size(inhibited.biomarkers.file) != 0) {
-        biomarkers.inhibited =
-          read.table(inhibited.biomarkers.file, stringsAsFactors = FALSE)
-        biomarkers.inhibited.names = biomarkers.inhibited[,1]
-        # biomarkers.inhibited.values = biomarkers.inhibited[,2]
-
-        res[drug.comb, biomarkers.inhibited.names] = -1
-      }
+    if (file.exists(observed.synergies.file)
+        && file.size(observed.synergies.file) != 0) {
+      synergies = get_observed_synergies(observed.synergies.file)
+    } else {
+      synergies = c()
     }
 
-    return(res)
-}
+    cell.line = basename(cell.line.dir)
 
-# `biomarkers.dirs` is a vector of the cell lines' biomarker directories
-# and `type` can be either 'active' or 'inhibited'
-#
-# @import utils read.table
-get_perf_biomarkers_per_cell_line = function(biomarkers.dirs, type) {
-  if (type == "active")
-    biomarker.type.extension = "/biomarkers_active"
-  else
-    biomarker.type.extension = "/biomarkers_inhibited"
-
-  biomarkers.perf = sapply(biomarkers.dirs, function(biomarkers.dir) {
-    biomarkers.file = paste0(biomarkers.dir, biomarker.type.extension)
-    if (file.size(biomarkers.file) == 0)
-      return(list(NULL)) # empty list
-    else
-      return(
-        read.table(biomarkers.file, stringsAsFactors = FALSE)
-      )
-  })
-  # add the cell line name as id
-  names(biomarkers.perf) = names(biomarkers.dirs)
-
-  return(biomarkers.perf)
-}
-
-# `biomarkers.dirs` is a vector of the cell lines' biomarker directories
-# Returns a list of cell-line data frames with rows the true positive
-# predicted synergies for each cell line and columns the network nodes (same
-# for all). So, cell line (list) => biomarkers of a synergy (row of data.frame)
-# @importFrom utils read.table
-get_synergy_biomarkers_per_cell_line = function(biomarkers.dirs) {
-  biomarkers.per.synergy = list()
-  for (i in seq_along(biomarkers.dirs)) {
-    biomarkers.file = paste0(biomarkers.dirs[i], "/biomarkers_per_synergy")
-    biomarkers.per.synergy[[i]] =
-      read.table(file = biomarkers.file, stringsAsFactors = FALSE,
-                 check.names = FALSE)
+    res = add_row_to_ternary_df(df = res, values.pos = synergies,
+                                values.neg = c(),
+                                row.name = cell.line)
   }
-  names(biomarkers.per.synergy) = names(biomarkers.dirs)
 
-  return(biomarkers.per.synergy)
+  return(res)
 }

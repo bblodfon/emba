@@ -472,102 +472,6 @@ update_biomarker_files =
     }
   }
 
-# merge the results of the performance (active and inhibited) biomarkers
-# from each cell line to a common `data.frame` object
-merge_perf_biomarkers =
-  function(node.names, cell.lines, biomarkers.perf.active, biomarkers.perf.inhibited) {
-    # initialize res data.frame
-    res = as.data.frame(matrix(0, ncol = length(node.names),
-                                  nrow = length(cell.lines)))
-    colnames(res) = node.names
-    rownames(res) = cell.lines
-
-    for (cell.line in cell.lines) {
-      biomarkers.perf.active.vec = unlist(biomarkers.perf.active[cell.line])
-      biomarkers.perf.inhibited.vec = unlist(biomarkers.perf.inhibited[cell.line])
-
-      for (biomarker.active in biomarkers.perf.active.vec) {
-        res[cell.line, biomarker.active] = 1
-      }
-
-      for (biomarker.inhibited in biomarkers.perf.inhibited.vec) {
-        res[cell.line, biomarker.inhibited] = -1
-      }
-    }
-
-    return(res)
-}
-
-# merge the observed synergies from each cell line to a common
-# `data.frame` object
-merge_observed_synergies =
-  function(drug.combinations.tested, cell.lines, observed.synergies.per.cell.line) {
-    # initialize res data.frame
-    res = as.data.frame(matrix(0, ncol = length(drug.combinations.tested),
-                                  nrow = length(cell.lines)))
-    colnames(res) = drug.combinations.tested
-    rownames(res) = cell.lines
-
-    for (cell.line in cell.lines) {
-      observed.synergies = observed.synergies.per.cell.line[cell.line]
-      for (synergy in observed.synergies) {
-        res[cell.line, synergy] = 1
-      }
-    }
-
-    return(res)
-}
-
-# `df.list` is a list of cell line data frames with rows the true positive
-# predicted synergies for each cell line and columns the network nodes.
-# `observed.synergies.res` is a data.frame with rows the cell lines and columns
-# the observed synergies
-# `predicted.synergies.vector` is a subset of the `observed.synergies.res` column
-# names
-# Returns a list of data frames for each synergy with rows the cell lines and
-# columns the network nodes, so a re-arrangement (and grouping) of the `df.list`
-# object
-#' @importFrom dplyr select
-arrange_by_synergy =
-  function(df.list, observed.synergies.res, predicted.synergies.vector, node.names) {
-    stopifnot(all(predicted.synergies.vector %in%
-                  colnames(observed.synergies.res)))
-
-    # prune the observed synergies to predicted and order by increasing number
-    # of cell line predictions
-    observed.synergies.res =
-      select(observed.synergies.res, predicted.synergies.vector)
-    observed.synergies.res =
-      observed.synergies.res[order(colSums(observed.synergies.res))]
-
-    # check that `node.names` is in the correct order
-    for (df in df.list) {
-      stopifnot(all(node.names == colnames(df)))
-    }
-
-    # initialize `res` list (correct dimensions, all values zero)
-    res = list()
-    for (synergy in colnames(observed.synergies.res)) {
-      row.df = select(observed.synergies.res, synergy)
-
-      synergy.res = as.data.frame(matrix(0, ncol = length(node.names),
-                                            nrow = sum(row.df)))
-      colnames(synergy.res) = node.names
-      rownames(synergy.res) = rownames(row.df)[row.df == 1]
-      res[[synergy]] = synergy.res
-    }
-
-    # fill in `res` list
-    for (cell.line in names(df.list)) {
-      df = df.list[[cell.line]]
-      for (synergy in rownames(df)) {
-        res[[synergy]][cell.line,] = df[synergy, ]
-      }
-    }
-
-    return(res)
-}
-
 #' Get synergy comparison sets
 #'
 #' This helper function identifies pairs of (\emph{set}, \emph{subset}) for each
@@ -637,4 +541,3 @@ get_synergy_comparison_sets = function(synergy.subset.stats) {
 
   return(res.df)
 }
-

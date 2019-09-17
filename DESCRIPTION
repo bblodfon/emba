@@ -17,7 +17,6 @@ Imports:
     graphics,
     grDevices,
     utils,
-    dplyr (>= 0.8.1),
     rje (>= 1.9),
     igraph (>= 1.2.4),
     visNetwork (>= 2.0.7),
