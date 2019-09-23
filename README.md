@@ -12,3 +12,6 @@ biomarkers from an ensemble of boolean models of cancer cell networks.
 ```
 devtools::install_github("bblodfon/emba")
 ```
+
+For an example usage of this package's functions, see the analysis performed
+on multiple boolean model datasets [here](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/).
