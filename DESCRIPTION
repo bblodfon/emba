@@ -4,9 +4,20 @@ Title: Ensemble Boolean Model Biomarker Analysis
 Version: 0.1.0
 Authors@R: person("John", "Zobolas", role = c("aut", "cph", "cre"), 
   email = "bblodfon@gmail.com", comment = c(ORCID = "0000-0002-3609-8674"))
-Description: Several functions that help the analysis and 
+Description: A set of functions that help the analysis and 
   visualization of an ensemble of boolean models for biomarker discovery in 
-  cancer cell networks.
+  cancer cell networks. These functions allow to easily 
+  import the data results of the DrugLogics software pipeline for drug combination
+  predictions while others (more generic ones) can be used to split a boolean model 
+  dataset with regards to the models predictive performance (number of true 
+  positive predictions or MCC score) or synergy prediction based on a given set 
+  of observed synergies and find the average activity difference per network 
+  node between all pairs of splitted model groups. Thus, given user-specific thresholds,
+  important nodes (biomarkers) can be accessed in the sense that they make the 
+  models predict specific synergies (synergy biomarkers) or have better 
+  performance in general (higher MCC, performance biomarkers). Lastly, if the 
+  boolean models have a specific equation form and differ only in their link operator, 
+  link operator biomarkers can also be assesed.
 License: MIT + file LICENSE
 URL: https://github.com/bblodfon/emba
 BugReports: https://github.com/bblodfon/emba/issues
