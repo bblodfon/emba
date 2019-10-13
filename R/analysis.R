@@ -308,8 +308,8 @@ calculate_models_synergies_tn = function(unobserved.model.predictions) {
 #' @param tn numeric vector of TNs
 #' @param fp numeric vector of FPs
 #' @param fn numeric vector of FNs
-#' @param p numeric vector of Ps (p = tp + fn)
-#' @param n numeric vector of Ns (n = tn + fp)
+#' @param p numeric vector of positives (p = tp + fn)
+#' @param n numeric vector of negatives (n = tn + fp)
 #'
 #' @return a numeric vector of MCC values, each value being in the [-1,1]
 #' interval or \emph{NaN}.
@@ -475,11 +475,11 @@ update_biomarker_files =
 #' Get synergy comparison sets
 #'
 #' This helper function identifies pairs of (\emph{set}, \emph{subset}) for each
-#' synergy (implicity given throught the \code{synergy.subset.stats} object) where
+#' synergy (implicitly given through the \code{synergy.subset.stats} object) where
 #' each respective \emph{subset} misses just one synergy from the larger \emph{set}.
 #'
 #' @param synergy.subset.stats integer vector with values the amount of models
-#' that predicted each synergy subset, defined as a comma-seperated string of
+#' that predicted each synergy subset, defined as a comma-separated string of
 #' drug combinations in the \emph{names} attribute of the vector. It can be the
 #' result of using the function \code{\link{get_synergy_subset_stats}}.
 #'

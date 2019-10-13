@@ -8,13 +8,13 @@ get_avg_activity_diff_based_on_synergy_set_cmp(synergy.set.str,
   synergy.subset.str, model.predictions, models.stable.state)
 }
 \arguments{
-\item{synergy.set.str}{a string of drug combinations, comma-seperated. The
+\item{synergy.set.str}{a string of drug combinations, comma-separated. The
 number of the specified combinations must be larger than the ones defined
 in the \code{synergy.subset.str} parameter. They also must be included in the
 tested drug combinations, i.e. the columns of the \code{model.predictions}
 parameter.}
 
-\item{synergy.subset.str}{a string of drug combinations, comma-seperated.
+\item{synergy.subset.str}{a string of drug combinations, comma-separated.
 There must be at least one combination defined and all of them should also
 be included in the \code{synergy.set.str} parameter.}
 

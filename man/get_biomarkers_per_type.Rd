@@ -10,7 +10,7 @@ get_biomarkers_per_type(diff.mat, threshold, type)
 \item{diff.mat}{a matrix whose rows are vectors of average node data
 differences between two groups of models based on some kind of classification
 (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-attribute of the matrix (usually denoting the diffferent classification
+attribute of the matrix (usually denoting the different classification
 groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
 that predicted 2 TP synergies, if the classification is done by number of TP
 predictions). The columns represent the network's node names.}

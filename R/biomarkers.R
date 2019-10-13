@@ -14,7 +14,7 @@
 #' @param diff.mat a matrix whose rows are vectors of average node data
 #' differences between two groups of models based on some kind of classification
 #' (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-#' attribute of the matrix (usually denoting the diffferent classification
+#' attribute of the matrix (usually denoting the different classification
 #' groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
 #' that predicted 2 TP synergies, if the classification is done by number of TP
 #' predictions). The columns represent the network's node names.
@@ -93,7 +93,7 @@ get_biomarkers_per_type = function(diff.mat, threshold, type) {
 #' @param diff.mat a matrix whose rows are vectors of average node data
 #' differences between two groups of models based on some kind of classification
 #' (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-#' attribute of the matrix (usually denoting the diffferent classification
+#' attribute of the matrix (usually denoting the different classification
 #' groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
 #' that predicted 2 TP synergies, if the classification is done by number of TP
 #' predictions). The columns represent the network's node names.
@@ -152,7 +152,7 @@ get_biomarkers = function(diff.mat, threshold) {
 #'
 #' This function reads the synergy biomarker files inside the given directory and merges
 #' the results into a \code{data.frame} which it returns. This functions should
-#' be used when the synergy biomarker results are in seperate files inside the
+#' be used when the synergy biomarker results are in separate files inside the
 #' directory given (see \code{biomarkers.dir} parameter).
 #'
 #' @param predicted.synergies a character vector of the synergies (drug

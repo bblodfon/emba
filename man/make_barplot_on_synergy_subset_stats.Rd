@@ -9,11 +9,11 @@ make_barplot_on_synergy_subset_stats(synergy.subset.stats,
 }
 \arguments{
 \item{synergy.subset.stats}{integer vector with values the amount of models
-that predicted each synergy subset, defined as a comma-seperated string of
+that predicted each synergy subset, defined as a comma-separated string of
 drug combinations in the \emph{names} attribute of the vector}
 
 \item{threshold.for.subset.removal}{integer. Use it to discard elements of
-the \code{synergy.subset.stats} vector that are stricly less than the
+the \code{synergy.subset.stats} vector that are strictly less than the
 specified threshold}
 
 \item{bottom.margin}{integer used to vertically fit in the names of the drug

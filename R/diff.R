@@ -19,7 +19,7 @@
 #' @return a matrix whose rows are \strong{vectors of
 #' average node activity state differences} between two groups of models where
 #' the classification was based on the number of true positive predictions.
-#' Rows represent the diffferent classification group matchings, e.g. (1,2) means the
+#' Rows represent the different classification group matchings, e.g. (1,2) means the
 #' models that predicted 1 TP synergy vs the models that predicted 2 TP
 #' synergies and the columns represent the network's node names.
 #' Values are in the [-1,1] interval.
@@ -73,7 +73,7 @@ get_avg_activity_diff_mat_based_on_tp_predictions =
 #' @return a matrix whose rows are \strong{vectors of average node link operator
 #' differences} between two groups of models based on some kind of classification
 #' (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-#' attribute of the matrix (usually denoting the diffferent classification
+#' attribute of the matrix (usually denoting the different classification
 #' groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
 #' that predicted 2 TP synergies, if the classification is done by number of TP
 #' predictions). The columns represent the network's node names. Values are in
@@ -203,7 +203,7 @@ get_avg_activity_diff_based_on_tp_predictions =
 #' @return a matrix whose rows are \strong{vectors of
 #' average node activity state differences} between two groups of models where
 #' the classification was based on the models' MCC values.
-#' Rows represent the diffferent classification group matchings, e.g. (1,2) means the
+#' Rows represent the different classification group matchings, e.g. (1,2) means the
 #' models that belonged to the 1st group of MCC values vs the models that
 #' belonged to the 2nd group. The columns represent the network's node names.
 #' Values are in the [-1,1] interval.
@@ -278,7 +278,7 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
 #' @return a matrix whose rows are \strong{vectors of average node link operator
 #' differences} between two groups of models where
 #' the classification was based on the models' MCC values.
-#' Rows represent the diffferent classification group matchings, e.g. (1,2) means the
+#' Rows represent the different classification group matchings, e.g. (1,2) means the
 #' models that belonged to the 1st group of MCC values vs the models that
 #' belonged to the 2nd group. The columns represent the network's node names.
 #' Values are in the [-1,1] interval.
@@ -609,12 +609,12 @@ get_avg_activity_diff_based_on_specific_synergy_prediction =
 #' (a value in the [0,1] interval) and then subtracts the bad class average
 #' activity value from the good one.
 #'
-#' @param synergy.set.str a string of drug combinations, comma-seperated. The
+#' @param synergy.set.str a string of drug combinations, comma-separated. The
 #' number of the specified combinations must be larger than the ones defined
 #' in the \code{synergy.subset.str} parameter. They also must be included in the
 #' tested drug combinations, i.e. the columns of the \code{model.predictions}
 #' parameter.
-#' @param synergy.subset.str a string of drug combinations, comma-seperated.
+#' @param synergy.subset.str a string of drug combinations, comma-separated.
 #' There must be at least one combination defined and all of them should also
 #' be included in the \code{synergy.set.str} parameter.
 #' @param model.predictions a \code{data.frame} object with rows the models and

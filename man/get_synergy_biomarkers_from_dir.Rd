@@ -36,6 +36,6 @@ element are either \emph{1} (\emph{active state} biomarker), \emph{-1}
 \description{
 This function reads the synergy biomarker files inside the given directory and merges
 the results into a \code{data.frame} which it returns. This functions should
-be used when the synergy biomarker results are in seperate files inside the
+be used when the synergy biomarker results are in separate files inside the
 directory given (see \code{biomarkers.dir} parameter).
 }

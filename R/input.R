@@ -324,7 +324,7 @@ validate_observed_synergies_data =
     }
 }
 
-#' Get alternative drug name
+#' Get alternative drug combination name
 #'
 #' Use this function on a string \emph{A-B} that represents a drug combination,
 #' to get the reverse combination name - \emph{B-A} - for testing/checking data.

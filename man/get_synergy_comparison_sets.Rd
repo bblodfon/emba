@@ -8,7 +8,7 @@ get_synergy_comparison_sets(synergy.subset.stats)
 }
 \arguments{
 \item{synergy.subset.stats}{integer vector with values the amount of models
-that predicted each synergy subset, defined as a comma-seperated string of
+that predicted each synergy subset, defined as a comma-separated string of
 drug combinations in the \emph{names} attribute of the vector. It can be the
 result of using the function \code{\link{get_synergy_subset_stats}}.}
 }
@@ -21,6 +21,6 @@ the single synergy of the first column (e.g. "F-G,C-D").
 }
 \description{
 This helper function identifies pairs of (\emph{set}, \emph{subset}) for each
-synergy (implicity given throught the \code{synergy.subset.stats} object) where
+synergy (implicitly given through the \code{synergy.subset.stats} object) where
 each respective \emph{subset} misses just one synergy from the larger \emph{set}.
 }

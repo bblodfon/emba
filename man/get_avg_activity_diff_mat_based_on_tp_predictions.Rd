@@ -24,7 +24,7 @@ are either \emph{0} (inactive node) or \emph{1} (active node).}
 a matrix whose rows are \strong{vectors of
 average node activity state differences} between two groups of models where
 the classification was based on the number of true positive predictions.
-Rows represent the diffferent classification group matchings, e.g. (1,2) means the
+Rows represent the different classification group matchings, e.g. (1,2) means the
 models that predicted 1 TP synergy vs the models that predicted 2 TP
 synergies and the columns represent the network's node names.
 Values are in the [-1,1] interval.

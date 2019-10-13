@@ -2,7 +2,7 @@
 % Please edit documentation in R/input.R
 \name{get_alt_drugname}
 \alias{get_alt_drugname}
-\title{Get alternative drug name}
+\title{Get alternative drug combination name}
 \usage{
 get_alt_drugname(drug.comb)
 }

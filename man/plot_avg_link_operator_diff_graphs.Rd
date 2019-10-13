@@ -12,7 +12,7 @@ plot_avg_link_operator_diff_graphs(net, diff.mat, layout)
 \item{diff.mat}{a matrix whose rows are \strong{vectors of average node link
 operator differences} between two groups of models based on some kind of
 classification (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-attribute of the matrix (usually denoting the diffferent classification
+attribute of the matrix (usually denoting the different classification
 groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
 that predicted 2 TP synergies, if the classification is done by number of TP
 predictions). The columns represent the network's node names.}
@@ -25,9 +25,9 @@ This function presents a convenient way to use many times the
 \code{\link{plot_avg_link_operator_diff_graph}} function.
 }
 \seealso{
-Other network ploting functions: \code{\link{plot_avg_link_operator_diff_graph}},
+Other network plotting functions: \code{\link{plot_avg_link_operator_diff_graph}},
   \code{\link{plot_avg_state_diff_graph_vis}},
   \code{\link{plot_avg_state_diff_graphs}},
   \code{\link{plot_avg_state_diff_graph}}
 }
-\concept{network ploting functions}
+\concept{network plotting functions}

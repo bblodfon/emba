@@ -38,9 +38,9 @@ respective boolean equation (where they function as the target).
 \seealso{
 \code{\link{get_node_colors}}
 
-Other network ploting functions: \code{\link{plot_avg_link_operator_diff_graphs}},
+Other network plotting functions: \code{\link{plot_avg_link_operator_diff_graphs}},
   \code{\link{plot_avg_state_diff_graph_vis}},
   \code{\link{plot_avg_state_diff_graphs}},
   \code{\link{plot_avg_state_diff_graph}}
 }
-\concept{network ploting functions}
+\concept{network plotting functions}

@@ -34,7 +34,7 @@ in the analysis? If \emph{TRUE}, then the number of total MCC classes will be
 a matrix whose rows are \strong{vectors of average node link operator
 differences} between two groups of models where
 the classification was based on the models' MCC values.
-Rows represent the diffferent classification group matchings, e.g. (1,2) means the
+Rows represent the different classification group matchings, e.g. (1,2) means the
 models that belonged to the 1st group of MCC values vs the models that
 belonged to the 2nd group. The columns represent the network's node names.
 Values are in the [-1,1] interval.

@@ -52,7 +52,7 @@
 #'   \item \code{diff.tp.mat}: a matrix whose rows are \strong{vectors of
 #'   average node activity state differences} between two groups of models where
 #'   the classification was based on the number of true positive predictions.
-#'   Rows represent the diffferent classification groupm atchings, e.g. (1,2) means the
+#'   Rows represent the different classification group matchings, e.g. (1,2) means the
 #'   models that predicted 1 TP synergy vs the models that predicted 2 TP
 #'   synergies and the columns represent the network's node names.
 #'   Values are in the [-1,1] interval.
@@ -65,7 +65,7 @@
 #'   \item \code{diff.link.tp.mat}: a matrix whose rows are \strong{vectors of
 #'   average node link operator differences} between two groups of models where
 #'   the classification was based on the number of true positive predictions.
-#'   Rows represent the diffferent classification group matchings, e.g. (1,2) means the
+#'   Rows represent the different classification group matchings, e.g. (1,2) means the
 #'   models that predicted 1 TP synergy vs the models that predicted 2 TP
 #'   synergies and the columns represent the network's node names.
 #'   Values are in the [-1,1] interval.
@@ -215,7 +215,7 @@ biomarker_tp_analysis =
 #'   the classification was based on the \emph{MCC score} of each model and was
 #'   found using an optimal univariate k-means clustering method
 #'   (\code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}).
-#'   Rows represent the diffferent classification group matchings, e.g. (1,2)
+#'   Rows represent the different classification group matchings, e.g. (1,2)
 #'   means the models that were classified into the first MCC class vs the models
 #'   that were classified in the 2nd class (higher is better). The columns
 #'   represent the network's node names. Values are in the [-1,1] interval.
@@ -230,7 +230,7 @@ biomarker_tp_analysis =
 #'   the classification was based on the \emph{MCC score} of each model and was
 #'   found using an optimal univariate k-means clustering method
 #'   (\code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}).
-#'   Rows represent the diffferent classification group matchings, e.g. (1,2)
+#'   Rows represent the different classification group matchings, e.g. (1,2)
 #'   means the models that were classified into the first MCC class vs the models
 #'   that were classified in the 2nd class (higher is better).
 #'   The columns represent the network's node names. Values are in the [-1,1] interval.

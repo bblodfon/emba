@@ -1,7 +1,7 @@
 #' Plot histogram of the MCC classes
 #'
 #' This function is a wrapper of the \code{\link[Ckmeans.1d.dp]{ahist}} function
-#' for ploting nicely the distribution of the MCC models' values.
+#' for plotting nicely the distribution of the MCC models' values.
 #'
 #' @param models.mcc.no.nan.sorted a numeric sorted vector of Matthews
 #' Correlation Coefficient (MCC) scores, one for each model (no NaNs included).
@@ -141,10 +141,10 @@ get_x_axis_values =
 #' that predicted each synergy subset out of the set of all observed synergies.
 #'
 #' @param synergy.subset.stats integer vector with values the amount of models
-#' that predicted each synergy subset, defined as a comma-seperated string of
+#' that predicted each synergy subset, defined as a comma-separated string of
 #' drug combinations in the \emph{names} attribute of the vector
 #' @param threshold.for.subset.removal integer. Use it to discard elements of
-#' the \code{synergy.subset.stats} vector that are stricly less than the
+#' the \code{synergy.subset.stats} vector that are strictly less than the
 #' specified threshold
 #' @param bottom.margin integer used to vertically fit in the names of the drug
 #' combinations in the x-axis (specified in inches). The best \code{bottom.margin}
@@ -220,7 +220,7 @@ add_numbers_above_the_bars = function(stats, bp, color) {
 #' of the nodes (n) in the \code{net} igraph object
 #' @param title string. The title of the visNetwork plot
 #'
-#' @family network ploting functions
+#' @family network plotting functions
 #'
 #' @importFrom magrittr %>%
 #' @importFrom visNetwork toVisNetworkData visNetwork visLegend
@@ -277,7 +277,7 @@ plot_avg_state_diff_graph_vis = function(net, diff, layout, title) {
 #' of the nodes (n) in the \code{net} igraph object
 #' @param title string. The title of the igraph plot
 #'
-#' @family network ploting functions
+#' @family network plotting functions
 #'
 #' @seealso
 #' \code{\link{get_node_colors}}
@@ -326,7 +326,7 @@ plot_avg_state_diff_graph = function(net, diff, layout, title) {
 #' of the nodes (n) in the \code{net} igraph object
 #' @param title string. The title of the igraph plot
 #'
-#' @family network ploting functions
+#' @family network plotting functions
 #'
 #' @seealso
 #' \code{\link{get_node_colors}}
@@ -416,14 +416,14 @@ get_node_colors = function(net, diff, col) {
 #' @param diff.mat a matrix whose rows are \strong{vectors of average node activity
 #' state differences} between two groups of models based on some kind of classification
 #' (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-#' attribute of the matrix (usually denoting the diffferent classification
+#' attribute of the matrix (usually denoting the different classification
 #' groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
 #' that predicted 2 TP synergies, if the classification is done by number of TP
 #' predictions). The columns represent the network's node names.
 #' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
 #' of the nodes (n) in the \code{net} igraph object
 #'
-#' @family network ploting functions
+#' @family network plotting functions
 #'
 #' @export
 plot_avg_state_diff_graphs = function(net, diff.mat, layout) {
@@ -442,14 +442,14 @@ plot_avg_state_diff_graphs = function(net, diff.mat, layout) {
 #' @param diff.mat a matrix whose rows are \strong{vectors of average node link
 #' operator differences} between two groups of models based on some kind of
 #' classification (e.g. number of TP predictions) and whose names are set in the \code{rownames}
-#' attribute of the matrix (usually denoting the diffferent classification
+#' attribute of the matrix (usually denoting the different classification
 #' groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
 #' that predicted 2 TP synergies, if the classification is done by number of TP
 #' predictions). The columns represent the network's node names.
 #' @param layout a (nx2) numeric matrix of x-y coordinates (2 columns) for each
 #' of the nodes (n) in the \code{net} igraph object
 #'
-#' @family network ploting functions
+#' @family network plotting functions
 #'
 #' @export
 plot_avg_link_operator_diff_graphs = function(net, diff.mat, layout) {

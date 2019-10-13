@@ -15,9 +15,9 @@ calculate_mcc(tp, tn, fp, fn, p, n)
 
 \item{fn}{numeric vector of FNs}
 
-\item{p}{numeric vector of Ps (p = tp + fn)}
+\item{p}{numeric vector of positives (p = tp + fn)}
 
-\item{n}{numeric vector of Ns (n = tn + fp)}
+\item{n}{numeric vector of negatives (n = tn + fp)}
 }
 \value{
 a numeric vector of MCC values, each value being in the [-1,1]

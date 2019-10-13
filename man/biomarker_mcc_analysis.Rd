@@ -71,7 +71,7 @@ a list with various elements:
   the classification was based on the \emph{MCC score} of each model and was
   found using an optimal univariate k-means clustering method
   (\code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}).
-  Rows represent the diffferent classification group matchings, e.g. (1,2)
+  Rows represent the different classification group matchings, e.g. (1,2)
   means the models that were classified into the first MCC class vs the models
   that were classified in the 2nd class (higher is better). The columns
   represent the network's node names. Values are in the [-1,1] interval.
@@ -86,7 +86,7 @@ a list with various elements:
   the classification was based on the \emph{MCC score} of each model and was
   found using an optimal univariate k-means clustering method
   (\code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}).
-  Rows represent the diffferent classification group matchings, e.g. (1,2)
+  Rows represent the different classification group matchings, e.g. (1,2)
   means the models that were classified into the first MCC class vs the models
   that were classified in the 2nd class (higher is better).
   The columns represent the network's node names. Values are in the [-1,1] interval.

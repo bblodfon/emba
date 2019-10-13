@@ -26,5 +26,5 @@ number of mcc classes (groups) that we should split the models MCC values
 }
 \description{
 This function is a wrapper of the \code{\link[Ckmeans.1d.dp]{ahist}} function
-for ploting nicely the distribution of the MCC models' values.
+for plotting nicely the distribution of the MCC models' values.
 }
