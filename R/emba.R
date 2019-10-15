@@ -1,7 +1,7 @@
 #' emba
 #'
-#' A collection of useful functions that help the analysis and discovery of
-#' biomarkers in an ensemble boolean model dataset
+#' A set of functions that help the analysis and visualization of an ensemble of
+#' boolean models for biomarker discovery in cancer cell networks.
 #'
 #' For a complete list of functions, use \code{library(help = "emba")}
 #'
