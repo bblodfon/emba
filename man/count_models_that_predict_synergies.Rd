@@ -2,14 +2,14 @@
 % Please edit documentation in R/analysis.R
 \name{count_models_that_predict_synergies}
 \alias{count_models_that_predict_synergies}
-\title{Count models that predict list of synergies}
+\title{Count models that predict a set of synergies}
 \usage{
-count_models_that_predict_synergies(drug.comb.list, model.predictions)
+count_models_that_predict_synergies(drug.comb.vec, model.predictions)
 }
 \arguments{
-\item{drug.comb.list}{a list with (synergistic) drug combinations as elements
-(each drug combination is a string in the form \emph{A-B} - no spaces between
-the names and the hyphen '-')}
+\item{drug.comb.vec}{a character vector. Elements are (synergistic) drug
+combinations, each one being a string in the form \emph{A-B} - no spaces
+between the names and the hyphen '-')}
 
 \item{model.predictions}{a \code{data.frame} object with rows as the models
 and columns the drug combinations tested. Possible values for each
@@ -21,9 +21,10 @@ the number of models that predict the given drug combination set
 (have a value of 1 in the respective columns of the \code{model.predictions}
 data.frame). If the given set is empty, we return the number of models that
 predicted no synergies at all (after the \emph{NA} values are discarded, the
-row in the \code{model.predictions} data.frame is all zeros)
+number of rows in the \code{model.predictions} data.frame that have only zero
+values)
 }
 \description{
-Use this function to find the number of models that predict a given list of
+Use this function to find the number of models that predict a given set of
 drug combinations (usually the ones found as synergies).
 }

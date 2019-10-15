@@ -31,3 +31,10 @@ the models' predictions. So, if for example the set of synergies is this one:
 just the single subsets (e.g. the \{'A-B'\}),
 the two-element subsets (e.g. the \{'A-B','C-D'\}) and all 3 of them.
 }
+\section{Details}{
+
+Note that if the \code{synergies} vector has more than 10-15 elements, then
+this function might take long time to execute even with an optimal
+implementation of \code{\link{count_models_that_predict_synergies}}.
+}
+

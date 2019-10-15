@@ -71,6 +71,11 @@ get_unobserved_model_predictions = function(model.predictions, observed.synergie
 #' synergistic drug combination subset, which are the drug combinations comma
 #' separated (e.g. 'A-B,C-D').
 #'
+#' @section Details:
+#' Note that if the \code{synergies} vector has more than 10-15 elements, then
+#' this function might take long time to execute even with an optimal
+#' implementation of \code{\link{count_models_that_predict_synergies}}.
+#'
 #' @importFrom rje powerSet
 #' @export
 get_synergy_subset_stats = function(model.predictions, synergies) {
@@ -97,14 +102,14 @@ get_synergy_subset_stats = function(model.predictions, synergies) {
   return(synergy.subset.stats)
 }
 
-#' Count models that predict list of synergies
+#' Count models that predict a set of synergies
 #'
-#' Use this function to find the number of models that predict a given list of
+#' Use this function to find the number of models that predict a given set of
 #' drug combinations (usually the ones found as synergies).
 #'
-#' @param drug.comb.list a list with (synergistic) drug combinations as elements
-#' (each drug combination is a string in the form \emph{A-B} - no spaces between
-#' the names and the hyphen '-')
+#' @param drug.comb.vec a character vector. Elements are (synergistic) drug
+#' combinations, each one being a string in the form \emph{A-B} - no spaces
+#' between the names and the hyphen '-')
 #' @param model.predictions a \code{data.frame} object with rows as the models
 #' and columns the drug combinations tested. Possible values for each
 #' \emph{model-drug combination element} are either \emph{0} (no synergy
@@ -114,22 +119,22 @@ get_synergy_subset_stats = function(model.predictions, synergies) {
 #' (have a value of 1 in the respective columns of the \code{model.predictions}
 #' data.frame). If the given set is empty, we return the number of models that
 #' predicted no synergies at all (after the \emph{NA} values are discarded, the
-#' row in the \code{model.predictions} data.frame is all zeros)
+#' number of rows in the \code{model.predictions} data.frame that have only zero
+#' values)
 #'
 #' @export
 count_models_that_predict_synergies =
-  function(drug.comb.list, model.predictions) {
-    synergy.vector = unlist(drug.comb.list)
-    if (length(synergy.vector) == 0) {
-      count = sum(apply(model.predictions, 1, function(x) {
-        all(x == 0, na.rm = T)
-      }))
-    } else if (length(synergy.vector) == 1) {
-      count = sum(model.predictions[, synergy.vector], na.rm = T)
+  function(drug.comb.vec, model.predictions) {
+    vec = drug.comb.vec
+    df = model.predictions
+
+    if (length(vec) == 0) {
+      count = sum(!rowSums(df != 0, na.rm = TRUE))
+    } else if (length(vec) == 1) {
+      count = sum(df[, vec], na.rm = T)
     } else {
-      count = sum(apply(model.predictions[, synergy.vector], 1, function(x) {
-        all(x == 1)
-      }), na.rm = T)
+      df.part = df[, vec]
+      count = sum(!rowSums(replace(df.part, is.na(df.part), -999) != 1))
     }
 
     return(count)
