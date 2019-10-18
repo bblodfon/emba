@@ -172,7 +172,9 @@ make_barplot_on_synergy_subset_stats =
       !synergy.subset.stats < threshold.for.subset.removal
     ]
 
+    oldpar = par('mar')
     par(mar = c(bottom.margin, 4, 4, 2)) # c(bottom, left, top, right)
+    on.exit(par(oldpar))
 
     y.axis.values = pretty(synergy.subset.stats)
     bp = barplot(synergy.subset.stats, col = "green", space = 0.5, las = 2,
@@ -291,7 +293,10 @@ plot_avg_state_diff_graph = function(net, diff, layout, title) {
   V(net)$color = get_node_colors(net, diff, col)
 
   # plot the network
+  oldpar = par('mar')
   par(mar = c(0, 0, 1, 0)) # c(bottom, left, top, right)
+  on.exit(par(oldpar))
+
   plot.igraph(net, asp = 0, layout = layout, main = title)
   legend(x = -1.1, y = -0.7, pch = 21, col = "#777777",
         legend = c("More inhibited", "No difference", "More activated"),
@@ -341,7 +346,10 @@ plot_avg_link_operator_diff_graph = function(net, diff, layout, title) {
   V(net)$color = get_node_colors(net, diff, col)
 
   # plot the network
+  oldpar = par('mar')
   par(mar = c(0, 0, 1, 0)) # c(bottom, left, top, right)
+  on.exit(par(oldpar))
+
   plot.igraph(net, asp = 0, layout = layout, main = title)
   legend(x = -1.1, y = -0.6, pch = 21, col = "#777777",
          legend = c("AND NOT", "OR NOT", "No difference", "no link operator"),
