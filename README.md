@@ -4,10 +4,9 @@
 [![Travis build status](https://travis-ci.org/bblodfon/emba.svg?branch=master)](https://travis-ci.org/bblodfon/emba)
 <!-- badges: end -->
 
-This package includes a set of functions that help the analysis and visualization of an ensemble of 
-boolean models for biomarker discovery in cancer cell networks. These functions allow to easily 
-import the data results of the DrugLogics software pipeline for drug combination
-predictions while others (more generic ones) can be used to split a boolean model 
+Analysis and visualization of an ensemble of boolean models for biomarker discovery in cancer cell networks. 
+The package allows to easily import the data results of a software pipeline that predicts synergistic drug combinations in cancer cell lines, developed by the DrugLogics research group in NTNU. 
+It has generic functions that can be used to split a boolean model 
 dataset to model groups with regards to the models predictive performance (number of true 
 positive predictions or Matthews correlation coefficient score) or synergy prediction based on a given set 
 of observed synergies and find the average activity difference per network 

@@ -6,7 +6,7 @@
 \alias{emba-package}
 \title{emba}
 \description{
-A set of functions that help the analysis and visualization of an ensemble of
+Analysis and visualization of an ensemble of
 boolean models for biomarker discovery in cancer cell networks.
 }
 \details{
