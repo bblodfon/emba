@@ -2,6 +2,8 @@
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/bblodfon/emba.svg?branch=master)](https://travis-ci.org/bblodfon/emba)
+[![CRAN status](https://www.r-pkg.org/badges/version/emba)](https://cran.r-project.org/package=emba)
+[![Downloads](https://cranlogs.r-pkg.org/badges/emba)](https://cran.r-project.org/package=emba)
 <!-- badges: end -->
 
 Analysis and visualization of an ensemble of boolean models for biomarker discovery in cancer cell networks. 
@@ -17,11 +19,18 @@ performance in general (performance biomarkers). Lastly, if the
 boolean models have a specific equation form and differ only in their link operator, 
 link operator biomarkers can also be assessed.
 
-For an example usage of this package's functions, see the analysis performed
-on multiple boolean model datasets [here](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/).
-
 ## Install
 
+CRAN version:
+```
+install.packages("emba")
+```
+
+Development version:
 ```
 devtools::install_github("bblodfon/emba")
 ```
+
+## Examples
+
+For an example usage of this package's functions, see [the analysis](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) performed on multiple boolean model datasets.
