@@ -1,3 +1,7 @@
+# emba 0.1.2
+
+- added function `get_avg_link_operator_diff_based_on_synergy_set_cmp`
+
 # emba 0.1.1
 
 - Optimized `count_models_that_predict_synergies` function and added tests for it. For a benchmark see
