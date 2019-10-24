@@ -35,7 +35,6 @@ individual row was based on the prediction or not of a specific synergistic
 drug combination.
 The row names are the predicted synergies, one per row, while the columns
 represent the network's node names. Values are in the [-1,1] interval.
-the classification was based on the models' MCC values.
 }
 \description{
 This function uses the \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}}
@@ -68,6 +67,7 @@ Other average data difference functions: \code{\link{get_avg_activity_diff_based
   \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
   \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}},
   \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}},
+  \code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}},
   \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
   \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
 }
