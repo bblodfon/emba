@@ -28,6 +28,7 @@ Imports:
     graphics,
     grDevices,
     utils,
+    purrr,
     rje (>= 1.9),
     igraph (>= 1.2.4),
     visNetwork (>= 2.0.7),

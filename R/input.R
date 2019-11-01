@@ -435,6 +435,68 @@ get_edges_from_topology_file = function(topology.file) {
   return(edges)
 }
 
+#' Filter the network's vertices
+#'
+#' Produce an \strong{induced subgraph} of the given \emph{net} igraph object.
+#' How many vertices/nodes will be kept in the result graph object is determined
+#' by the initial nodes given and the level provided. A level equal to 0 corresponds
+#' to a subgraph with only the given nodes, a level equal to 1 to a subgraph with
+#' the nodes + their neighbors (the closed neighbourhood set) and a level equal to
+#' 2 to a subgraph with the nodes + their neighbors + the nodes neighbor beighbors!
+#' (so the neighbourhood of the neighbourhood)
+#'
+#' @param net an igraph object.
+#' @param nodes character vector of node names. It must be a subset of the nodes
+#' of the \emph{net} object.
+#' @param level integer. Can be only 0, 1 or 2 and specifies the neighbourhood
+#' depth of the result graph.
+#'
+#' @return an induced subgraph of the \code{net} igraph object.
+#'
+#' @importFrom igraph V induced_subgraph
+#' @export
+filter_network = function(net, nodes, level) {
+  stopifnot(class(net) == "igraph")
+  stopifnot(level == 0 | level == 1 | level == 2)
+  stopifnot(!is_empty(nodes))
+
+  nodes = unique(nodes)
+  net.nodes = V(net)$name
+  stopifnot(nodes %in% net.nodes)
+
+  if (level == 0) {
+    neighbor.nodes = c()
+  }
+  if (level == 1) {
+    neighbor.nodes = get_neighbors(net, nodes)
+  } else if (level == 2) {
+    neighbor.nodes.lev.1 = get_neighbors(net, nodes)
+    neighbor.nodes = c(neighbor.nodes.lev.1, get_neighbors(net, neighbor.nodes.lev.1))
+  }
+
+  nodes = unique(c(nodes, neighbor.nodes))
+  induced_subgraph(net, nodes)
+}
+
+#' Get neighbor nodes
+#'
+#' Given an igraph network object and vector of node names, this function
+#' returns the set of unique neighbor nodes considering both ingoing and outgoing
+#' edges (the closed neighbourhood node set).
+#'
+#' @param net igraph object
+#' @param nodes character vector of node names
+#'
+#' @return a character vector of all the unique neighbors of the given
+#' \code{nodes} in the \code{net} graph.
+#'
+#' @importFrom igraph adjacent_vertices
+#' @importFrom purrr flatten_chr
+get_neighbors = function(net, nodes) {
+  adj.node.list = adjacent_vertices(graph = net, v = nodes, mode = "all")
+  return(unique(names(flatten_chr(adj.node.list))))
+}
+
 #' Get observed synergies per cell line
 #'
 #' Use this function to get the observed synergies from the respective
