@@ -12,8 +12,11 @@ filter_network(net, nodes, level)
 \item{nodes}{character vector of node names. It must be a subset of the nodes
 of the \emph{net} object.}
 
-\item{level}{integer. Can be only 0, 1 or 2 and specifies the the
-neighbourhood depth of the result graph.}
+\item{level}{integer. Can be only 0, 1 or 2 and specifies the neighbourhood
+depth of the result graph.}
+}
+\value{
+an induced subgraph of the \code{net} igraph object.
 }
 \description{
 Produce an \strong{induced subgraph} of the given \emph{net} igraph object.
@@ -21,6 +24,6 @@ How many vertices/nodes will be kept in the result graph object is determined
 by the initial nodes given and the level provided. A level equal to 0 corresponds
 to a subgraph with only the given nodes, a level equal to 1 to a subgraph with
 the nodes + their neighbors (the closed neighbourhood set) and a level equal to
-2 to a subgraph with the nodes + their neighbors + the nodes neighbor beighbors!
+2 to a subgraph with the nodes + their neighbors + the nodes neighbor neighbors!
 (so the neighbourhood of the neighbourhood)
 }

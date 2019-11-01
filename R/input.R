@@ -442,7 +442,7 @@ get_edges_from_topology_file = function(topology.file) {
 #' by the initial nodes given and the level provided. A level equal to 0 corresponds
 #' to a subgraph with only the given nodes, a level equal to 1 to a subgraph with
 #' the nodes + their neighbors (the closed neighbourhood set) and a level equal to
-#' 2 to a subgraph with the nodes + their neighbors + the nodes neighbor beighbors!
+#' 2 to a subgraph with the nodes + their neighbors + the nodes neighbor neighbors!
 #' (so the neighbourhood of the neighbourhood)
 #'
 #' @param net an igraph object.
