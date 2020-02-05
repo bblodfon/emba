@@ -1,8 +1,9 @@
 # emba 0.1.2
 
-- added function `get_avg_link_operator_diff_based_on_synergy_set_cmp`
-- added function `get_avg_link_operator_diff_based_on_specific_synergy_prediction`
-- added function `filter_network` - to use for visualizing induced subgraphs
+- add function `get_avg_link_operator_diff_based_on_synergy_set_cmp`
+- add function `get_avg_link_operator_diff_based_on_specific_synergy_prediction`
+- add function `filter_network` - to use for visualizing induced subgraphs
+- update dependencies (set `usefun` min version to 0.4.3)
 
 # emba 0.1.1
 
