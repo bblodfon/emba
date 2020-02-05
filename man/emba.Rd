@@ -3,7 +3,6 @@
 \docType{package}
 \name{emba}
 \alias{emba}
-\alias{emba-package}
 \title{emba}
 \description{
 Analysis and visualization of an ensemble of

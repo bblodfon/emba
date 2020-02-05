@@ -25,10 +25,11 @@ Since the given \code{unobserved.model.predictions} data.frame has only the
 negative results, this function returns the total number of 1's in each row.
 }
 \seealso{
-Other confusion matrix calculation functions: \code{\link{calculate_mcc}},
-  \code{\link{calculate_models_mcc}},
-  \code{\link{calculate_models_synergies_fn}},
-  \code{\link{calculate_models_synergies_tn}},
-  \code{\link{calculate_models_synergies_tp}}
+Other confusion matrix calculation functions: 
+\code{\link{calculate_mcc}()},
+\code{\link{calculate_models_mcc}()},
+\code{\link{calculate_models_synergies_fn}()},
+\code{\link{calculate_models_synergies_tn}()},
+\code{\link{calculate_models_synergies_tp}()}
 }
 \concept{confusion matrix calculation functions}

@@ -4,8 +4,7 @@
 \alias{validate_observed_synergies_data}
 \title{Validate observed synergies data}
 \usage{
-validate_observed_synergies_data(observed.synergies,
-  drug.combinations.tested)
+validate_observed_synergies_data(observed.synergies, drug.combinations.tested)
 }
 \arguments{
 \item{observed.synergies}{a character vector of drug combinations}

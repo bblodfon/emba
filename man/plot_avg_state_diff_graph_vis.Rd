@@ -30,9 +30,10 @@ comparing the average model classified in the 'good' category vs the average
 'bad' one.
 }
 \seealso{
-Other network plotting functions: \code{\link{plot_avg_link_operator_diff_graphs}},
-  \code{\link{plot_avg_link_operator_diff_graph}},
-  \code{\link{plot_avg_state_diff_graphs}},
-  \code{\link{plot_avg_state_diff_graph}}
+Other network plotting functions: 
+\code{\link{plot_avg_link_operator_diff_graphs}()},
+\code{\link{plot_avg_link_operator_diff_graph}()},
+\code{\link{plot_avg_state_diff_graphs}()},
+\code{\link{plot_avg_state_diff_graph}()}
 }
 \concept{network plotting functions}

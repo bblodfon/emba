@@ -4,8 +4,11 @@
 \alias{print_biomarkers_per_predicted_synergy}
 \title{Print biomarkers for each predicted synergy}
 \usage{
-print_biomarkers_per_predicted_synergy(biomarkers.dir, predicted.synergies,
-  html.output = TRUE)
+print_biomarkers_per_predicted_synergy(
+  biomarkers.dir,
+  predicted.synergies,
+  html.output = TRUE
+)
 }
 \arguments{
 \item{biomarkers.dir}{string. It specifies the full path name of the

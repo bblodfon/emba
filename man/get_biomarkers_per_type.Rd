@@ -39,6 +39,7 @@ of the given classification group comparisons (below) the threshold (negative
 threshold), then a \emph{positive} (\emph{negative}) biomarker is reported.
 }
 \seealso{
-Other biomarker functions: \code{\link{get_biomarkers}}
+Other biomarker functions: 
+\code{\link{get_biomarkers}()}
 }
 \concept{biomarker functions}

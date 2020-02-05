@@ -4,8 +4,10 @@
 \alias{get_link_operators_from_models_dir}
 \title{Load the models boolean equation link operator data}
 \usage{
-get_link_operators_from_models_dir(models.dir,
-  remove.equations.without.link.operator = TRUE)
+get_link_operators_from_models_dir(
+  models.dir,
+  remove.equations.without.link.operator = TRUE
+)
 }
 \arguments{
 \item{models.dir}{string. A dir with \emph{.gitsbe} files/models}

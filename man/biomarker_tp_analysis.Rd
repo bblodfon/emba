@@ -4,8 +4,13 @@
 \alias{biomarker_tp_analysis}
 \title{Biomarker analysis based on TP model classification}
 \usage{
-biomarker_tp_analysis(model.predictions, models.stable.state,
-  models.link.operator = NULL, observed.synergies, threshold)
+biomarker_tp_analysis(
+  model.predictions,
+  models.stable.state,
+  models.link.operator = NULL,
+  observed.synergies,
+  threshold
+)
 }
 \arguments{
 \item{model.predictions}{a \code{data.frame} object with rows the models and
@@ -94,7 +99,8 @@ operator) affects the prediction performance of the models (as measured by
 the number of TPs).
 }
 \seealso{
-Other general analysis functions: \code{\link{biomarker_mcc_analysis}},
-  \code{\link{biomarker_synergy_analysis}}
+Other general analysis functions: 
+\code{\link{biomarker_mcc_analysis}()},
+\code{\link{biomarker_synergy_analysis}()}
 }
 \concept{general analysis functions}

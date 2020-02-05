@@ -4,9 +4,15 @@
 \alias{biomarker_mcc_analysis}
 \title{Biomarker analysis based on MCC model classification}
 \usage{
-biomarker_mcc_analysis(model.predictions, models.stable.state,
-  models.link.operator = NULL, observed.synergies, threshold,
-  num.of.mcc.classes, include.NaN.mcc.class = TRUE)
+biomarker_mcc_analysis(
+  model.predictions,
+  models.stable.state,
+  models.link.operator = NULL,
+  observed.synergies,
+  threshold,
+  num.of.mcc.classes,
+  include.NaN.mcc.class = TRUE
+)
 }
 \arguments{
 \item{model.predictions}{a \code{data.frame} object with rows the models and
@@ -109,7 +115,8 @@ operator) affects the prediction performance of the models (as measured by
 the MCC score).
 }
 \seealso{
-Other general analysis functions: \code{\link{biomarker_synergy_analysis}},
-  \code{\link{biomarker_tp_analysis}}
+Other general analysis functions: 
+\code{\link{biomarker_synergy_analysis}()},
+\code{\link{biomarker_tp_analysis}()}
 }
 \concept{general analysis functions}

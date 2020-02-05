@@ -4,8 +4,13 @@
 \alias{update_biomarker_files}
 \title{Update biomarker files for a specific synergy}
 \usage{
-update_biomarker_files(biomarkers.dir, drug.comb, biomarkers.active.new,
-  biomarkers.inhibited.new, method = "replace")
+update_biomarker_files(
+  biomarkers.dir,
+  drug.comb,
+  biomarkers.active.new,
+  biomarkers.inhibited.new,
+  method = "replace"
+)
 }
 \arguments{
 \item{biomarkers.dir}{string. It specifies the full path name of the

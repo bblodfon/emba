@@ -4,8 +4,13 @@
 \alias{biomarker_synergy_analysis}
 \title{Biomarker analysis per synergy predicted}
 \usage{
-biomarker_synergy_analysis(model.predictions, models.stable.state,
-  models.link.operator = NULL, observed.synergies, threshold)
+biomarker_synergy_analysis(
+  model.predictions,
+  models.stable.state,
+  models.link.operator = NULL,
+  observed.synergies,
+  threshold
+)
 }
 \arguments{
 \item{model.predictions}{a \code{data.frame} object with rows the models and
@@ -86,7 +91,8 @@ manifestation of synergies in the models. Models are classified based on
 whether they predict or not each of the predicted synergies.
 }
 \seealso{
-Other general analysis functions: \code{\link{biomarker_mcc_analysis}},
-  \code{\link{biomarker_tp_analysis}}
+Other general analysis functions: 
+\code{\link{biomarker_mcc_analysis}()},
+\code{\link{biomarker_tp_analysis}()}
 }
 \concept{general analysis functions}

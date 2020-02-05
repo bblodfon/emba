@@ -4,8 +4,11 @@
 \alias{calculate_models_mcc}
 \title{Calculate the Matthews correlation coefficient for each model}
 \usage{
-calculate_models_mcc(observed.model.predictions,
-  unobserved.model.predictions, number.of.drug.comb.tested)
+calculate_models_mcc(
+  observed.model.predictions,
+  unobserved.model.predictions,
+  number.of.drug.comb.tested
+)
 }
 \arguments{
 \item{observed.model.predictions}{\code{data.frame} object with rows the models
@@ -34,10 +37,11 @@ interval or \emph{NaN}. The \emph{names} attribute holds the models' names.
 Calculate the Matthews correlation coefficient for each model
 }
 \seealso{
-Other confusion matrix calculation functions: \code{\link{calculate_mcc}},
-  \code{\link{calculate_models_synergies_fn}},
-  \code{\link{calculate_models_synergies_fp}},
-  \code{\link{calculate_models_synergies_tn}},
-  \code{\link{calculate_models_synergies_tp}}
+Other confusion matrix calculation functions: 
+\code{\link{calculate_mcc}()},
+\code{\link{calculate_models_synergies_fn}()},
+\code{\link{calculate_models_synergies_fp}()},
+\code{\link{calculate_models_synergies_tn}()},
+\code{\link{calculate_models_synergies_tp}()}
 }
 \concept{confusion matrix calculation functions}

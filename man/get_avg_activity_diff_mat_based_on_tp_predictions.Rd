@@ -4,8 +4,11 @@
 \alias{get_avg_activity_diff_mat_based_on_tp_predictions}
 \title{Get average activity difference matrix based on the number of true positives}
 \usage{
-get_avg_activity_diff_mat_based_on_tp_predictions(models,
-  models.synergies.tp, models.stable.state)
+get_avg_activity_diff_mat_based_on_tp_predictions(
+  models,
+  models.synergies.tp,
+  models.stable.state
+)
 }
 \arguments{
 \item{models}{character vector. The model names.}
@@ -37,16 +40,17 @@ function on each generated classification group matching, comparing thus all
 groups of models with different true positive (TP) values.
 }
 \seealso{
-Other average data difference functions: \code{\link{get_avg_activity_diff_based_on_mcc_clustering}},
-  \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}},
-  \code{\link{get_avg_activity_diff_based_on_synergy_set_cmp}},
-  \code{\link{get_avg_activity_diff_based_on_tp_predictions}},
-  \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}},
-  \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}},
-  \code{\link{get_avg_link_operator_diff_based_on_specific_synergy_prediction}},
-  \code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}},
-  \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}},
-  \code{\link{get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction}},
-  \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}
+Other average data difference functions: 
+\code{\link{get_avg_activity_diff_based_on_mcc_clustering}()},
+\code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}()},
+\code{\link{get_avg_activity_diff_based_on_synergy_set_cmp}()},
+\code{\link{get_avg_activity_diff_based_on_tp_predictions}()},
+\code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}()},
+\code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}()},
+\code{\link{get_avg_link_operator_diff_based_on_specific_synergy_prediction}()},
+\code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}()},
+\code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}()},
+\code{\link{get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction}()},
+\code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}()}
 }
 \concept{average data difference functions}

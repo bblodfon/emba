@@ -26,10 +26,11 @@ positive results, this function returns the total number of 0's \emph{and}
 NA's in each row.
 }
 \seealso{
-Other confusion matrix calculation functions: \code{\link{calculate_mcc}},
-  \code{\link{calculate_models_mcc}},
-  \code{\link{calculate_models_synergies_fp}},
-  \code{\link{calculate_models_synergies_tn}},
-  \code{\link{calculate_models_synergies_tp}}
+Other confusion matrix calculation functions: 
+\code{\link{calculate_mcc}()},
+\code{\link{calculate_models_mcc}()},
+\code{\link{calculate_models_synergies_fp}()},
+\code{\link{calculate_models_synergies_tn}()},
+\code{\link{calculate_models_synergies_tp}()}
 }
 \concept{confusion matrix calculation functions}

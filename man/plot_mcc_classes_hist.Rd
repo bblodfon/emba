@@ -4,8 +4,12 @@
 \alias{plot_mcc_classes_hist}
 \title{Plot histogram of the MCC classes}
 \usage{
-plot_mcc_classes_hist(models.mcc.no.nan.sorted, models.cluster.ids,
-  num.of.mcc.classes, mcc.class.ids)
+plot_mcc_classes_hist(
+  models.mcc.no.nan.sorted,
+  models.cluster.ids,
+  num.of.mcc.classes,
+  mcc.class.ids
+)
 }
 \arguments{
 \item{models.mcc.no.nan.sorted}{a numeric sorted vector of Matthews

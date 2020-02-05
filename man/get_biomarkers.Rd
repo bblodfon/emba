@@ -62,6 +62,7 @@ the more sure we are that the average data difference corresponds to a
 }
 
 \seealso{
-Other biomarker functions: \code{\link{get_biomarkers_per_type}}
+Other biomarker functions: 
+\code{\link{get_biomarkers_per_type}()}
 }
 \concept{biomarker functions}

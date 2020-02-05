@@ -4,8 +4,12 @@
 \alias{get_synergy_biomarkers_from_dir}
 \title{Get synergy biomarkers from dir}
 \usage{
-get_synergy_biomarkers_from_dir(predicted.synergies, biomarkers.dir,
-  models.dir, node.names = NULL)
+get_synergy_biomarkers_from_dir(
+  predicted.synergies,
+  biomarkers.dir,
+  models.dir,
+  node.names = NULL
+)
 }
 \arguments{
 \item{predicted.synergies}{a character vector of the synergies (drug

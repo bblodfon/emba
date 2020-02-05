@@ -4,8 +4,12 @@
 \alias{make_barplot_on_synergy_subset_stats}
 \title{Bar plot of observed synergy subsets}
 \usage{
-make_barplot_on_synergy_subset_stats(synergy.subset.stats,
-  threshold.for.subset.removal, bottom.margin, cell.line = NULL)
+make_barplot_on_synergy_subset_stats(
+  synergy.subset.stats,
+  threshold.for.subset.removal,
+  bottom.margin,
+  cell.line = NULL
+)
 }
 \arguments{
 \item{synergy.subset.stats}{integer vector with values the amount of models

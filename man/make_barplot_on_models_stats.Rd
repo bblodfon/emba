@@ -4,8 +4,15 @@
 \alias{make_barplot_on_models_stats}
 \title{Bar plot of model stats}
 \usage{
-make_barplot_on_models_stats(models.stats, cell.line, title, xlab, ylab,
-  cont.values = FALSE, threshold = 0)
+make_barplot_on_models_stats(
+  models.stats,
+  cell.line,
+  title,
+  xlab,
+  ylab,
+  cont.values = FALSE,
+  threshold = 0
+)
 }
 \arguments{
 \item{models.stats}{table object, the result of using \link[base]{table} on

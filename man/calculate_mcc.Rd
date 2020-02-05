@@ -31,10 +31,11 @@ the input vectors have to be of the same size and have one-to-one value
 correspondence for the output MCC vector values to make sense.
 }
 \seealso{
-Other confusion matrix calculation functions: \code{\link{calculate_models_mcc}},
-  \code{\link{calculate_models_synergies_fn}},
-  \code{\link{calculate_models_synergies_fp}},
-  \code{\link{calculate_models_synergies_tn}},
-  \code{\link{calculate_models_synergies_tp}}
+Other confusion matrix calculation functions: 
+\code{\link{calculate_models_mcc}()},
+\code{\link{calculate_models_synergies_fn}()},
+\code{\link{calculate_models_synergies_fp}()},
+\code{\link{calculate_models_synergies_tn}()},
+\code{\link{calculate_models_synergies_tp}()}
 }
 \concept{confusion matrix calculation functions}
