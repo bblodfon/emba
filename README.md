@@ -1,7 +1,7 @@
 # emba
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/bblodfon/emba.svg?branch=master)](https://travis-ci.org/bblodfon/emba)
+[![Travis build status](https://travis-ci.com/bblodfon/emba.svg?branch=master)](https://travis-ci.com/bblodfon/emba)
 [![CRAN status](https://www.r-pkg.org/badges/version/emba)](https://cran.r-project.org/package=emba)
 [![Downloads](https://cranlogs.r-pkg.org/badges/emba)](https://cran.r-project.org/package=emba)
 <!-- badges: end -->
