@@ -1,11 +1,7 @@
 context("Testing 'count_models_that_predict_synergies'")
 
 test_that("it returns correct results", {
-  RNGkind(sample.kind = "Rejection")
-  set.seed(0)
-
-  df = matrix(data = sample(c(0,1,NA), size = 10000, replace = TRUE), nrow = 1000, ncol = 10)
-  colnames(df) = c('d-e','r-u','i-k','g-o','w-x','n-s','f-l','b-m','c-y','z-a')
+  df = model_predictions_df # from R/sysdata.rda
 
   expect_equal(count_models_that_predict_synergies(drug.comb.vec = character(0), model.predictions = df), 25)
 
