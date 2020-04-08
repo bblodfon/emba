@@ -1,3 +1,8 @@
+# emba 0.1.3
+
+- add function `get_synergy_scores`
+- fixed test that used a randomly generated matrix
+
 # emba 0.1.2
 
 - add function `get_avg_link_operator_diff_based_on_synergy_set_cmp`
