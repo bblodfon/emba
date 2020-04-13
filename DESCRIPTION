@@ -35,6 +35,7 @@ Imports:
     visNetwork (>= 2.0.9),
     Ckmeans.1d.dp (>= 4.2.2),
     magrittr (>= 1.5),
-    usefun (>= 0.4.3)
+    usefun (>= 0.4.3),
+    readr
 Suggests: 
     testthat
