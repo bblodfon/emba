@@ -35,6 +35,11 @@
 #' below its negative value) a biomarker will be registered in the returned result.
 #' Values closer to 1 translate to a more strict threshold and thus less
 #' biomarkers are found.
+#' @param calculate.subsets.stats logical. If \emph{TRUE}, then the results will
+#' include a vector of integers, representing the number of models that predicted
+#' every subset of the given \code{observed.synergies} (where at least one model
+#' predicts every synergy in the subset). The default value is \emph{FALSE}, since
+#' the powerset of the predicted \code{observed.synergies} can be very large to compute.
 #'
 #' @return a list with various elements:
 #' \itemize{
@@ -46,7 +51,8 @@
 #'   combination names) that were predicted by \strong{at least one} of the models
 #'   in the dataset.
 #'   \item \code{synergy.subset.stats}: an integer vector with elements the number
-#'   of models the predicted each \strong{observed synergy subset}.
+#'   of models the predicted each \strong{observed synergy subset} if the
+#'   \emph{calculate.subsets.stats} option is enabled.
 #'   \item \code{models.synergies.tp}: an integer vector of true positive (TP)
 #'   values, one for each model.
 #'   \item \code{diff.tp.mat}: a matrix whose rows are \strong{vectors of
@@ -83,7 +89,7 @@
 #' @export
 biomarker_tp_analysis =
   function(model.predictions, models.stable.state, models.link.operator = NULL,
-           observed.synergies, threshold) {
+           observed.synergies, threshold, calculate.subsets.stats = FALSE) {
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
   models = rownames(model.predictions)
@@ -106,7 +112,9 @@ biomarker_tp_analysis =
   stopifnot(all(predicted.synergies %in% observed.synergies))
 
   # Find the number of predictive models for every synergy subset
-  synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
+  if (calculate.subsets.stats) {
+    synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
+  }
 
   # Count the predictions of the observed synergies per model (TP)
   models.synergies.tp = calculate_models_synergies_tp(observed.model.predictions)
@@ -125,7 +133,9 @@ biomarker_tp_analysis =
   res.list$observed.model.predictions = observed.model.predictions
   res.list$unobserved.model.predictions = unobserved.model.predictions
   res.list$predicted.synergies = predicted.synergies
-  res.list$synergy.subset.stats = synergy.subset.stats
+  if (calculate.subsets.stats) {
+    res.list$synergy.subset.stats = synergy.subset.stats
+  }
   res.list$models.synergies.tp = models.synergies.tp
   res.list$diff.state.tp.mat = diff.state.tp.mat
   res.list$biomarkers.tp.active = biomarkers.state.list$biomarkers.pos
@@ -196,6 +206,11 @@ biomarker_tp_analysis =
 #' in one class - the 'NaN MCC Class' - and compared with the other model classes
 #' in the analysis? If \emph{TRUE} (default), then the number of total MCC classes
 #' will be \emph{num.of.mcc.classes + 1}.
+#' @param calculate.subsets.stats logical. If \emph{TRUE}, then the results will
+#' include a vector of integers, representing the number of models that predicted
+#' every subset of the given \code{observed.synergies} (where at least one model
+#' predicts every synergy in the subset). The default value is \emph{FALSE}, since
+#' the powerset of the predicted \code{observed.synergies} can be very large to compute.
 #'
 #' @return a list with various elements:
 #' \itemize{
@@ -207,7 +222,8 @@ biomarker_tp_analysis =
 #'   combination names) that were predicted by \strong{at least one} of the models
 #'   in the dataset.
 #'   \item \code{synergy.subset.stats}: an integer vector with elements the number
-#'   of models the predicted each \strong{observed synergy subset}.
+#'   of models the predicted each \strong{observed synergy subset} if the
+#'   \emph{calculate.subsets.stats} option is enabled.
 #'   \item \code{models.mcc}: a numeric vector of MCC values (NaN's can be
 #'   included), one for each model.
 #'   \item \code{diff.state.mcc.mat}: a matrix whose rows are \strong{vectors of
@@ -246,9 +262,10 @@ biomarker_tp_analysis =
 #'
 #' @family general analysis functions
 #' @export
-biomarker_mcc_analysis =
-  function(model.predictions, models.stable.state, models.link.operator = NULL,
-           observed.synergies, threshold, num.of.mcc.classes, include.NaN.mcc.class = TRUE) {
+biomarker_mcc_analysis = function(model.predictions, models.stable.state,
+  models.link.operator = NULL, observed.synergies, threshold, num.of.mcc.classes,
+  include.NaN.mcc.class = TRUE, calculate.subsets.stats = FALSE) {
+
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
   stopifnot(num.of.mcc.classes >= 2)
@@ -274,7 +291,9 @@ biomarker_mcc_analysis =
   stopifnot(all(predicted.synergies %in% observed.synergies))
 
   # Find the number of predictive models for every synergy subset
-  synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
+  if (calculate.subsets.stats) {
+    synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
+  }
 
   # Calculate Matthews Correlation Coefficient (MCC) for every model
   models.mcc = calculate_models_mcc(observed.model.predictions,
@@ -295,7 +314,9 @@ biomarker_mcc_analysis =
   res.list$observed.model.predictions = observed.model.predictions
   res.list$unobserved.model.predictions = unobserved.model.predictions
   res.list$predicted.synergies = predicted.synergies
-  res.list$synergy.subset.stats = synergy.subset.stats
+  if (calculate.subsets.stats) {
+    res.list$synergy.subset.stats = synergy.subset.stats
+  }
   res.list$models.mcc = models.mcc
   res.list$diff.state.mcc.mat = diff.state.mcc.mat
   res.list$biomarkers.mcc.active = biomarkers.state.list$biomarkers.pos
@@ -356,6 +377,11 @@ biomarker_mcc_analysis =
 #' below its negative value) a biomarker will be registered in the returned result.
 #' Values closer to 1 translate to a more strict threshold and thus less
 #' biomarkers are found.
+#' @param calculate.subsets.stats logical. If \emph{TRUE}, then the results will
+#' include a vector of integers, representing the number of models that predicted
+#' every subset of the given \code{observed.synergies} (where at least one model
+#' predicts every synergy in the subset). The default value is \emph{FALSE}, since
+#' the powerset of the predicted \code{observed.synergies} can be very large to compute.
 #'
 #' @return a list with various elements:
 #' \itemize{
@@ -367,7 +393,8 @@ biomarker_mcc_analysis =
 #'   combination names) that were predicted by \strong{at least one} of the models
 #'   in the dataset.
 #'   \item \code{synergy.subset.stats}: an integer vector with elements the number
-#'   of models the predicted each \strong{observed synergy subset}.
+#'   of models the predicted each \strong{observed synergy subset} if the
+#'   \emph{calculate.subsets.stats} option is enabled.
 #'   \item \code{diff.state.synergies.mat}: a matrix whose rows are
 #'   \strong{vectors of average node activity state differences} between two
 #'   groups of models where the classification for each individual row was based
@@ -400,7 +427,7 @@ biomarker_mcc_analysis =
 #' @export
 biomarker_synergy_analysis =
   function(model.predictions, models.stable.state, models.link.operator = NULL,
-           observed.synergies, threshold) {
+           observed.synergies, threshold, calculate.subsets.stats = FALSE) {
     # check input
     stopifnot(threshold >= 0 & threshold <= 1)
     models = rownames(model.predictions)
@@ -423,7 +450,9 @@ biomarker_synergy_analysis =
     stopifnot(all(predicted.synergies %in% observed.synergies))
 
     # Find the number of predictive models for every synergy subset
-    synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
+    if (calculate.subsets.stats) {
+      synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
+    }
 
     # get the average activity state differences for each predicted synergy
     diff.state.synergies.mat =
@@ -440,7 +469,9 @@ biomarker_synergy_analysis =
     res.list$observed.model.predictions = observed.model.predictions
     res.list$unobserved.model.predictions = unobserved.model.predictions
     res.list$predicted.synergies = predicted.synergies
-    res.list$synergy.subset.stats = synergy.subset.stats
+    if (calculate.subsets.stats) {
+      res.list$synergy.subset.stats = synergy.subset.stats
+    }
     res.list$diff.state.synergies.mat = diff.state.synergies.mat
     res.list$activity.biomarkers = activity.biomarkers
 

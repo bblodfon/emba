@@ -9,7 +9,8 @@ biomarker_synergy_analysis(
   models.stable.state,
   models.link.operator = NULL,
   observed.synergies,
-  threshold
+  threshold,
+  calculate.subsets.stats = FALSE
 )
 }
 \arguments{
@@ -45,6 +46,12 @@ parameter.}
 below its negative value) a biomarker will be registered in the returned result.
 Values closer to 1 translate to a more strict threshold and thus less
 biomarkers are found.}
+
+\item{calculate.subsets.stats}{logical. If \emph{TRUE}, then the results will
+include a vector of integers, representing the number of models that predicted
+every subset of the given \code{observed.synergies} (where at least one model
+predicts every synergy in the subset). The default value is \emph{FALSE}, since
+the powerset of the predicted \code{observed.synergies} can be very large to compute.}
 }
 \value{
 a list with various elements:
@@ -57,7 +64,8 @@ a list with various elements:
   combination names) that were predicted by \strong{at least one} of the models
   in the dataset.
   \item \code{synergy.subset.stats}: an integer vector with elements the number
-  of models the predicted each \strong{observed synergy subset}.
+  of models the predicted each \strong{observed synergy subset} if the
+  \emph{calculate.subsets.stats} option is enabled.
   \item \code{diff.state.synergies.mat}: a matrix whose rows are
   \strong{vectors of average node activity state differences} between two
   groups of models where the classification for each individual row was based
