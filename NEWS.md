@@ -1,3 +1,9 @@
+# emba 0.1.4
+
+- `get_synergy_scores` now supports reading both *ensemble-wise* and *model-wise* synergies files
+- add `calculate.subsets.stats` option to the general analysis functions (`biomarker_*`) that decides if the powerset of the observed synergies and the number of models predicting each subset is going to be calculated. 
+The default value is set to `FALSE` to save computation time :)
+
 # emba 0.1.3
 
 - add function `get_synergy_scores`
