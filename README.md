@@ -33,4 +33,4 @@ devtools::install_github("bblodfon/emba")
 
 ## Examples
 
-For an example usage of this package's functions, see [the analysis](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) performed on multiple boolean model datasets.
+For an example usage of this package's functions (version `0.1.1`), see [the analysis](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) performed on multiple boolean model datasets.
