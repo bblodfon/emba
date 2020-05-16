@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.com/bblodfon/emba.svg?branch=master)](https://travis-ci.com/bblodfon/emba)
+[![codecov](https://codecov.io/gh/bblodfon/emba/branch/master/graph/badge.svg)](https://codecov.io/gh/bblodfon/emba)
 [![CRAN status](https://www.r-pkg.org/badges/version/emba)](https://cran.r-project.org/package=emba)
 [![Downloads](https://cranlogs.r-pkg.org/badges/emba)](https://cran.r-project.org/package=emba)
 <!-- badges: end -->
