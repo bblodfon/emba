@@ -7,9 +7,9 @@
 validate_observed_synergies_data(observed.synergies, drug.combinations.tested)
 }
 \arguments{
-\item{observed.synergies}{a character vector of drug combinations}
+\item{observed.synergies}{a non-empty character vector of drug combinations}
 
-\item{drug.combinations.tested}{a character vector of drug combinations}
+\item{drug.combinations.tested}{a non-empty character vector of drug combinations}
 }
 \value{
 NULL if no errors found, otherwise stops execution.

@@ -118,10 +118,11 @@ get_stable_state_from_models_dir = function(models.dir) {
 #'
 #' Use this function to merge the link operator data used in the boolean equations
 #' of the models into a single matrix. Every boolean model is defined by a series
-#' of boolean equations in the form \eqn{Target *= (Activator OR Activator OR...)
-#' AND NOT (Inhibitor OR Inhibitor OR...)"}. The \strong{link operator} can be
-#' either \emph{AND NOT}, \emph{OR NOT} or non-existent if the target has only
-#' activating regulators or only inhibiting ones. The models are loaded from
+#' of boolean equations in the form \eqn{Target *= (Activator or Activator or...)
+#' and not (Inhibitor or Inhibitor or...)"}. The \strong{link operator} can be
+#' either \emph{and not}, \emph{or not} or non-existent if the target has only
+#' activating regulators or only inhibiting ones (the \emph{not} remains in the
+#' latter case). The models are loaded from
 #' \emph{.gitsbe} files that can be found inside the given \code{models.dir}
 #' directory.
 #'
@@ -133,8 +134,8 @@ get_stable_state_from_models_dir = function(models.dir) {
 #' @return a matrix (nxm) with n models and m nodes. The row names of the matrix
 #' specify the models' names whereas the column names specify the name of the
 #' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
-#' element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
-#' (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
+#' element} are either \emph{0} (\strong{and not} link operator), \emph{1}
+#' (\strong{or not} link operator) or \emph{0.5} if the node is not targeted by
 #' both activating and inhibiting regulators (no link operator).
 #'
 #' @examples
@@ -261,8 +262,8 @@ get_model_names = function(models.dir) {
 #' Assign link operator value to boolean equation
 #'
 #' @param equation string. The boolean equation in the form
-#' \eqn{Target *= (Activator OR Activator OR...)
-#' AND NOT (Inhibitor OR Inhibitor OR...)"}
+#' \eqn{Target *= (Activator or Activator or...)
+#' and not (Inhibitor or Inhibitor or...)"}
 #'
 #' @return \strong{1} if the \code{equation} has the '\emph{or not}' link operator,
 #' \strong{0} if the \code{equation} has the '\emph{and not}' link operator and
@@ -310,8 +311,8 @@ is_comb_element_of = function(drug.comb, comb.vector) {
 #' This function checks that the observed synergies are part (a subset) of the
 #' tested drug combinations
 #'
-#' @param observed.synergies a character vector of drug combinations
-#' @param drug.combinations.tested a character vector of drug combinations
+#' @param observed.synergies a non-empty character vector of drug combinations
+#' @param drug.combinations.tested a non-empty character vector of drug combinations
 #'
 #' @return NULL if no errors found, otherwise stops execution.
 validate_observed_synergies_data =
@@ -365,6 +366,10 @@ get_alt_drugname = function(drug.comb) {
 #' \code{\link{get_edges_from_topology_file}},
 #' \code{\link{get_node_names}}
 #'
+#' @examples
+#' topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
+#' net = construct_network(topology.file)
+#'
 #' @importFrom igraph graph_from_data_frame V V<- E E<-
 #' @export
 construct_network = function(topology.file, models.dir = NULL) {
@@ -404,11 +409,13 @@ construct_network = function(topology.file, models.dir = NULL) {
 #' regulation (activation or inhibition) and the color (green or red) of the
 #' signed interaction.
 #'
+#' @examples
+#' topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
+#' edges = get_edges_from_topology_file(topology.file)
+#'
 #' @importFrom utils read.table
 #' @export
 get_edges_from_topology_file = function(topology.file) {
-  #print(paste("Reading topology file:", topology.file))
-
   edges = read.table(topology.file)
 
   # reorder&rename columns
@@ -442,9 +449,11 @@ get_edges_from_topology_file = function(topology.file) {
 #' How many vertices/nodes will be kept in the result graph object is determined
 #' by the initial nodes given and the level provided. A level equal to 0 corresponds
 #' to a subgraph with only the given nodes, a level equal to 1 to a subgraph with
-#' the nodes + their neighbors (the closed neighbourhood set) and a level equal to
-#' 2 to a subgraph with the nodes + their neighbors + the nodes neighbor neighbors!
-#' (so the neighbourhood of the neighbourhood)
+#' the nodes + their neighbors (the closed neighbourhood set where every node is within
+#' 1 edge distnace from the given ones) and a level equal to 2 to a subgraph
+#' with the nodes + their neighbors + the nodes neighbor neighbors!
+#' (so the neighbourhood of the neighbourhood or every node is within 2 edges
+#' distance from the given ones).
 #'
 #' @param net an igraph object.
 #' @param nodes character vector of node names. It must be a subset of the nodes

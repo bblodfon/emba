@@ -8,8 +8,8 @@ assign_link_operator_value_to_equation(equation)
 }
 \arguments{
 \item{equation}{string. The boolean equation in the form
-\eqn{Target *= (Activator OR Activator OR...)
-AND NOT (Inhibitor OR Inhibitor OR...)"}}
+\eqn{Target *= (Activator or Activator or...)
+and not (Inhibitor or Inhibitor or...)"}}
 }
 \value{
 \strong{1} if the \code{equation} has the '\emph{or not}' link operator,

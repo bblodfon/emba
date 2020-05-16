@@ -22,3 +22,8 @@ and get a matrix of network edges specifying the source and target name, the
 regulation effect (activation or inhibition) and the color (green or red) of
 each interaction.
 }
+\examples{
+topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
+edges = get_edges_from_topology_file(topology.file)
+
+}

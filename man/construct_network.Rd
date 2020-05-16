@@ -23,6 +23,11 @@ file given. It automatically sets various visualization graph properties and
 checks if the node names from the topology file are the same as in the models
 inside the given \code{models.dir} (if not NULL).
 }
+\examples{
+topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
+net = construct_network(topology.file)
+
+}
 \seealso{
 \code{\link[igraph]{graph_from_data_frame}},
 \code{\link{get_edges_from_topology_file}},
