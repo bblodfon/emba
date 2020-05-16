@@ -175,7 +175,7 @@ get_avg_activity_diff_based_on_tp_predictions =
 #'
 #' This function splits the Matthews correlation coefficient (MCC) scores
 #' of the models to specific groups using the \pkg{Ckmeans.1d.dp}
-#' package for the clustering (groups are denoted by ids, e.g. NaN,1,2,3, etc.
+#' package for the clustering (groups are denoted by ids, e.g. 1,2,3, etc.
 #' where a larger id corresponds to a group of models with higher MCC scores)
 #' and for each pairwise
 #' combination of group id matchings (e.g. (0,1), (1,3), etc.), it uses the
@@ -193,12 +193,7 @@ get_avg_activity_diff_based_on_tp_predictions =
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
 #' signifies the number of mcc classes (groups) that we should split the models
-#' MCC values (excluding the 'NaN' values).
-#' @param include.NaN.mcc.class logical. Should the models that have NaN MCC value
-#' (e.g. TP+FP = 0, models that predicted no synergies at all) be classified together
-#' in one class - the 'NaN MCC Class' - and compared with the other model classes
-#' in the analysis? If \emph{TRUE}, then the number of total MCC classes will be
-#' \emph{num.of.mcc.classes + 1}.
+#' MCC values.
 #'
 #' @return a matrix whose rows are \strong{vectors of
 #' average node activity state differences} between two groups of models where
@@ -213,21 +208,15 @@ get_avg_activity_diff_based_on_tp_predictions =
 #' @importFrom Ckmeans.1d.dp Ckmeans.1d.dp
 #' @export
 get_avg_activity_diff_mat_based_on_mcc_clustering =
-  function(models.mcc, models.stable.state, num.of.mcc.classes, include.NaN.mcc.class) {
+  function(models.mcc, models.stable.state, num.of.mcc.classes) {
     stopifnot(num.of.mcc.classes >= 2)
     mcc.class.ids = 1:num.of.mcc.classes
 
-    models.mcc.no.nan = models.mcc[!is.nan(models.mcc)]
-    models.mcc.no.nan.sorted = sort(models.mcc.no.nan)
+    models.mcc.sorted = sort(models.mcc)
 
     # find the clusters
-    res = Ckmeans.1d.dp(x = models.mcc.no.nan.sorted, k = num.of.mcc.classes)
+    res = Ckmeans.1d.dp(x = models.mcc.sorted, k = num.of.mcc.classes)
     models.cluster.ids = res$cluster
-
-    # add NaN class (if applicable)
-    if (include.NaN.mcc.class & (sum(is.nan(models.mcc)) > 0)) {
-      mcc.class.ids = append(mcc.class.ids, values = NaN, after = 0)
-    }
 
     mcc.class.id.comb = t(combn(1:length(mcc.class.ids), 2))
 
@@ -268,12 +257,7 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
 #' both activating and inhibiting regulators (no link operator).
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
 #' signifies the number of mcc classes (groups) that we should split the models
-#' MCC values (excluding the 'NaN' values).
-#' @param include.NaN.mcc.class logical. Should the models that have NaN MCC value
-#' (e.g. TP+FP = 0, models that predicted no synergies at all) be classified together
-#' in one class - the 'NaN MCC Class' - and compared with the other model classes
-#' in the analysis? If \emph{TRUE}, then the number of total MCC classes will be
-#' \emph{num.of.mcc.classes + 1}.
+#' MCC values.
 #'
 #' @return a matrix whose rows are \strong{vectors of average node link operator
 #' differences} between two groups of models where
@@ -300,10 +284,9 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
 #' @family average data difference functions
 #' @export
 get_avg_link_operator_diff_mat_based_on_mcc_clustering =
-  function(models.mcc, models.link.operator, num.of.mcc.classes, include.NaN.mcc.class) {
+  function(models.mcc, models.link.operator, num.of.mcc.classes) {
     get_avg_activity_diff_mat_based_on_mcc_clustering(
-      models.mcc, models.stable.state = models.link.operator,
-      num.of.mcc.classes, include.NaN.mcc.class
+      models.mcc, models.stable.state = models.link.operator, num.of.mcc.classes
     )
   }
 
@@ -325,12 +308,11 @@ get_avg_link_operator_diff_mat_based_on_mcc_clustering =
 #' parameter) whereas the column names specify the name of the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
-#' @param mcc.class.ids a numeric vector of group/class ids starting from NaN if
-#' models with NaN MCC score are included or 1 otherwise. E.g. c(1,2,3), where
-#' we have 3 MCC classes and no NaN values.
+#' @param mcc.class.ids a numeric vector of group/class ids starting from 1,
+#' e.g. \code{c(1,2,3)} (3 MCC classes).
 #' @param models.cluster.ids a numeric vector of cluster ids assigned to each
 #' model. It is the result of using \code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}
-#' with input the sorted vector of the models' MCC values with no NaNs included.
+#' with input the sorted vector of the models' MCC values.
 #' @param class.id.low integer. This number specifies the MCC class id of the
 #' 'bad' models.
 #' @param class.id.high integer. This number specifies the MCC class id of the
@@ -358,27 +340,18 @@ get_avg_activity_diff_based_on_mcc_clustering =
       stop("`class.id.low` needs to be smaller than `class.id.high`")
     }
 
-    models.mcc.no.nan = models.mcc[!is.nan(models.mcc)]
-    models.mcc.no.nan.sorted = sort(models.mcc.no.nan)
+    models.mcc.sorted = sort(models.mcc)
 
     bad.class.id  = mcc.class.ids[class.id.low]
     good.class.id = mcc.class.ids[class.id.high]
 
     # find the 'good' models
-    good.models = get_models_based_on_mcc_class_id(
-      good.class.id, models.cluster.ids, models.mcc.no.nan.sorted
-    )
+    good.models = get_models_based_on_mcc_class_id(good.class.id,
+      models.cluster.ids, models.mcc.sorted)
 
     # find the 'bad' models
-    if (is.nan(bad.class.id)) {
-      # the `NaN` MCC scored models (can only be 'bad' ones)
-      bad.models = names(models.mcc)[is.nan(models.mcc)]
-    } else {
-      bad.models =
-        get_models_based_on_mcc_class_id(
-          bad.class.id, models.cluster.ids, models.mcc.no.nan.sorted
-        )
-    }
+    bad.models = get_models_based_on_mcc_class_id(bad.class.id,
+      models.cluster.ids, models.mcc.sorted)
 
     # `good.models` != `bad.models` (disjoing sets of models)
     stopifnot(!(good.models %in% bad.models))
@@ -411,9 +384,9 @@ get_avg_activity_diff_based_on_mcc_clustering =
 #' @param class.id an integer specifying the class id.
 #' @param models.cluster.ids a numeric vector of cluster ids assigned to each
 #' model. It is the result of using \code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}
-#' with input the sorted vector of the models' MCC values with no NaNs included.
+#' with input the sorted vector of the models' MCC values.
 #' @param models.mcc a numeric sorted vector of Matthews Correlation Coefficient (MCC)
-#' scores, one for each model (no NaNs included).
+#' scores, one for each model.
 #' The \emph{names} attribute holds the models' names.
 #'
 #' @return a character vector of model names

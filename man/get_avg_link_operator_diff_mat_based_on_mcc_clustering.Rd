@@ -7,8 +7,7 @@
 get_avg_link_operator_diff_mat_based_on_mcc_clustering(
   models.mcc,
   models.link.operator,
-  num.of.mcc.classes,
-  include.NaN.mcc.class
+  num.of.mcc.classes
 )
 }
 \arguments{
@@ -26,13 +25,7 @@ both activating and inhibiting regulators (no link operator).}
 
 \item{num.of.mcc.classes}{numeric. A positive integer larger than 2 that
 signifies the number of mcc classes (groups) that we should split the models
-MCC values (excluding the 'NaN' values).}
-
-\item{include.NaN.mcc.class}{logical. Should the models that have NaN MCC value
-(e.g. TP+FP = 0, models that predicted no synergies at all) be classified together
-in one class - the 'NaN MCC Class' - and compared with the other model classes
-in the analysis? If \emph{TRUE}, then the number of total MCC classes will be
-\emph{num.of.mcc.classes + 1}.}
+MCC values.}
 }
 \value{
 a matrix whose rows are \strong{vectors of average node link operator

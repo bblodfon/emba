@@ -159,7 +159,8 @@ count_models_that_predict_synergies =
 #' \code{observed.model.predictions} and the \code{unobserved.model.predictions}.
 #'
 #' @return a numeric vector of MCC values, each value being in the [-1,1]
-#' interval or \emph{NaN}. The \emph{names} attribute holds the models' names.
+#' interval. The \emph{names} attribute holds the models' names
+#' if applicable (i.e. the input \code{data.frames} have \emph{rownames}).
 #'
 #' @family confusion matrix calculation functions
 #'
@@ -193,8 +194,7 @@ calculate_models_mcc = function(observed.model.predictions, unobserved.model.pre
 
     # Calculate Matthews Correlation Coefficient (MCC)
     models.mcc = calculate_mcc(models.synergies.tp, models.synergies.tn,
-                               models.synergies.fp, models.synergies.fn,
-                               positives, negatives)
+                               models.synergies.fp, models.synergies.fn)
     return(models.mcc)
 }
 
@@ -301,31 +301,32 @@ calculate_models_synergies_tn = function(unobserved.model.predictions) {
   }))
 }
 
-#' Calculate the Matthews correlation coefficient vector
+#' Calculate Matthews correlation coefficient vector
 #'
-#' Use this function to calculate the MCC values given vectors of \emph{TP} (true
-#' positives), \emph{FP} (false positives), \emph{TN} (true negatives), \emph{FN}
-#' (false negatives), \emph{P} (positives) and \emph{N} (negatives). Note that
-#' the input vectors have to be of the same size and have one-to-one value
-#' correspondence for the output MCC vector values to make sense.
+#' Use this function to calculate the MCC scores given vectors of \emph{TP} (true
+#' positives), \emph{FP} (false positives), \emph{TN} (true negatives) and \emph{FN}
+#' (false negatives) values.
+#' Note that the input vectors have to be of the same size and have one-to-one value
+#' correspondence for the output MCC vector to make sense.
 #'
 #' @param tp numeric vector of TPs
 #' @param tn numeric vector of TNs
 #' @param fp numeric vector of FPs
 #' @param fn numeric vector of FNs
-#' @param p numeric vector of positives (p = tp + fn)
-#' @param n numeric vector of negatives (n = tn + fp)
 #'
 #' @return a numeric vector of MCC values, each value being in the [-1,1]
-#' interval or \emph{NaN}.
+#' interval. If any of the four sums of the MCC formula are zero, then we return
+#' an MCC score of zero, which can be shown to be the correct limiting value (model
+#' is no better than a random predictor, see
+#' \href{https://github.com/mlr-org/mlr/issues/1736}{stackoveflow discussion}).
 #'
 #' @family confusion matrix calculation functions
 #'
 #' @export
-calculate_mcc = function(tp, tn, fp, fn, p, n) {
-  return(
-    (tp * tn - fp * fn) / sqrt((tp + fp) * p * n * (tn + fn))
-  )
+calculate_mcc = function(tp, tn, fp, fn) {
+  res = (tp * tn - fp * fn) / sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
+  res[which(!is.finite(res))] = 0 # deal with zero division cases
+  res
 }
 
 #' Update biomarker files for a specific synergy

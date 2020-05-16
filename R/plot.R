@@ -3,32 +3,29 @@
 #' This function is a wrapper of the \code{\link[Ckmeans.1d.dp]{ahist}} function
 #' for plotting nicely the distribution of the MCC models' values.
 #'
-#' @param models.mcc.no.nan.sorted a numeric sorted vector of Matthews
-#' Correlation Coefficient (MCC) scores, one for each model (no NaNs included).
+#' @param models.mcc.sorted a numeric sorted vector of Matthews
+#' Correlation Coefficient (MCC) scores, one for each model.
 #' The \emph{names} attribute holds the models' names.
 #' @param models.cluster.ids a numeric vector of cluster ids assigned to each
 #' model. It is the result of using \code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}
-#' with input the sorted vector of the models' MCC values with no NaNs included
-#' (\code{models.mcc.no.nan.sorted}).
+#' with input the sorted vector of the models' MCC values (\code{models.mcc.sorted}).
 #' @param num.of.mcc.classes numeric. A positive integer (>2) that signifies the
-#' number of mcc classes (groups) that we should split the models MCC values
-#' (excluding the 'NaN' values).
-#' @param mcc.class.ids a numeric vector ranging from from 1 to
-#' \code{num.of.mcc.classes}.
+#' number of mcc classes (groups) that we should split the models MCC values.
+#' @param mcc.class.ids a numeric vector ranging from from 1 to \code{num.of.mcc.classes}.
 #'
 #' @importFrom grDevices rainbow
 #' @importFrom graphics legend
 #' @importFrom Ckmeans.1d.dp ahist
 #' @export
-plot_mcc_classes_hist = function(models.mcc.no.nan.sorted, models.cluster.ids,
+plot_mcc_classes_hist = function(models.mcc.sorted, models.cluster.ids,
                                  num.of.mcc.classes, mcc.class.ids) {
-  min.x.value = round(min(models.mcc.no.nan.sorted) - 0.1, digits = 1)
-  max.x.value = round(max(models.mcc.no.nan.sorted) + 0.1, digits = 1)
+  min.x.value = round(min(models.mcc.sorted) - 0.1, digits = 1)
+  max.x.value = round(max(models.mcc.sorted) + 0.1, digits = 1)
   rainbow.colors = rainbow(num.of.mcc.classes)
 
-  ahist(models.mcc.no.nan.sorted, k = num.of.mcc.classes,
+  ahist(models.mcc.sorted, k = num.of.mcc.classes,
         main = "Model MCC-Classification", xlab = "MCC value",
-        sub = paste("n =", length(models.mcc.no.nan.sorted), "models, k =",
+        sub = paste("n =", length(models.mcc.sorted), "models, k =",
                     num.of.mcc.classes, "classes"),
         col = rainbow.colors, col.stick = rainbow.colors[models.cluster.ids],
         xlim = c(min.x.value, max.x.value))

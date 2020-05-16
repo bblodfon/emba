@@ -7,8 +7,7 @@
 get_avg_activity_diff_mat_based_on_mcc_clustering(
   models.mcc,
   models.stable.state,
-  num.of.mcc.classes,
-  include.NaN.mcc.class
+  num.of.mcc.classes
 )
 }
 \arguments{
@@ -24,13 +23,7 @@ are either \emph{0} (inactive node) or \emph{1} (active node).}
 
 \item{num.of.mcc.classes}{numeric. A positive integer larger than 2 that
 signifies the number of mcc classes (groups) that we should split the models
-MCC values (excluding the 'NaN' values).}
-
-\item{include.NaN.mcc.class}{logical. Should the models that have NaN MCC value
-(e.g. TP+FP = 0, models that predicted no synergies at all) be classified together
-in one class - the 'NaN MCC Class' - and compared with the other model classes
-in the analysis? If \emph{TRUE}, then the number of total MCC classes will be
-\emph{num.of.mcc.classes + 1}.}
+MCC values.}
 }
 \value{
 a matrix whose rows are \strong{vectors of
@@ -44,7 +37,7 @@ Values are in the [-1,1] interval.
 \description{
 This function splits the Matthews correlation coefficient (MCC) scores
 of the models to specific groups using the \pkg{Ckmeans.1d.dp}
-package for the clustering (groups are denoted by ids, e.g. NaN,1,2,3, etc.
+package for the clustering (groups are denoted by ids, e.g. 1,2,3, etc.
 where a larger id corresponds to a group of models with higher MCC scores)
 and for each pairwise
 combination of group id matchings (e.g. (0,1), (1,3), etc.), it uses the

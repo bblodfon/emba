@@ -2,9 +2,9 @@
 % Please edit documentation in R/analysis.R
 \name{calculate_mcc}
 \alias{calculate_mcc}
-\title{Calculate the Matthews correlation coefficient vector}
+\title{Calculate Matthews correlation coefficient vector}
 \usage{
-calculate_mcc(tp, tn, fp, fn, p, n)
+calculate_mcc(tp, tn, fp, fn)
 }
 \arguments{
 \item{tp}{numeric vector of TPs}
@@ -14,21 +14,20 @@ calculate_mcc(tp, tn, fp, fn, p, n)
 \item{fp}{numeric vector of FPs}
 
 \item{fn}{numeric vector of FNs}
-
-\item{p}{numeric vector of positives (p = tp + fn)}
-
-\item{n}{numeric vector of negatives (n = tn + fp)}
 }
 \value{
 a numeric vector of MCC values, each value being in the [-1,1]
-interval or \emph{NaN}.
+interval. If any of the four sums of the MCC formula are zero, then we return
+an MCC score of zero, which can be shown to be the correct limiting value (model
+is no better than a random predictor, see
+\href{https://github.com/mlr-org/mlr/issues/1736}{stackoveflow discussion}).
 }
 \description{
-Use this function to calculate the MCC values given vectors of \emph{TP} (true
-positives), \emph{FP} (false positives), \emph{TN} (true negatives), \emph{FN}
-(false negatives), \emph{P} (positives) and \emph{N} (negatives). Note that
-the input vectors have to be of the same size and have one-to-one value
-correspondence for the output MCC vector values to make sense.
+Use this function to calculate the MCC scores given vectors of \emph{TP} (true
+positives), \emph{FP} (false positives), \emph{TN} (true negatives) and \emph{FN}
+(false negatives) values.
+Note that the input vectors have to be of the same size and have one-to-one value
+correspondence for the output MCC vector to make sense.
 }
 \seealso{
 Other confusion matrix calculation functions: 

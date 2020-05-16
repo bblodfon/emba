@@ -31,7 +31,8 @@ combinations tested, which should be equal to the sum of the columns of the
 }
 \value{
 a numeric vector of MCC values, each value being in the [-1,1]
-interval or \emph{NaN}. The \emph{names} attribute holds the models' names.
+interval. The \emph{names} attribute holds the models' names
+if applicable (i.e. the input \code{data.frames} have \emph{rownames}).
 }
 \description{
 Calculate the Matthews correlation coefficient for each model

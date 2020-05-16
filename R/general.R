@@ -200,12 +200,7 @@ biomarker_tp_analysis =
 #' biomarkers are found.
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
 #' signifies the number of mcc classes (groups) that we should split the models
-#' MCC values (excluding the 'NaN' values).
-#' @param include.NaN.mcc.class logical. Should the models that have NaN MCC value
-#' (e.g. TP+FP = 0, models that predicted no synergies at all) be classified together
-#' in one class - the 'NaN MCC Class' - and compared with the other model classes
-#' in the analysis? If \emph{TRUE} (default), then the number of total MCC classes
-#' will be \emph{num.of.mcc.classes + 1}.
+#' MCC values.
 #' @param calculate.subsets.stats logical. If \emph{TRUE}, then the results will
 #' include a vector of integers, representing the number of models that predicted
 #' every subset of the given \code{observed.synergies} (where at least one model
@@ -224,8 +219,8 @@ biomarker_tp_analysis =
 #'   \item \code{synergy.subset.stats}: an integer vector with elements the number
 #'   of models the predicted each \strong{observed synergy subset} if the
 #'   \emph{calculate.subsets.stats} option is enabled.
-#'   \item \code{models.mcc}: a numeric vector of MCC values (NaN's can be
-#'   included), one for each model.
+#'   \item \code{models.mcc}: a numeric vector of MCC scores, one for each model.
+#'   Values are in the [-1,1] interval.
 #'   \item \code{diff.state.mcc.mat}: a matrix whose rows are \strong{vectors of
 #'   average node activity state differences} between two groups of models where
 #'   the classification was based on the \emph{MCC score} of each model and was
@@ -264,7 +259,7 @@ biomarker_tp_analysis =
 #' @export
 biomarker_mcc_analysis = function(model.predictions, models.stable.state,
   models.link.operator = NULL, observed.synergies, threshold, num.of.mcc.classes,
-  include.NaN.mcc.class = TRUE, calculate.subsets.stats = FALSE) {
+  calculate.subsets.stats = FALSE) {
 
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
@@ -303,7 +298,7 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
   # Make all possible classification group matchings and get the
   # average state differences
   diff.state.mcc.mat = get_avg_activity_diff_mat_based_on_mcc_clustering(
-    models.mcc, models.stable.state, num.of.mcc.classes, include.NaN.mcc.class
+    models.mcc, models.stable.state, num.of.mcc.classes
   )
 
   # find the active and inhibited biomarkers based on the MCC classification groups
@@ -329,7 +324,7 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
     # Make all possible classification group matchings and get the average
     # link operator differences
     diff.link.mcc.mat = get_avg_link_operator_diff_mat_based_on_mcc_clustering(
-      models.mcc, models.link.operator, num.of.mcc.classes, include.NaN.mcc.class
+      models.mcc, models.link.operator, num.of.mcc.classes
     )
     # find the 'OR' and 'AND' biomarkers based on the TP classification groups
     biomarkers.link.list = get_biomarkers(diff.link.mcc.mat, threshold)

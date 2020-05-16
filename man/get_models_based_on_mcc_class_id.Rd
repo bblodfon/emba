@@ -11,10 +11,10 @@ get_models_based_on_mcc_class_id(class.id, models.cluster.ids, models.mcc)
 
 \item{models.cluster.ids}{a numeric vector of cluster ids assigned to each
 model. It is the result of using \code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}
-with input the sorted vector of the models' MCC values with no NaNs included.}
+with input the sorted vector of the models' MCC values.}
 
 \item{models.mcc}{a numeric sorted vector of Matthews Correlation Coefficient (MCC)
-scores, one for each model (no NaNs included).
+scores, one for each model.
 The \emph{names} attribute holds the models' names.}
 }
 \value{

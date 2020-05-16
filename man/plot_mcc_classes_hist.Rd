@@ -5,28 +5,25 @@
 \title{Plot histogram of the MCC classes}
 \usage{
 plot_mcc_classes_hist(
-  models.mcc.no.nan.sorted,
+  models.mcc.sorted,
   models.cluster.ids,
   num.of.mcc.classes,
   mcc.class.ids
 )
 }
 \arguments{
-\item{models.mcc.no.nan.sorted}{a numeric sorted vector of Matthews
-Correlation Coefficient (MCC) scores, one for each model (no NaNs included).
+\item{models.mcc.sorted}{a numeric sorted vector of Matthews
+Correlation Coefficient (MCC) scores, one for each model.
 The \emph{names} attribute holds the models' names.}
 
 \item{models.cluster.ids}{a numeric vector of cluster ids assigned to each
 model. It is the result of using \code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}
-with input the sorted vector of the models' MCC values with no NaNs included
-(\code{models.mcc.no.nan.sorted}).}
+with input the sorted vector of the models' MCC values (\code{models.mcc.sorted}).}
 
 \item{num.of.mcc.classes}{numeric. A positive integer (>2) that signifies the
-number of mcc classes (groups) that we should split the models MCC values
-(excluding the 'NaN' values).}
+number of mcc classes (groups) that we should split the models MCC values.}
 
-\item{mcc.class.ids}{a numeric vector ranging from from 1 to
-\code{num.of.mcc.classes}.}
+\item{mcc.class.ids}{a numeric vector ranging from from 1 to \code{num.of.mcc.classes}.}
 }
 \description{
 This function is a wrapper of the \code{\link[Ckmeans.1d.dp]{ahist}} function

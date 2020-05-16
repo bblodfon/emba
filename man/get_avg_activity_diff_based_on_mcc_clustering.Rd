@@ -24,13 +24,12 @@ parameter) whereas the column names specify the name of the network nodes
 (gene, proteins, etc.). Possible values for each \emph{model-node element}
 are either \emph{0} (inactive node) or \emph{1} (active node).}
 
-\item{mcc.class.ids}{a numeric vector of group/class ids starting from NaN if
-models with NaN MCC score are included or 1 otherwise. E.g. c(1,2,3), where
-we have 3 MCC classes and no NaN values.}
+\item{mcc.class.ids}{a numeric vector of group/class ids starting from 1,
+e.g. \code{c(1,2,3)} (3 MCC classes).}
 
 \item{models.cluster.ids}{a numeric vector of cluster ids assigned to each
 model. It is the result of using \code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}
-with input the sorted vector of the models' MCC values with no NaNs included.}
+with input the sorted vector of the models' MCC values.}
 
 \item{class.id.low}{integer. This number specifies the MCC class id of the
 'bad' models.}
