@@ -431,7 +431,8 @@ update_biomarker_files =
     inhibited.biomarkers.file =
       paste0(biomarkers.dir, drug.comb, "_biomarkers_inhibited")
 
-    if (file.size(inhibited.biomarkers.file) == 0) {
+    if (file.size(inhibited.biomarkers.file) == 0
+      || !file.exists(inhibited.biomarkers.file)) {
       save_vector_to_file(vector = biomarkers.inhibited.new,
                           file = inhibited.biomarkers.file,
                           with.row.names = TRUE)
