@@ -19,20 +19,21 @@
 #' model.predictions = get_model_predictions(model.predictions.file)
 #'
 #' @importFrom utils read.table
+#' @importFrom magrittr %>%
+#' @importFrom tibble column_to_rownames
 #' @export
 get_model_predictions = function(model.predictions.file) {
-  #print(paste("Reading model predictions file:", model.predictions.file))
+  # Get the column names (drug combination names)
+  first.line = readLines(model.predictions.file, n = 1)
+  first.line = sub("ModelName\t|#ModelName\t", "", first.line)
+  drug.combo.names = unlist(strsplit(first.line, split = '\t'))
+  drug.combo.names = sapply(drug.combo.names, function(x) {
+    gsub(pattern = "\\[|\\]", replacement = "", x)
+    }, USE.NAMES = F)
 
-  lines = readLines(model.predictions.file)
-  lines[1] = sub("ModelName\t|#ModelName\t", "", lines[1])
-  tmp.file = "model_predictions.tab"
-  writeLines(lines, tmp.file)
-  model.data = read.table("model_predictions.tab",  check.names = F)
-
-  if (file.exists(tmp.file)) invisible(file.remove(tmp.file))
-  for (i in 1:length(colnames(model.data))) {
-    colnames(model.data)[i] = gsub("\\[|\\]", "", colnames(model.data)[i])
-  }
+  model.data = read.table(model.predictions.file, header = FALSE, skip = 1, stringsAsFactors = FALSE)
+  model.data = model.data %>% tibble::column_to_rownames(var = "V1")
+  colnames(model.data) = drug.combo.names
 
   return(model.data)
 }
