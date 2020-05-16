@@ -37,6 +37,7 @@ Imports:
     magrittr (>= 1.5),
     usefun (>= 0.4.3),
     readr,
+    dplyr,
     tibble (>= 3.0.0)
 Suggests: 
     testthat
