@@ -10,9 +10,9 @@
 #' @param models.synergies.tp an integer vector of TP values. The \emph{names}
 #' attribute holds the models' names and have to be in the same order as in the
 #' \code{models} parameter.
-#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names (same order as in the \code{models}
-#' parameter) whereas the column names specify the name of the network nodes
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names (same order as in the \code{models}
+#' parameter) whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #'
@@ -114,9 +114,9 @@ get_avg_link_operator_diff_mat_based_on_tp_predictions =
 #' @param models.synergies.tp an integer vector of TP values. The \emph{names}
 #' attribute holds the models' names and have to be in the same order as in the
 #' \code{models} parameter.
-#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names (same order as in the \code{models}
-#' parameter) whereas the column names specify the name of the network nodes
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names (same order as in the \code{models}
+#' parameter) whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #' @param num.low integer. The number of true positives representing the 'bad'
@@ -186,9 +186,9 @@ get_avg_activity_diff_based_on_tp_predictions =
 #' @param models.mcc a numeric vector of Matthews Correlation Coefficient (MCC)
 #' scores, one for each model. The \emph{names} attribute holds the models' names.
 #' Can be the result of using the function \code{\link{calculate_models_mcc}}.
-#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names (same order as in the \code{models.mcc}
-#' parameter) whereas the column names specify the name of the network nodes
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names (same order as in the \code{models.mcc}
+#' parameter) whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
@@ -303,9 +303,9 @@ get_avg_link_operator_diff_mat_based_on_mcc_clustering =
 #' @param models.mcc a numeric vector of Matthews Correlation Coefficient (MCC)
 #' scores, one for each model. The \emph{names} attribute holds the models' names.
 #' Can be the result of using the function \code{\link{calculate_models_mcc}}.
-#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names (same order as in the \code{models.mcc}
-#' parameter) whereas the column names specify the name of the network nodes
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names (same order as in the \code{models.mcc}
+#' parameter) whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #' @param mcc.class.ids a numeric vector of group/class ids starting from 1,
@@ -407,9 +407,8 @@ get_models_based_on_mcc_class_id =
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
-#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names
-#' whereas the column names specify the name of the network nodes
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #' @param predicted.synergies a character vector of the synergies (drug
@@ -512,9 +511,8 @@ get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction =
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
-#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names
-#' whereas the column names specify the name of the network nodes
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #' @param drug.comb string. The drug combination which will be used to split
@@ -650,9 +648,8 @@ get_avg_link_operator_diff_based_on_specific_synergy_prediction =
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
-#' @param models.stable.state a matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names
-#' whereas the column names specify the name of the network nodes
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #'

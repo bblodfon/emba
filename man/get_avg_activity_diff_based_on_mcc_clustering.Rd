@@ -18,9 +18,9 @@ get_avg_activity_diff_based_on_mcc_clustering(
 scores, one for each model. The \emph{names} attribute holds the models' names.
 Can be the result of using the function \code{\link{calculate_models_mcc}}.}
 
-\item{models.stable.state}{a matrix (nxm) with n models and m nodes. The row
-names of the matrix specify the models' names (same order as in the \code{models.mcc}
-parameter) whereas the column names specify the name of the network nodes
+\item{models.stable.state}{a \code{data.frame} (nxm) with n models and m nodes. The row
+names specify the models' names (same order as in the \code{models.mcc}
+parameter) whereas the column names specify the network nodes
 (gene, proteins, etc.). Possible values for each \emph{model-node element}
 are either \emph{0} (inactive node) or \emph{1} (active node).}
 

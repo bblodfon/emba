@@ -15,7 +15,7 @@ a \code{data.frame} (nxm) with n models and m nodes. The row names
 specify the models' names whereas the column names specify the name of the
 network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 element} are either \emph{0} (inactive node) or \emph{1} (active node). If a
-\emph{.gitsbe} file/model has zero (0) or mode than 1 stable states, a diagnostic
+\emph{.gitsbe} file/model has zero (0) or more than 1 stable states, a diagnostic
 message is printed and the corresponding model is discarded, i.e. it will not
 be included in the returned \code{data.frame} object.
 }
