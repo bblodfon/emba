@@ -7,18 +7,22 @@
 get_stable_state_from_models_dir(models.dir)
 }
 \arguments{
-\item{models.dir}{string. A dir with \emph{.gitsbe} files/models}
+\item{models.dir}{string. A dir with \emph{.gitsbe} files/models.
+\strong{Do not} include the ending path character in the string (\emph{/}).}
 }
 \value{
-a matrix (nxm) with n models and m nodes. The row names of the matrix
+a \code{data.frame} (nxm) with n models and m nodes. The row names
 specify the models' names whereas the column names specify the name of the
 network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
-element} are either \emph{0} (inactive node) or \emph{1} (active node).
+element} are either \emph{0} (inactive node) or \emph{1} (active node). If a
+\emph{.gitsbe} file/model has zero (0) or mode than 1 stable states, a diagnostic
+message is printed and the corresponding model is discarded, i.e. it will not
+be included in the returned \code{data.frame} object.
 }
 \description{
 Use this function to merge the stable states from all models into a single
-matrix. The models stable states are loaded from \emph{.gitsbe} files that can
-be found inside the given \code{models.dir} directory.
+\code{data.frame} object. The models stable states are loaded from \emph{.gitsbe}
+files that can be found inside the given \code{models.dir} directory.
 }
 \examples{
 

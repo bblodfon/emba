@@ -11,7 +11,7 @@ get_model_names(models.dir)
 }
 \value{
 a character vector of the model names, corresponding to the names
-of the \emph{.gitsbe} files.
+of the \emph{.gitsbe} files (the extension is pruned).
 }
 \description{
 Get the model names

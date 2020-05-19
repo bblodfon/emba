@@ -14,7 +14,8 @@ update_biomarker_files(
 }
 \arguments{
 \item{biomarkers.dir}{string. It specifies the full path name of the
-directory which holds the biomarker files for the synergistic drug combination
+directory (without the ending character \emph{/}) which holds the biomarker
+files for the synergistic drug combination
 specified in the parameter \code{drug.comb}. The biomarker files must be
 formatted as: \emph{\%drug.comb\%_biomarkers_active} or
 \emph{\%drug.comb\%_biomarkers_inhibited}, where \%drug.comb\% is the value

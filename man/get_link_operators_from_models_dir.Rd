@@ -10,7 +10,8 @@ get_link_operators_from_models_dir(
 )
 }
 \arguments{
-\item{models.dir}{string. A dir with \emph{.gitsbe} files/models}
+\item{models.dir}{string. A directory path with \emph{.gitsbe} files/models.
+\strong{Do not} include the ending path character in the string (\emph{/}).}
 
 \item{remove.equations.without.link.operator}{logical. Should we keep the
 nodes (columns in the returned matrix) which do not have both type of
