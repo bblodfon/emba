@@ -38,6 +38,8 @@ Imports:
     usefun (>= 0.4.3),
     readr,
     dplyr,
+    tidyr,
+    stringr,
     tibble (>= 3.0.0)
 Suggests: 
     testthat
