@@ -42,18 +42,18 @@ test_that("it returns proper results", {
   expect_equal(obs.synergies, c("A-B", "A-C"))
 })
 
-context("Testing '*get_stable_state_from_models_dir'")
+context("Testing 'get_stable_state_from_models_dir'")
 test_that("it returns proper results", {
   models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
   models.ss = get_stable_state_from_models_dir(models.dir)
 
-  expect_equal(rownames(models.ss), c("test.gitsbe", "test2.gitsbe", "test3.gitsbe"))
+  expect_equal(rownames(models.ss), c("test", "test2", "test3"))
   expect_equal(ncol(models.ss), 139)
   expect_equal(colnames(models.ss)[1], "MAP3K7")
   expect_equal(colnames(models.ss)[139], "CASP9")
-  expect_equal(models.ss["test.gitsbe", "CASP9"], 0)
-  expect_equal(models.ss["test2.gitsbe", "CASP9"], 1)
-  expect_equal(models.ss["test3.gitsbe", "CASP9"], 1)
+  expect_equal(models.ss["test", "CASP9"], 0)
+  expect_equal(models.ss["test2", "CASP9"], 1)
+  expect_equal(models.ss["test3", "CASP9"], 1)
 })
 
 context("Testing 'get_link_operators_from_models_dir'")
@@ -62,8 +62,8 @@ test_that("it returns proper results", {
   models.link = get_link_operators_from_models_dir(models.dir)
   models.link.extra = get_link_operators_from_models_dir(models.dir, remove.equations.without.link.operator = FALSE)
 
-  expect_equal(rownames(models.link), c("test.gitsbe", "test2.gitsbe", "test3.gitsbe"))
-  expect_equal(rownames(models.link.extra), c("test.gitsbe", "test2.gitsbe", "test3.gitsbe"))
+  expect_equal(rownames(models.link), c("test.gitsbe", "test2.gitsbe", "test3.gitsbe", "test4.gitsbe"))
+  expect_equal(rownames(models.link.extra), c("test.gitsbe", "test2.gitsbe", "test3.gitsbe", "test4.gitsbe"))
   expect_equal(ncol(models.link), 43)
   expect_equal(ncol(models.link.extra), 139)
   expect_equal(colnames(models.link)[1], "MAP3K4")
@@ -79,7 +79,7 @@ test_that("it returns proper results", {
   models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
   models.fitness = get_fitness_from_models_dir(models.dir)
 
-  expect_equal(names(models.fitness), c("test.gitsbe", "test2.gitsbe", "test3.gitsbe"))
+  expect_equal(names(models.fitness), c("test.gitsbe", "test2.gitsbe", "test3.gitsbe", "test4.gitsbe"))
   expect_equal(unname(models.fitness["test.gitsbe"]), 0.640625)
   expect_equal(unname(models.fitness["test2.gitsbe"]), 0.625)
   expect_equal(unname(models.fitness["test3.gitsbe"]), 0.6640625)
@@ -100,8 +100,8 @@ test_that("it returns proper results", {
   models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
   models = get_model_names(models.dir)
 
-  expect_equal(length(models), 3)
-  expect_equal(models, c("test.gitsbe", "test2.gitsbe", "test3.gitsbe"))
+  expect_equal(length(models), 4)
+  expect_equal(models, c("test", "test2", "test3", "test4"))
 })
 
 context("Testing 'assign_link_operator_value_to_equation'")

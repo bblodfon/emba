@@ -95,7 +95,7 @@ test_that("it returns proper results", {
 
 context("Testing 'update_biomarker_files'")
 test_that("it returns proper results", {
-  biomarkers.dir = system.file("extdata", "biomarkers/", package = "emba", mustWork = TRUE)
+  biomarkers.dir = system.file("extdata", "biomarkers", package = "emba", mustWork = TRUE)
   biomarkers.active.prev = read.table(paste0(biomarkers.dir, "/A-B_biomarkers_active"),
     stringsAsFactors = FALSE)
   biomarkers.inhibited.prev = read.table(paste0(biomarkers.dir, "/A-B_biomarkers_inhibited"),
@@ -106,6 +106,9 @@ test_that("it returns proper results", {
 
   biomarkers.inhibited.new = c(-0.8, -0.99)
   names(biomarkers.inhibited.new) = c("B3", "B4")
+
+  # for not skipping the test
+  expect_equal(unname(biomarkers.active.new), c(0.8, 0.9))
 
   update_biomarker_files(biomarkers.dir = biomarkers.dir, drug.comb = "A-B",
     biomarkers.active.new = biomarkers.active.new,
@@ -127,7 +130,7 @@ test_that("it returns proper results", {
     biomarkers.active.new = biomarkers.active.new,
     biomarkers.inhibited.new = biomarkers.inhibited.new)
 
-  # restore biomarkers
+  # restore biomarkers files
   usefun::save_vector_to_file(vector = biomarkers.active.prev,
     file = paste0(biomarkers.dir, "/A-B_biomarkers_active"))
   usefun::save_vector_to_file(vector = biomarkers.inhibited.prev,
