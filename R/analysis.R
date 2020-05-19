@@ -341,7 +341,8 @@ calculate_mcc = function(tp, tn, fp, fn) {
 #' the 'new' biomarkers are added to the 'old' ones.
 #'
 #' @param biomarkers.dir string. It specifies the full path name of the
-#' directory which holds the biomarker files for the synergistic drug combination
+#' directory (without the ending character \emph{/}) which holds the biomarker
+#' files for the synergistic drug combination
 #' specified in the parameter \code{drug.comb}. The biomarker files must be
 #' formatted as: \emph{\%drug.comb\%_biomarkers_active} or
 #' \emph{\%drug.comb\%_biomarkers_inhibited}, where \%drug.comb\% is the value
@@ -378,7 +379,7 @@ update_biomarker_files =
 
     # update the active biomarkers
     active.biomarkers.file =
-      paste0(biomarkers.dir, drug.comb, "_biomarkers_active")
+      paste0(biomarkers.dir, "/", drug.comb, "_biomarkers_active")
 
     if (file.size(active.biomarkers.file) == 0
         || !file.exists(active.biomarkers.file)) {
@@ -429,7 +430,7 @@ update_biomarker_files =
 
     # update the inhibited biomarkers
     inhibited.biomarkers.file =
-      paste0(biomarkers.dir, drug.comb, "_biomarkers_inhibited")
+      paste0(biomarkers.dir, "/", drug.comb, "_biomarkers_inhibited")
 
     if (file.size(inhibited.biomarkers.file) == 0
       || !file.exists(inhibited.biomarkers.file)) {
