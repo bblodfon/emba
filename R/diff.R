@@ -155,14 +155,14 @@ get_avg_activity_diff_based_on_tp_predictions =
     stopifnot(length(good.models) > 0, length(bad.models) > 0)
 
     if (length(good.models) == 1) {
-      warning( "Only 1 \'good\' model in TP class: ", num.high, " - very biased analysis\n")
+      warning("Only 1 \'good\' model in TP class: ", num.high, " - very biased analysis\n")
       good.avg.activity = models.stable.state[good.models, ]
     } else {
       good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
     }
 
     if (length(bad.models) == 1) {
-      warning(paste0("Only 1 \'bad\' model in TP class: ", num.low, " - very biased analysis\n"))
+      warning("Only 1 \'bad\' model in TP class: ", num.low, " - very biased analysis\n")
       bad.avg.activity = models.stable.state[bad.models, ]
     } else {
       bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
@@ -360,14 +360,14 @@ get_avg_activity_diff_based_on_mcc_clustering =
     stopifnot(length(good.models) > 0, length(bad.models) > 0)
 
     if (length(good.models) == 1) {
-      warning(paste0("Only 1 \'good\' model in MCC class: ", class.id.high, " - very biased analysis\n"))
+      warning("Only 1 \'good\' model in MCC class: ", class.id.high, " - very biased analysis\n")
       good.avg.activity = models.stable.state[good.models, ]
     } else {
       good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
     }
 
     if (length(bad.models) == 1) {
-      warning(paste0("Only 1 \'bad\' model in MCC class: ", class.id.low, " - very biased analysis\n"))
+      warning("Only 1 \'bad\' model in MCC class: ", class.id.low, " - very biased analysis\n")
       bad.avg.activity = models.stable.state[bad.models, ]
     } else {
       bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
