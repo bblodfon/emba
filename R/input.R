@@ -145,7 +145,7 @@ get_stable_state_from_models_dir = function(models.dir) {
 #' Load the models boolean equation link operator data
 #'
 #' Use this function to merge the link operator data used in the boolean equations
-#' of the models into a single matrix. Every boolean model is defined by a series
+#' of the models into a single \code{data.frame} object. Every boolean model is defined by a series
 #' of boolean equations in the form \eqn{Target *= (Activator or Activator or...)
 #' and not (Inhibitor or Inhibitor or...)"}. The \strong{link operator} can be
 #' either \emph{and not}, \emph{or not} or non-existent if the target has only
@@ -160,8 +160,8 @@ get_stable_state_from_models_dir = function(models.dir) {
 #' nodes (columns in the returned matrix) which do not have both type of
 #' regulators (so no link operator)? Default value: TRUE (remove these nodes).
 #'
-#' @return a matrix (nxm) with n models and m nodes. The row names of the matrix
-#' specify the models' names whereas the column names specify the name of the
+#' @return a \code{data.frame} (nxm) with n models and m nodes. The row names
+#' specify the models' names whereas the column names specify the
 #' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 #' element} are either \emph{0} (\strong{and not} link operator), \emph{1}
 #' (\strong{or not} link operator) or \emph{0.5} if the node is not targeted by
@@ -178,24 +178,28 @@ get_stable_state_from_models_dir = function(models.dir) {
 get_link_operators_from_models_dir =
   function(models.dir, remove.equations.without.link.operator = TRUE) {
     files = list.files(models.dir)
+
+    model.names = sapply(files, function(x) {
+      sub(pattern = ".gitsbe", replacement = "", x)
+    }, USE.NAMES = FALSE)
     node.names = get_node_names(models.dir)
 
-    datalist = list(length(files))
+    datalist = list()
 
     # get the equations
-    i = 0
+    index = 1
     for (file in files) {
-      i = i+1
       lines = readLines(paste0(models.dir, "/", file))
       equations = grep("equation:", lines, value = TRUE)
       values = sapply(equations, function(equation) {
-        assign_link_operator_value_to_equation(equation)})
-      datalist[[i]] = values
+        assign_link_operator_value_to_equation(equation)}, USE.NAMES = FALSE)
+      datalist[[index]] = values
+      index = index + 1
     }
 
     df = do.call(rbind, datalist)
 
-    rownames(df) = files
+    rownames(df) = model.names
     colnames(df) = node.names
 
     if (remove.equations.without.link.operator) {
@@ -208,7 +212,7 @@ get_link_operators_from_models_dir =
       df[is.na(df)] = 0.5
     }
 
-    return(df)
+    return(as.data.frame(df))
 }
 
 #' Load the models fitness scores

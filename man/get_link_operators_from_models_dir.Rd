@@ -18,8 +18,8 @@ nodes (columns in the returned matrix) which do not have both type of
 regulators (so no link operator)? Default value: TRUE (remove these nodes).}
 }
 \value{
-a matrix (nxm) with n models and m nodes. The row names of the matrix
-specify the models' names whereas the column names specify the name of the
+a \code{data.frame} (nxm) with n models and m nodes. The row names
+specify the models' names whereas the column names specify the
 network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 element} are either \emph{0} (\strong{and not} link operator), \emph{1}
 (\strong{or not} link operator) or \emph{0.5} if the node is not targeted by
@@ -27,7 +27,7 @@ both activating and inhibiting regulators (no link operator).
 }
 \description{
 Use this function to merge the link operator data used in the boolean equations
-of the models into a single matrix. Every boolean model is defined by a series
+of the models into a single \code{data.frame} object. Every boolean model is defined by a series
 of boolean equations in the form \eqn{Target *= (Activator or Activator or...)
 and not (Inhibitor or Inhibitor or...)"}. The \strong{link operator} can be
 either \emph{and not}, \emph{or not} or non-existent if the target has only
