@@ -79,10 +79,10 @@ test_that("it returns proper results", {
   models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
   models.fitness = get_fitness_from_models_dir(models.dir)
 
-  expect_equal(names(models.fitness), c("test.gitsbe", "test2.gitsbe", "test3.gitsbe", "test4.gitsbe"))
-  expect_equal(unname(models.fitness["test.gitsbe"]), 0.640625)
-  expect_equal(unname(models.fitness["test2.gitsbe"]), 0.625)
-  expect_equal(unname(models.fitness["test3.gitsbe"]), 0.6640625)
+  expect_equal(names(models.fitness), c("test", "test2", "test3", "test4"))
+  expect_equal(unname(models.fitness["test"]), 0.640625)
+  expect_equal(unname(models.fitness["test2"]), 0.625)
+  expect_equal(unname(models.fitness["test3"]), 0.6640625)
 })
 
 context("Testing 'get_node_names'")

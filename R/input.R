@@ -232,6 +232,11 @@ get_link_operators_from_models_dir =
 #' @export
 get_fitness_from_models_dir = function(models.dir) {
   files = list.files(models.dir)
+
+  model.names = sapply(files, function(x) {
+    sub(pattern = ".gitsbe", replacement = "", x)
+  }, USE.NAMES = FALSE)
+
   model.fitness = character(length(files))
 
   i = 0
@@ -242,7 +247,7 @@ get_fitness_from_models_dir = function(models.dir) {
   }
 
   model.fitness = as.numeric(model.fitness)
-  names(model.fitness) = files
+  names(model.fitness) = model.names
 
   return(model.fitness)
 }
