@@ -8,7 +8,8 @@ get_avg_activity_diff_based_on_synergy_set_cmp(
   synergy.set.str,
   synergy.subset.str,
   model.predictions,
-  models.stable.state
+  models.stable.state,
+  penalty = 0
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ combination inhibited model or in any of the two single-drug inhibited models)}
 names specify the models' names whereas the column names specify the network nodes
 (gene, proteins, etc.). Possible values for each \emph{model-node element}
 are either \emph{0} (inactive node) or \emph{1} (active node).}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.}
 }
 \value{
 a numeric vector with values in the [-1,1] interval (minimum and
@@ -46,7 +50,8 @@ The 'good' models are those that predict the \code{synergy.set.str}
 \code{synergy.subset.str} (e.g. "A-B,B-C"). Then, for each network node,
 the function finds the node's average activity in each of the two classes
 (a value in the [0,1] interval) and then subtracts the bad class average
-activity value from the good one.
+activity value from the good one, taking into account the given \code{penalty}
+factor and the number of models in the 'good' and 'bad' class respectively.
 }
 \section{Details}{
 
@@ -64,6 +69,8 @@ of interest when searching for potential biomarkers for the extra synergy(-ies).
 }
 
 \seealso{
+\code{\link{get_vector_diff}}
+
 Other average data difference functions: 
 \code{\link{get_avg_activity_diff_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}()},

@@ -633,7 +633,8 @@ get_avg_link_operator_diff_based_on_specific_synergy_prediction =
 #' \code{synergy.subset.str} (e.g. "A-B,B-C"). Then, for each network node,
 #' the function finds the node's average activity in each of the two classes
 #' (a value in the [0,1] interval) and then subtracts the bad class average
-#' activity value from the good one.
+#' activity value from the good one, taking into account the given \code{penalty}
+#' factor and the number of models in the 'good' and 'bad' class respectively.
 #'
 #' @param synergy.set.str a string of drug combinations, comma-separated. The
 #' number of the specified combinations must be larger than the ones defined
@@ -652,6 +653,8 @@ get_avg_link_operator_diff_based_on_specific_synergy_prediction =
 #' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
+#' penalty and a value of 1 is the strickest possible penalty. Default value is 0.
 #'
 #' @return a numeric vector with values in the [-1,1] interval (minimum and
 #' maximum possible average difference) and with the names attribute
@@ -667,16 +670,19 @@ get_avg_link_operator_diff_based_on_specific_synergy_prediction =
 #' performance of a model and make it predict the extra synergy(-ies).
 #' A value closer to 0 indicates that the activity of that
 #' node is \strong{not so much different} between the models that predicted the
-#' synergy set and those that predicted it's subset, so it won't not be a node
+#' synergy set and those that predicted it's subset, so it won't be a node
 #' of interest when searching for potential biomarkers for the extra synergy(-ies).
 #'
 #' @family average data difference functions
+#'
+#' @seealso
+#' \code{\link{get_vector_diff}}
 #'
 #' @importFrom usefun outersect is_empty
 #' @export
 get_avg_activity_diff_based_on_synergy_set_cmp =
   function(synergy.set.str, synergy.subset.str, model.predictions,
-           models.stable.state) {
+           models.stable.state, penalty = 0) {
 
     synergy.set = unlist(strsplit(synergy.set.str, split = ","))
     synergy.subset = unlist(strsplit(synergy.subset.str, split = ","))
@@ -687,16 +693,10 @@ get_avg_activity_diff_based_on_synergy_set_cmp =
     stopifnot(all(synergy.subset %in% synergy.set))
     stopifnot(all(synergy.set %in% colnames(model.predictions)))
 
-    # find models that predict the `synergy.set`
-    if (length(synergy.set) == 1) {
-      models.synergy.set = rownames(model.predictions)[
-        model.predictions[, synergy.set] == 1 &
-          !is.na(model.predictions[, synergy.set])]
-    } else {
-      models.synergy.set = rownames(model.predictions)[
-        apply(model.predictions[, synergy.set], 1,
-              function(x) all(x == 1 & !is.na(x)))]
-    }
+    # find models that predict the `synergy.set` (always more than 1 elements in the set)
+    models.synergy.set = rownames(model.predictions)[
+      apply(model.predictions[, synergy.set], 1,
+            function(x) all(x == 1 & !is.na(x)))]
 
     # find models that predict the `synergy.subset`
     if (length(synergy.subset) == 1) {
@@ -721,20 +721,20 @@ get_avg_activity_diff_based_on_synergy_set_cmp =
     stopifnot(!is_empty(good.models))
 
     if (length(good.models) == 1) {
-      good.avg.activity = models.stable.state[good.models, ]
+      good.avg.activity = unlist(models.stable.state[good.models, ])
     } else {
       good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
     }
 
     if (length(bad.models) == 1) {
-      bad.avg.activity = models.stable.state[bad.models, ]
+      bad.avg.activity = unlist(models.stable.state[bad.models, ])
     } else {
       bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
     }
 
-    return(good.avg.activity - bad.avg.activity)
-  }
-
+    get_vector_diff(vec1 = good.avg.activity, vec2 = bad.avg.activity,
+      m1 = length(good.models), m2 = length(bad.models), penalty)
+}
 
 #' Get the average link operator difference based on the comparison of two synergy sets
 #'
@@ -800,3 +800,45 @@ get_avg_link_operator_diff_based_on_synergy_set_cmp =
       synergy.set.str, synergy.subset.str, model.predictions,
       models.stable.state = models.link.operator)
   }
+
+
+#' Calculate difference vector with penalty term
+#'
+#' This function calculates the difference between two given numeric vectors while
+#' adding a penalty term (weight) to account for the number of models/instances that
+#' each vector's values were calculated from. Thus, if the models/instances are
+#' disproportionate and a penalty is included, the difference vector's values will
+#' be changed accordingly to reflect that.
+#'
+#' @param vec1 numeric vector
+#' @param vec2 numeric vector
+#' @param m1 integer > 0
+#' @param m2 integer > 0
+#' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
+#' penalty (\code{m1,m2} don't matter) and a value of 1 is the strickest possible
+#' penalty. Default value is 0.
+#'
+#' @return the vector of differences between the two given vectors based on the
+#' formula: \deqn{vec1 - vec2 * (min(m1,m2)/max(m1,m2))^penalty)}
+#'
+#' See also related \href{https://math.stackexchange.com/questions/3547139/formula-for-weighted-average-difference}{StackOverflow question}.
+#' If \code{vec1} has \code{names}, the returned vector will have the same names
+#' attribute as \code{vec1}.
+#'
+#' @export
+get_vector_diff = function(vec1, vec2, m1 = 1, m2 = 1, penalty = 0) {
+  stopifnot(penalty >= 0, penalty <= 1)
+  stopifnot(length(vec1) == length(vec2))
+
+  if (m1 < 1 | m2 < 1) {
+    message("m1 or m2 less than 1!")
+    m1 = 1
+    m2 = 1
+  }
+
+  min.v = min(m1, m2)
+  max.v = max(m1, m2)
+
+  weight = (min.v/max.v) ^ penalty
+  return(weight * (vec1 - vec2))
+}
