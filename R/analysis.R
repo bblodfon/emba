@@ -318,7 +318,7 @@ calculate_models_synergies_tn = function(unobserved.model.predictions) {
 #' interval. If any of the four sums of the MCC formula are zero, then we return
 #' an MCC score of zero, which can be shown to be the correct limiting value (model
 #' is no better than a random predictor, see
-#' \href{https://github.com/mlr-org/mlr/issues/1736}{stackoveflow discussion}).
+#' \href{https://doi.org/10.1186/s12864-019-6413-7}{Chicco et al. (2020)}).
 #'
 #' @family confusion matrix calculation functions
 #'
