@@ -17,9 +17,9 @@ element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 predicted) or \emph{NA} (couldn't find stable states in either the drug
 combination inhibited model or in any of the two single-drug inhibited models)}
 
-\item{models.link.operator}{matrix (nxm) with n models and m nodes. The row
-names of the matrix specify the models' names (same order as in the
-\code{model.predictions} parameter) whereas the column names specify the name of the
+\item{models.link.operator}{a \code{data.frame} (nxm) with n models and m nodes. The row
+names specify the models' names (same order as in the
+\code{model.predictions} parameter) whereas the column names specify the
 network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
 (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by

@@ -63,8 +63,8 @@ get_avg_activity_diff_mat_based_on_tp_predictions =
 #' @param models.synergies.tp an integer vector of TP values. The \emph{names}
 #' attribute holds the models' names and have to be in the same order as in the
 #' \code{models} parameter.
-#' @param models.link.operator matrix (nxm) with n models and m nodes. The row names of the matrix
-#' specify the models' names whereas the column names specify the name of the
+#' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes.
+#' The row names specify the models' names whereas the column names specify the
 #' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 #' element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
 #' (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
@@ -248,9 +248,9 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
 #' @param models.mcc a numeric vector of Matthews Correlation Coefficient (MCC)
 #' scores, one for each model. The \emph{names} attribute holds the models' names.
 #' Can be the result of using the function \code{\link{calculate_models_mcc}}.
-#' @param models.link.operator matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names (same order as in the
-#' \code{models.mcc} parameter) whereas the column names specify the name of the
+#' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes.
+#' The row names specify the models' names (same order as in the
+#' \code{models.mcc} parameter) whereas the column names specify the
 #' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 #' element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
 #' (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
@@ -452,9 +452,9 @@ get_avg_activity_diff_mat_based_on_specific_synergy_prediction =
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
-#' @param models.link.operator matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names (same order as in the
-#' \code{model.predictions} parameter) whereas the column names specify the name of the
+#' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names (same order as in the
+#' \code{model.predictions} parameter) whereas the column names specify the
 #' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 #' element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
 #' (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
@@ -586,9 +586,9 @@ get_avg_activity_diff_based_on_specific_synergy_prediction =
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
-#' @param models.link.operator matrix (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names (same order as in the
-#' \code{model.predictions} parameter) whereas the column names specify the name of the
+#' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes. The row
+#' names specify the models' names (same order as in the
+#' \code{model.predictions} parameter) whereas the column names specify the
 #' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 #' element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
 #' (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
@@ -761,8 +761,8 @@ get_avg_activity_diff_based_on_synergy_set_cmp =
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
-#' @param models.link.operator matrix (nxm) with n models and m nodes. The row names of the matrix
-#' specify the models' names whereas the column names specify the name of the
+#' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes.
+#' The row names specify the models' names whereas the column names specify the
 #' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 #' element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
 #' (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
