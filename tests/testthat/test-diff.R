@@ -1,4 +1,45 @@
-context("Testing 'get_avg_activity_diff_based_on_synergy_set_cmp'")
+# Common stuff for tests
+df = model_predictions_df %>% as.data.frame() # from R/sysdata.rda
+dff = df[c(567, 736, 810, 1000, 1000, 567, 736, 736),]
+rownames(dff) = c("test", "test2", "test3", "test4", "test5", "test6", "test7", "test8")
+
+models_dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
+models_ss = get_stable_state_from_models_dir(models_dir)
+models_lo = get_link_operators_from_models_dir(models_dir)
+models_ss = models_ss[, 1:5]
+models_lo = models_lo[, 1:5]
+df_new = as.data.frame(matrix(c(1,0,1,1,0), ncol = 5, nrow = 5))
+colnames(df_new) = colnames(models_ss)
+rownames(df_new) = c("test4", "test5", "test6", "test7", "test8")
+models_ss = rbind(models_ss, df_new)
+colnames(df_new) = colnames(models_lo)
+models_lo = rbind(models_lo, df_new[-1,])
+
+context("Testing 'get_avg_{activity/link_operator}_diff_mat_based_on_specific_synergy_prediction'")
+test_that("it returns proper results", {
+  expect_error(get_avg_activity_diff_mat_based_on_specific_synergy_prediction(
+    dff, models_ss, predicted.synergies = c("NO!", "YES!")))
+
+  synergies = c("r-u", "f-l")
+  res1 = get_avg_activity_diff_mat_based_on_specific_synergy_prediction(model.predictions = dff, models.stable.state = models_ss, predicted.synergies = synergies, penalty = 0.2)
+  res2 = get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction(model.predictions = dff, models.link.operator = models_lo, predicted.synergies = synergies)
+
+  expect_equal(unname(res1[1,]), c(-0.2904, -0.2904, -0.2904, -0.2904, 0.2904), tolerance = 0.0001)
+  expect_equal(unname(res2[2,]), c(0.5, 0.5, 0, 0.5, 0))
+  expect_equal(colnames(res1), colnames(models_ss))
+  expect_equal(colnames(res2), colnames(models_lo))
+  expect_equal(rownames(res1), synergies)
+  expect_equal(rownames(res2), synergies)
+})
+
+context("Testing 'get_avg_activity_diff_based_on_specific_synergy_prediction'")
+test_that("it does proper input check", {
+  # input check
+  expect_error(get_avg_activity_diff_based_on_specific_synergy_prediction(
+    dff, models_ss, drug.comb = "NO!"))
+})
+
+context("Testing 'get_avg_{activity/link_operator}_diff_based_on_synergy_set_cmp'")
 test_that("it does proper input checks", {
   # length(synergy.subset) > 0
   expect_error(get_avg_activity_diff_based_on_synergy_set_cmp(
@@ -17,35 +58,23 @@ test_that("it does proper input checks", {
 })
 
 test_that("it returns proper results", {
-  df = model_predictions_df %>% as.data.frame() # from R/sysdata.rda
-  dff = df[c(567, 736, 810, 1000, 1000, 567, 736, 736),]
-  rownames(dff) = c("test", "test2", "test3", "test4", "test5", "test6", "test7", "test8")
-
-  models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
-  models.ss = get_stable_state_from_models_dir(models.dir)
-  models.ss = models.ss[, 1:5]
-  models.ss.new = as.data.frame(matrix(c(1,0,1,1,0), ncol = 5, nrow = 5))
-  colnames(models.ss.new) = colnames(models.ss)
-  rownames(models.ss.new) = c("test4", "test5", "test6", "test7", "test8")
-  models.ss = rbind(models.ss, models.ss.new)
-
   diff1 = get_avg_activity_diff_based_on_synergy_set_cmp(
     synergy.set.str = "r-u,i-k", synergy.subset.str = "i-k",
-    model.predictions = dff, models.stable.state = models.ss)
+    model.predictions = dff, models.stable.state = models_ss)
   diff2 = get_avg_activity_diff_based_on_synergy_set_cmp(
     synergy.set.str = "r-u,i-k,g-o", synergy.subset.str = "r-u,g-o",
-    model.predictions = dff, models.stable.state = models.ss)
-  diff3 = get_avg_activity_diff_based_on_synergy_set_cmp(
+    model.predictions = dff, models.stable.state = models_ss)
+  diff3 = get_avg_link_operator_diff_based_on_synergy_set_cmp(
     synergy.set.str = "i-k,g-o,w-x,n-s,b-m,c-y", synergy.subset.str = "i-k,c-y",
-    model.predictions = dff, models.stable.state = models.ss)
+    model.predictions = dff, models.link.operator = models_lo)
 
   expect_equal(unname(diff1), c(-0.4, -0.4, -0.4, -0.4, 0.4))
   expect_equal(unname(diff2), c(0.1, 0.1, 0.1, 0.1, -0.1))
-  expect_equal(unname(diff3), c(0.4, 0.4, 0.4, 0.4, -0.4))
+  expect_equal(unname(diff3), c(-0.2, -0.6, 0.8, -0.2, 0.4))
 
-  expect_equal(names(diff1), colnames(models.ss))
-  expect_equal(names(diff2), colnames(models.ss))
-  expect_equal(names(diff3), colnames(models.ss))
+  expect_equal(names(diff1), colnames(models_ss))
+  expect_equal(names(diff2), colnames(models_ss))
+  expect_equal(names(diff3), colnames(models_lo))
 })
 
 context("Testing 'get_vector_diff'")
