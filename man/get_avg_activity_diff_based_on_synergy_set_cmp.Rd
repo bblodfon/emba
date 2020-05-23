@@ -35,7 +35,11 @@ names specify the models' names whereas the column names specify the network nod
 are either \emph{0} (inactive node) or \emph{1} (active node).}
 
 \item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
-penalty and a value of 1 is the strickest possible penalty. Default value is 0.}
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a numeric vector with values in the [-1,1] interval (minimum and
@@ -64,7 +68,7 @@ biomarkers} because their activity state can influence the prediction
 performance of a model and make it predict the extra synergy(-ies).
 A value closer to 0 indicates that the activity of that
 node is \strong{not so much different} between the models that predicted the
-synergy set and those that predicted it's subset, so it won't not be a node
+synergy set and those that predicted it's subset, so it won't be a node
 of interest when searching for potential biomarkers for the extra synergy(-ies).
 }
 
@@ -78,7 +82,6 @@ Other average data difference functions:
 \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}()},
-\code{\link{get_avg_link_operator_diff_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction}()},

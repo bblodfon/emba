@@ -7,7 +7,8 @@
 get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction(
   model.predictions,
   models.link.operator,
-  predicted.synergies
+  predicted.synergies,
+  penalty = 0
 )
 }
 \arguments{
@@ -29,6 +30,13 @@ both activating and inhibiting regulators (no link operator).}
 combination names) that were predicted by \strong{at least one} of the models
 in the dataset. It must be a subset of the column names (the drug combinations)
 of the \code{model.predictions} object.}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a matrix whose rows are \strong{vectors of average node link operator
@@ -62,6 +70,8 @@ node with regard to the parameterization).
 }
 
 \seealso{
+\code{\link{get_vector_diff}}
+
 Other average data difference functions: 
 \code{\link{get_avg_activity_diff_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}()},
@@ -70,7 +80,6 @@ Other average data difference functions:
 \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}()},
-\code{\link{get_avg_link_operator_diff_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}()}

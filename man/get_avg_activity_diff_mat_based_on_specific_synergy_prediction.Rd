@@ -7,7 +7,8 @@
 get_avg_activity_diff_mat_based_on_specific_synergy_prediction(
   model.predictions,
   models.stable.state,
-  predicted.synergies
+  predicted.synergies,
+  penalty = 0
 )
 }
 \arguments{
@@ -26,6 +27,13 @@ are either \emph{0} (inactive node) or \emph{1} (active node).}
 combination names) that were predicted by \strong{at least one} of the models
 in the dataset. It must be a subset of the column names (the drug combinations)
 of the \code{model.predictions} object.}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a matrix whose rows are \strong{vectors of
@@ -39,9 +47,11 @@ represent the network's node names. Values are in the [-1,1] interval.
 This function uses the \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}
 function on a vector of drug combinations that were observed as synergistic
 (e.g. by experiments) but also found as such by at least one of the models
-(these drug combinations are the \emph{predicted synergies}).
+(these drug combinations are the \code{predicted.synergies}).
 }
 \seealso{
+\code{\link{get_vector_diff}}
+
 Other average data difference functions: 
 \code{\link{get_avg_activity_diff_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}()},
@@ -49,7 +59,6 @@ Other average data difference functions:
 \code{\link{get_avg_activity_diff_based_on_tp_predictions}()},
 \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}()},
-\code{\link{get_avg_link_operator_diff_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction}()},

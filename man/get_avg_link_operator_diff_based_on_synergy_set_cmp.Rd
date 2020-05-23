@@ -8,7 +8,8 @@ get_avg_link_operator_diff_based_on_synergy_set_cmp(
   synergy.set.str,
   synergy.subset.str,
   model.predictions,
-  models.link.operator
+  models.link.operator,
+  penalty = 0
 )
 }
 \arguments{
@@ -34,6 +35,13 @@ network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
 element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
 (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
 both activating and inhibiting regulators (no link operator).}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a numeric vector with values in the [-1,1] interval (minimum and
@@ -41,7 +49,7 @@ maximum possible average difference) and with the names attribute
 representing the name of the nodes.
 }
 \description{
-This function uses the \code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}}
+This function uses the \code{\link{get_avg_activity_diff_based_on_synergy_set_cmp}}
 which splits the models to 'good' and 'bad' based on the predictions
 of two different synergy sets, one of them being a subset of the other.
 The 'good' models are those that predict the \code{synergy.set.str}
@@ -49,7 +57,9 @@ The 'good' models are those that predict the \code{synergy.set.str}
 \code{synergy.subset.str} (e.g. "A-B,B-C"). Then, for each network node,
 the function finds the node's average link operator value in each of the two classes
 (a value in the [0,1] interval, 0 being \emph{AND NOT} and 1 being \emph{OR NOT})
-and then subtracts the bad class average link operator value from the good one.
+and then subtracts the bad class average link operator value from the good one,
+taking into account the given \code{penalty} factor and the number of models
+in the 'good' and 'bad' class respectively.
 }
 \section{Details}{
 
@@ -73,6 +83,8 @@ in model performance.
 }
 
 \seealso{
+\code{\link{get_vector_diff}}
+
 Other average data difference functions: 
 \code{\link{get_avg_activity_diff_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}()},
@@ -81,7 +93,6 @@ Other average data difference functions:
 \code{\link{get_avg_activity_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}()},
-\code{\link{get_avg_link_operator_diff_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}()}

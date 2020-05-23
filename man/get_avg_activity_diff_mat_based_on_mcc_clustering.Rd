@@ -46,6 +46,8 @@ function, comparing thus all groups of models that belong to different
 MCC classes.
 }
 \seealso{
+\code{\link{get_vector_diff}}
+
 Other average data difference functions: 
 \code{\link{get_avg_activity_diff_based_on_mcc_clustering}()},
 \code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}()},
@@ -53,7 +55,6 @@ Other average data difference functions:
 \code{\link{get_avg_activity_diff_based_on_tp_predictions}()},
 \code{\link{get_avg_activity_diff_mat_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_activity_diff_mat_based_on_tp_predictions}()},
-\code{\link{get_avg_link_operator_diff_based_on_specific_synergy_prediction}()},
 \code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_mcc_clustering}()},
 \code{\link{get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction}()},
