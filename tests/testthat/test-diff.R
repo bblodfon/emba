@@ -1,8 +1,14 @@
-# Common stuff for tests
+# Common data used in all tests
+
+## dff => model.predictions
 df = model_predictions_df %>% as.data.frame() # from R/sysdata.rda
 dff = df[c(567, 736, 810, 1000, 1000, 567, 736, 736),]
 rownames(dff) = c("test", "test2", "test3", "test4", "test5", "test6", "test7", "test8")
 
+models_mcc = c(-0.04, -0.17, 0.15, -0.24, -0.02 , 0.27, -0.42 , 0.38)
+names(models_mcc) = rownames(dff)
+
+## models_ss => models.stable.state, models_lo => models.link.operators
 models_dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
 models_ss = get_stable_state_from_models_dir(models_dir)
 models_lo = get_link_operators_from_models_dir(models_dir)
@@ -14,6 +20,48 @@ rownames(df_new) = c("test4", "test5", "test6", "test7", "test8")
 models_ss = rbind(models_ss, df_new)
 colnames(df_new) = colnames(models_lo)
 models_lo = rbind(models_lo, df_new[-1,])
+
+context("Testing 'get_avg_{activity/link_operator}_diff_mat_based_on_mcc_clustering'")
+test_that("it returns proper results", {
+  expect_error(get_avg_activity_diff_mat_based_on_mcc_clustering(models_mcc, models_ss,
+    num.of.mcc.classes = 1))
+
+  res1 = get_avg_activity_diff_mat_based_on_mcc_clustering(models_mcc, models_ss,
+    num.of.mcc.classes = 3)
+  res2 = get_avg_activity_diff_mat_based_on_mcc_clustering(models_mcc, models_ss,
+    num.of.mcc.classes = 3, penalty = 0.3)
+  res3 = get_avg_activity_diff_mat_based_on_mcc_clustering(models_mcc, models_ss,
+    num.of.mcc.classes = 2, penalty = 0.1)
+  res4 = get_avg_link_operator_diff_mat_based_on_mcc_clustering(models_mcc, models_lo,
+    num.of.mcc.classes = 3, penalty = 0.4)
+
+  expect_equal(dim(res1), c(3,5))
+  expect_equal(dim(res2), c(3,5))
+  expect_equal(dim(res3), c(1,5))
+  expect_equal(dim(res4), c(3,5))
+
+  expect_equal(colnames(res1), colnames(models_ss))
+  expect_equal(colnames(res2), colnames(models_ss))
+  expect_equal(colnames(res3), colnames(models_ss))
+  expect_equal(colnames(res4), colnames(models_lo))
+
+  expect_equal(rownames(res1), c("(1,2)", "(1,3)", "(2,3)"))
+  expect_equal(rownames(res2), c("(1,2)", "(1,3)", "(2,3)"))
+  expect_equal(rownames(res3), c("(1,2)"))
+  expect_equal(rownames(res4), c("(1,2)", "(1,3)", "(2,3)"))
+
+  expect_equal(unname(res3[1,]), c(0.0633, 0.0633, 0.0633, 0.0633, -0.0633), tolerance = 0.0001)
+
+  # same number of models in each group, same result no matter the penalty
+  expect_equal(res1[3,], res2[3,])
+})
+
+context("Testing 'get_avg_activity_diff_based_on_mcc_clustering'")
+test_that("it does proper input check", {
+  expect_error(get_avg_activity_diff_based_on_mcc_clustering(models.mcc = models_mcc,
+    models.stable.state = models_ss, mcc.class.ids = c(1,2),
+    models.cluster.ids = c(1,1,2,1,2,1,1,2), class.id.low = 2, class.id.high = 1))
+})
 
 context("Testing 'get_avg_{activity/link_operator}_diff_mat_based_on_specific_synergy_prediction'")
 test_that("it returns proper results", {
