@@ -7,7 +7,8 @@
 get_avg_activity_diff_mat_based_on_mcc_clustering(
   models.mcc,
   models.stable.state,
-  num.of.mcc.classes
+  num.of.mcc.classes,
+  penalty = 0
 )
 }
 \arguments{
@@ -16,14 +17,20 @@ scores, one for each model. The \emph{names} attribute holds the models' names.
 Can be the result of using the function \code{\link{calculate_models_mcc}}.}
 
 \item{models.stable.state}{a \code{data.frame} (nxm) with n models and m nodes. The row
-names specify the models' names (same order as in the \code{models.mcc}
-parameter) whereas the column names specify the network nodes
+names specify the models' names whereas the column names specify the network nodes
 (gene, proteins, etc.). Possible values for each \emph{model-node element}
 are either \emph{0} (inactive node) or \emph{1} (active node).}
 
 \item{num.of.mcc.classes}{numeric. A positive integer larger than 2 that
 signifies the number of mcc classes (groups) that we should split the models
 MCC values.}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a matrix whose rows are \strong{vectors of
@@ -37,13 +44,14 @@ Values are in the [-1,1] interval.
 \description{
 This function splits the Matthews correlation coefficient (MCC) scores
 of the models to specific groups using the \pkg{Ckmeans.1d.dp}
-package for the clustering (groups are denoted by ids, e.g. 1,2,3, etc.
+package (groups are denoted by ids, e.g. 1,2,3, etc.
 where a larger id corresponds to a group of models with higher MCC scores)
 and for each pairwise
 combination of group id matchings (e.g. (0,1), (1,3), etc.), it uses the
 \code{\link{get_avg_activity_diff_based_on_mcc_clustering}}
 function, comparing thus all groups of models that belong to different
-MCC classes.
+MCC classes while taking into account the given \code{penalty} factor and the
+number of models in each respective model MCC group.
 }
 \seealso{
 \code{\link{get_vector_diff}}

@@ -7,7 +7,8 @@
 get_avg_link_operator_diff_mat_based_on_mcc_clustering(
   models.mcc,
   models.link.operator,
-  num.of.mcc.classes
+  num.of.mcc.classes,
+  penalty = 0
 )
 }
 \arguments{
@@ -26,6 +27,13 @@ both activating and inhibiting regulators (no link operator).}
 \item{num.of.mcc.classes}{numeric. A positive integer larger than 2 that
 signifies the number of mcc classes (groups) that we should split the models
 MCC values.}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a matrix whose rows are \strong{vectors of average node link operator

@@ -10,8 +10,9 @@ biomarker_mcc_analysis(
   models.link.operator = NULL,
   observed.synergies,
   threshold,
-  num.of.mcc.classes,
-  calculate.subsets.stats = FALSE
+  num.of.mcc.classes = 5,
+  calculate.subsets.stats = FALSE,
+  penalty = 0.1
 )
 }
 \arguments{
@@ -50,13 +51,20 @@ biomarkers are found.}
 
 \item{num.of.mcc.classes}{numeric. A positive integer larger than 2 that
 signifies the number of mcc classes (groups) that we should split the models
-MCC values.}
+MCC values. Default value: 5.}
 
 \item{calculate.subsets.stats}{logical. If \emph{TRUE}, then the results will
 include a vector of integers, representing the number of models that predicted
 every subset of the given \code{observed.synergies} (where at least one model
 predicts every synergy in the subset). The default value is \emph{FALSE}, since
 the powerset of the predicted \code{observed.synergies} can be very large to compute.}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.1.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a list with various elements:
