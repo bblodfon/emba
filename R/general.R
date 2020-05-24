@@ -200,12 +200,18 @@ biomarker_tp_analysis =
 #' biomarkers are found.
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
 #' signifies the number of mcc classes (groups) that we should split the models
-#' MCC values.
+#' MCC values. Default value: 5.
 #' @param calculate.subsets.stats logical. If \emph{TRUE}, then the results will
 #' include a vector of integers, representing the number of models that predicted
 #' every subset of the given \code{observed.synergies} (where at least one model
 #' predicts every synergy in the subset). The default value is \emph{FALSE}, since
 #' the powerset of the predicted \code{observed.synergies} can be very large to compute.
+#' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
+#' penalty and a value of 1 is the strickest possible penalty. Default value is 0.1.
+#' This penalty is used as part of a weighted term to the difference in a value of
+#' interest (e.g. activity or link operator difference) between two group of
+#' models, to account for the difference in the number of models from each
+#' respective model group.
 #'
 #' @return a list with various elements:
 #' \itemize{
@@ -258,8 +264,8 @@ biomarker_tp_analysis =
 #' @family general analysis functions
 #' @export
 biomarker_mcc_analysis = function(model.predictions, models.stable.state,
-  models.link.operator = NULL, observed.synergies, threshold, num.of.mcc.classes,
-  calculate.subsets.stats = FALSE) {
+  models.link.operator = NULL, observed.synergies, threshold, num.of.mcc.classes = 5,
+  calculate.subsets.stats = FALSE, penalty = 0.1) {
 
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
@@ -298,8 +304,7 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
   # Make all possible classification group matchings and get the
   # average state differences
   diff.state.mcc.mat = get_avg_activity_diff_mat_based_on_mcc_clustering(
-    models.mcc, models.stable.state, num.of.mcc.classes
-  )
+    models.mcc, models.stable.state, num.of.mcc.classes, penalty)
 
   # find the active and inhibited biomarkers based on the MCC classification groups
   biomarkers.state.list = get_biomarkers(diff.state.mcc.mat, threshold)
@@ -324,8 +329,8 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
     # Make all possible classification group matchings and get the average
     # link operator differences
     diff.link.mcc.mat = get_avg_link_operator_diff_mat_based_on_mcc_clustering(
-      models.mcc, models.link.operator, num.of.mcc.classes
-    )
+      models.mcc, models.link.operator, num.of.mcc.classes, penalty)
+
     # find the 'OR' and 'AND' biomarkers based on the TP classification groups
     biomarkers.link.list = get_biomarkers(diff.link.mcc.mat, threshold)
 
@@ -341,7 +346,7 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 #'
 #' Use this function to discover \emph{synergy biomarkers}, i.e. nodes whose
 #' activity and/or boolean equation parameterization (link operator) affect the
-#' manifestation of synergies in the models. Models are classified based on
+#' manifestation of synergies in the models. Models are classified to groups based on
 #' whether they predict or not each of the predicted synergies.
 #'
 #' @param model.predictions a \code{data.frame} object with rows the models and
@@ -377,6 +382,12 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 #' every subset of the given \code{observed.synergies} (where at least one model
 #' predicts every synergy in the subset). The default value is \emph{FALSE}, since
 #' the powerset of the predicted \code{observed.synergies} can be very large to compute.
+#' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
+#' penalty and a value of 1 is the strickest possible penalty. Default value is 0.1.
+#' This penalty is used as part of a weighted term to the difference in a value of
+#' interest (e.g. activity or link operator difference) between two group of
+#' models, to account for the difference in the number of models from each
+#' respective model group.
 #'
 #' @return a list with various elements:
 #' \itemize{
@@ -422,7 +433,7 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 #' @export
 biomarker_synergy_analysis =
   function(model.predictions, models.stable.state, models.link.operator = NULL,
-           observed.synergies, threshold, calculate.subsets.stats = FALSE) {
+           observed.synergies, threshold, calculate.subsets.stats = FALSE, penalty = 0.1) {
     # check input
     stopifnot(threshold >= 0 & threshold <= 1)
     models = rownames(model.predictions)
@@ -452,8 +463,7 @@ biomarker_synergy_analysis =
     # get the average activity state differences for each predicted synergy
     diff.state.synergies.mat =
       get_avg_activity_diff_mat_based_on_specific_synergy_prediction(
-        model.predictions, models.stable.state, predicted.synergies
-      )
+        model.predictions, models.stable.state, predicted.synergies, penalty)
 
     # find the active and inhibited biomarkers for each predicted synergy
     activity.biomarkers = as.data.frame(
@@ -477,8 +487,7 @@ biomarker_synergy_analysis =
       # get the average link operator differences for each predicted synergy
       diff.link.synergies.mat =
         get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction(
-          model.predictions, models.link.operator, predicted.synergies
-        )
+          model.predictions, models.link.operator, predicted.synergies, penalty)
 
       # find the 'OR' and 'AND' biomarkers for each predicted synergy
       link.operator.biomarkers = as.data.frame(
