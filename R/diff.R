@@ -186,25 +186,31 @@ get_avg_activity_diff_based_on_tp_predictions =
 #'
 #' This function splits the Matthews correlation coefficient (MCC) scores
 #' of the models to specific groups using the \pkg{Ckmeans.1d.dp}
-#' package for the clustering (groups are denoted by ids, e.g. 1,2,3, etc.
+#' package (groups are denoted by ids, e.g. 1,2,3, etc.
 #' where a larger id corresponds to a group of models with higher MCC scores)
 #' and for each pairwise
 #' combination of group id matchings (e.g. (0,1), (1,3), etc.), it uses the
 #' \code{\link{get_avg_activity_diff_based_on_mcc_clustering}}
 #' function, comparing thus all groups of models that belong to different
-#' MCC classes.
+#' MCC classes while taking into account the given \code{penalty} factor and the
+#' number of models in each respective model MCC group.
 #'
 #' @param models.mcc a numeric vector of Matthews Correlation Coefficient (MCC)
 #' scores, one for each model. The \emph{names} attribute holds the models' names.
 #' Can be the result of using the function \code{\link{calculate_models_mcc}}.
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
-#' names specify the models' names (same order as in the \code{models.mcc}
-#' parameter) whereas the column names specify the network nodes
+#' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
 #' signifies the number of mcc classes (groups) that we should split the models
 #' MCC values.
+#' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
+#' penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+#' This penalty is used as part of a weighted term to the difference in a value of
+#' interest (e.g. activity or link operator difference) between two group of
+#' models, to account for the difference in the number of models from each
+#' respective model group.
 #'
 #' @return a matrix whose rows are \strong{vectors of
 #' average node activity state differences} between two groups of models where
@@ -222,14 +228,12 @@ get_avg_activity_diff_based_on_tp_predictions =
 #' @importFrom Ckmeans.1d.dp Ckmeans.1d.dp
 #' @export
 get_avg_activity_diff_mat_based_on_mcc_clustering =
-  function(models.mcc, models.stable.state, num.of.mcc.classes) {
+  function(models.mcc, models.stable.state, num.of.mcc.classes, penalty = 0) {
     stopifnot(num.of.mcc.classes >= 2)
     mcc.class.ids = 1:num.of.mcc.classes
 
-    models.mcc.sorted = sort(models.mcc)
-
     # find the clusters
-    res = Ckmeans.1d.dp(x = models.mcc.sorted, k = num.of.mcc.classes)
+    res = Ckmeans.1d.dp(x = models.mcc, k = num.of.mcc.classes)
     models.cluster.ids = res$cluster
 
     mcc.class.id.comb = t(combn(1:length(mcc.class.ids), 2))
@@ -238,7 +242,7 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
       return(get_avg_activity_diff_based_on_mcc_clustering(
         models.mcc, models.stable.state,
         mcc.class.ids, models.cluster.ids,
-        class.id.low = comb[1], class.id.high = comb[2]))
+        class.id.low = comb[1], class.id.high = comb[2], penalty))
     })
 
     mcc.classes.comb.names = apply(mcc.class.id.comb, 1, function(comb) {
@@ -272,6 +276,12 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
 #' signifies the number of mcc classes (groups) that we should split the models
 #' MCC values.
+#' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
+#' penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+#' This penalty is used as part of a weighted term to the difference in a value of
+#' interest (e.g. activity or link operator difference) between two group of
+#' models, to account for the difference in the number of models from each
+#' respective model group.
 #'
 #' @return a matrix whose rows are \strong{vectors of average node link operator
 #' differences} between two groups of models where
@@ -302,10 +312,10 @@ get_avg_activity_diff_mat_based_on_mcc_clustering =
 #'
 #' @export
 get_avg_link_operator_diff_mat_based_on_mcc_clustering =
-  function(models.mcc, models.link.operator, num.of.mcc.classes) {
+  function(models.mcc, models.link.operator, num.of.mcc.classes, penalty = 0) {
     get_avg_activity_diff_mat_based_on_mcc_clustering(
-      models.mcc, models.stable.state = models.link.operator, num.of.mcc.classes
-    )
+      models.mcc, models.stable.state = models.link.operator,
+      num.of.mcc.classes, penalty)
   }
 
 #' Get the average activity difference based on MCC clustering
@@ -316,25 +326,31 @@ get_avg_link_operator_diff_mat_based_on_mcc_clustering =
 #' the lower MCC values (bad model group). Then, for each network node, the function
 #' finds the node's average activity in each of the two classes (a value in
 #' the [0,1] interval) and then subtracts the bad class average activity value from
-#' the good one.
+#' the good one, taking into account the given \code{penalty} factor and the
+#' number of models in each respective model group.
 #'
 #' @param models.mcc a numeric vector of Matthews Correlation Coefficient (MCC)
 #' scores, one for each model. The \emph{names} attribute holds the models' names.
 #' Can be the result of using the function \code{\link{calculate_models_mcc}}.
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
-#' names specify the models' names (same order as in the \code{models.mcc}
-#' parameter) whereas the column names specify the network nodes
+#' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
 #' are either \emph{0} (inactive node) or \emph{1} (active node).
 #' @param mcc.class.ids a numeric vector of group/class ids starting from 1,
 #' e.g. \code{c(1,2,3)} (3 MCC classes).
 #' @param models.cluster.ids a numeric vector of cluster ids assigned to each
 #' model. It is the result of using \code{\link[Ckmeans.1d.dp]{Ckmeans.1d.dp}}
-#' with input the sorted vector of the models' MCC values.
+#' with input the vector of the models' MCC values.
 #' @param class.id.low integer. This number specifies the MCC class id of the
 #' 'bad' models.
 #' @param class.id.high integer. This number specifies the MCC class id of the
 #' 'good' models and needs to be strictly higher than \code{class.id.low}.
+#' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
+#' penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+#' This penalty is used as part of a weighted term to the difference in a value of
+#' interest (e.g. activity or link operator difference) between two group of
+#' models, to account for the difference in the number of models from each
+#' respective model group.
 #'
 #' @return a numeric vector with values in the [-1,1] interval (minimum and maximum
 #' possible average difference) and with the \emph{names} attribute representing the name
@@ -357,23 +373,21 @@ get_avg_link_operator_diff_mat_based_on_mcc_clustering =
 #' @export
 get_avg_activity_diff_based_on_mcc_clustering =
   function(models.mcc, models.stable.state, mcc.class.ids, models.cluster.ids,
-           class.id.low, class.id.high) {
+           class.id.low, class.id.high, penalty = 0) {
     if (class.id.low >= class.id.high) {
       stop("`class.id.low` needs to be smaller than `class.id.high`")
     }
-
-    models.mcc.sorted = sort(models.mcc)
 
     bad.class.id  = mcc.class.ids[class.id.low]
     good.class.id = mcc.class.ids[class.id.high]
 
     # find the 'good' models
     good.models = get_models_based_on_mcc_class_id(good.class.id,
-      models.cluster.ids, models.mcc.sorted)
+      models.cluster.ids, models.mcc)
 
     # find the 'bad' models
     bad.models = get_models_based_on_mcc_class_id(bad.class.id,
-      models.cluster.ids, models.mcc.sorted)
+      models.cluster.ids, models.mcc)
 
     # `good.models` != `bad.models` (disjoing sets of models)
     stopifnot(!(good.models %in% bad.models))
@@ -383,19 +397,17 @@ get_avg_activity_diff_based_on_mcc_clustering =
 
     if (length(good.models) == 1) {
       warning("Only 1 \'good\' model in MCC class: ", class.id.high, " - very biased analysis\n")
-      good.avg.activity = models.stable.state[good.models, ]
-    } else {
-      good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
     }
 
     if (length(bad.models) == 1) {
       warning("Only 1 \'bad\' model in MCC class: ", class.id.low, " - very biased analysis\n")
-      bad.avg.activity = models.stable.state[bad.models, ]
-    } else {
-      bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
     }
 
-    return(good.avg.activity - bad.avg.activity)
+    good.avg.activity = apply(models.stable.state[good.models, ], 2, mean)
+    bad.avg.activity = apply(models.stable.state[bad.models, ], 2, mean)
+
+    get_vector_diff(vec1 = good.avg.activity, vec2 = bad.avg.activity,
+      m1 = length(good.models), m2 = length(bad.models), penalty)
   }
 
 #' Get models based on the MCC class id
