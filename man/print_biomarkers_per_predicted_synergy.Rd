@@ -11,10 +11,10 @@ print_biomarkers_per_predicted_synergy(
 )
 }
 \arguments{
-\item{biomarkers.dir}{string. It specifies the full path name of the
-directory which holds the biomarker files for each drug combination in the
-\code{predicted.synergies}. The biomarker files must be formatted as:
-\emph{\%drug.comb\%_biomarkers_active} or
+\item{biomarkers.dir}{string. It specifies the full path name (without the
+ending character \emph{/}) of the directory which holds the biomarker files
+for each drug combination in the \code{predicted.synergies}.
+The biomarker files must be formatted as: \emph{\%drug.comb\%_biomarkers_active} or
 \emph{\%drug.comb\%_biomarkers_inhibited}, where \%drug.comb\% is an element of
 the \code{predicted.synergies} vector. If the files are not properly formatted
 or don't even exist, zero biomarkers are reported.}
