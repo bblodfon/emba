@@ -8,6 +8,9 @@ rownames(dff) = c("test", "test2", "test3", "test4", "test5", "test6", "test7", 
 models_mcc = c(-0.04, -0.17, 0.15, -0.24, -0.02 , 0.27, -0.42 , 0.38)
 names(models_mcc) = rownames(dff)
 
+models_tp = c(1,1,2,1,3,3,2,1)
+names(models_tp) = rownames(dff)
+
 ## models_ss => models.stable.state, models_lo => models.link.operators
 models_dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
 models_ss = get_stable_state_from_models_dir(models_dir)
@@ -18,8 +21,49 @@ df_new = as.data.frame(matrix(c(1,0,1,1,0), ncol = 5, nrow = 5))
 colnames(df_new) = colnames(models_ss)
 rownames(df_new) = c("test4", "test5", "test6", "test7", "test8")
 models_ss = rbind(models_ss, df_new)
+models_ss = models_ss[rownames(dff),] # keep the order as in the dff
 colnames(df_new) = colnames(models_lo)
 models_lo = rbind(models_lo, df_new[-1,])
+models_lo = models_lo[rownames(dff),] # keep the order as in the dff
+
+context("Testing 'get_avg_{activity/link_operator}_diff_mat_based_on_tp_predictions'")
+test_that("it returns proper results", {
+  res1 = get_avg_activity_diff_mat_based_on_tp_predictions(models_tp, models_ss)
+  res2 = get_avg_activity_diff_mat_based_on_tp_predictions(models_tp, models_ss, penalty = 0.1)
+  res3 = get_avg_link_operator_diff_mat_based_on_tp_predictions(models_tp, models_lo)
+  res4 = get_avg_link_operator_diff_mat_based_on_tp_predictions(models_tp, models_lo, penalty = 0.1)
+
+  expect_equal(dim(res1), c(3,5))
+  expect_equal(dim(res2), c(3,5))
+  expect_equal(dim(res3), c(3,5))
+  expect_equal(dim(res4), c(3,5))
+
+  expect_equal(colnames(res1), colnames(models_ss))
+  expect_equal(colnames(res2), colnames(models_ss))
+  expect_equal(colnames(res3), colnames(models_lo))
+  expect_equal(colnames(res4), colnames(models_lo))
+
+  expect_equal(rownames(res1), c("(1,2)", "(1,3)", "(2,3)"))
+  expect_equal(rownames(res2), c("(1,2)", "(1,3)", "(2,3)"))
+  expect_equal(rownames(res3), c("(1,2)", "(1,3)", "(2,3)"))
+  expect_equal(rownames(res4), c("(1,2)", "(1,3)", "(2,3)"))
+
+  expect_equal(unname(res1[1,]), c(0.5, 0.5, 0.5, 0.5, 0.25))
+  expect_equal(unname(res3[1,]), c(0.5, 0, 0.75, 0.5, 0.25))
+
+  # same number of models in each group, same result no matter the penalty
+  expect_equal(res1[3,], res2[3,])
+  expect_equal(res3[3,], res4[3,])
+
+  # test the penalty effect
+  expect_true(all(res2[1,] <= res1[1,]))
+  expect_true(all(res4[1,] <= res3[1,]))
+})
+
+context("Testing 'get_avg_activity_diff_based_on_tp_predictions'")
+test_that("it does proper input check", {
+  expect_error(get_avg_activity_diff_based_on_tp_predictions(models_tp, models_ss, 2, 1))
+})
 
 context("Testing 'get_avg_{activity/link_operator}_diff_mat_based_on_mcc_clustering'")
 test_that("it returns proper results", {
@@ -54,6 +98,10 @@ test_that("it returns proper results", {
 
   # same number of models in each group, same result no matter the penalty
   expect_equal(res1[3,], res2[3,])
+
+  # test the penalty effect
+  expect_true(all(res1[1,] <= res2[1,]))
+  expect_true(all(res1[2,] <= res2[2,]))
 })
 
 context("Testing 'get_avg_activity_diff_based_on_mcc_clustering'")
