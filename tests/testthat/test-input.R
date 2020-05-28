@@ -47,7 +47,7 @@ test_that("it returns proper results", {
   models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
   models.ss = get_stable_state_from_models_dir(models.dir)
 
-  expect_equal(rownames(models.ss), c("test", "test2", "test3"))
+  expect_equal(sort(rownames(models.ss)), c("test", "test2", "test3"))
   expect_equal(ncol(models.ss), 139)
   expect_equal(colnames(models.ss)[1], "MAP3K7")
   expect_equal(colnames(models.ss)[139], "CASP9")
@@ -62,8 +62,8 @@ test_that("it returns proper results", {
   models.link = get_link_operators_from_models_dir(models.dir)
   models.link.extra = get_link_operators_from_models_dir(models.dir, remove.equations.without.link.operator = FALSE)
 
-  expect_equal(rownames(models.link), c("test", "test2", "test3", "test4"))
-  expect_equal(rownames(models.link.extra), c("test", "test2", "test3", "test4"))
+  expect_equal(sort(rownames(models.link)), c("test", "test2", "test3", "test4"))
+  expect_equal(sort(rownames(models.link.extra)), c("test", "test2", "test3", "test4"))
   expect_equal(ncol(models.link), 43)
   expect_equal(ncol(models.link.extra), 139)
   expect_equal(colnames(models.link)[1], "MAP3K4")
@@ -80,7 +80,7 @@ test_that("it returns proper results", {
   models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
   models.fitness = get_fitness_from_models_dir(models.dir)
 
-  expect_equal(names(models.fitness), c("test", "test2", "test3", "test4"))
+  expect_equal(sort(names(models.fitness)), c("test", "test2", "test3", "test4"))
   expect_equal(unname(models.fitness["test"]), 0.640625)
   expect_equal(unname(models.fitness["test2"]), 0.625)
   expect_equal(unname(models.fitness["test3"]), 0.6640625)
@@ -102,7 +102,7 @@ test_that("it returns proper results", {
   models = get_model_names(models.dir)
 
   expect_equal(length(models), 4)
-  expect_equal(models, c("test", "test2", "test3", "test4"))
+  expect_equal(sort(models), c("test", "test2", "test3", "test4"))
 })
 
 context("Testing 'assign_link_operator_value_to_equation'")
