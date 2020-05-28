@@ -40,6 +40,12 @@
 #' every subset of the given \code{observed.synergies} (where at least one model
 #' predicts every synergy in the subset). The default value is \emph{FALSE}, since
 #' the powerset of the predicted \code{observed.synergies} can be very large to compute.
+#' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
+#' penalty and a value of 1 is the strickest possible penalty. Default value is 0.1.
+#' This penalty is used as part of a weighted term to the difference in a value of
+#' interest (e.g. activity or link operator difference) between two group of
+#' models, to account for the difference in the number of models from each
+#' respective model group.
 #'
 #' @return a list with various elements:
 #' \itemize{
@@ -89,7 +95,7 @@
 #' @export
 biomarker_tp_analysis =
   function(model.predictions, models.stable.state, models.link.operator = NULL,
-           observed.synergies, threshold, calculate.subsets.stats = FALSE) {
+           observed.synergies, threshold, calculate.subsets.stats = FALSE, penalty = 0.1) {
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
   models = rownames(model.predictions)
@@ -122,8 +128,7 @@ biomarker_tp_analysis =
   # Make all possible classification group matchings and get the
   # average state differences
   diff.state.tp.mat = get_avg_activity_diff_mat_based_on_tp_predictions(
-    models, models.synergies.tp, models.stable.state
-  )
+    models.synergies.tp, models.stable.state, penalty)
 
   # find the active and inhibited biomarkers based on the TP classification groups
   biomarkers.state.list = get_biomarkers(diff.state.tp.mat, threshold)
@@ -148,8 +153,8 @@ biomarker_tp_analysis =
     # Make all possible classification group matchings and get the average
     # link operator differences
     diff.link.tp.mat = get_avg_link_operator_diff_mat_based_on_tp_predictions(
-      models, models.synergies.tp, models.link.operator
-    )
+      models.synergies.tp, models.link.operator, penalty)
+
     # find the 'OR' and 'AND' biomarkers based on the TP classification groups
     biomarkers.link.list = get_biomarkers(diff.link.tp.mat, threshold)
 
