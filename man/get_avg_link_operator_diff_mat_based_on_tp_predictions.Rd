@@ -5,24 +5,30 @@
 \title{Get average link operator difference matrix based on the number of true positives}
 \usage{
 get_avg_link_operator_diff_mat_based_on_tp_predictions(
-  models,
   models.synergies.tp,
-  models.link.operator
+  models.link.operator,
+  penalty = 0
 )
 }
 \arguments{
-\item{models}{character vector. The model names.}
-
 \item{models.synergies.tp}{an integer vector of TP values. The \emph{names}
-attribute holds the models' names and have to be in the same order as in the
-\code{models} parameter.}
+attribute must hold the models' names. Consider using the function
+\code{\link{calculate_models_synergies_tp}}.}
 
 \item{models.link.operator}{a \code{data.frame} (nxm) with n models and m nodes.
-The row names specify the models' names whereas the column names specify the
-network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
+The row names specify the models' names (same order as in the \code{models.synergies.tp}
+parameter) whereas the column names specify the network nodes (gene, proteins, etc.).
+Possible values for each \emph{model-node
 element} are either \emph{0} (\strong{AND NOT} link operator), \emph{1}
 (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted by
 both activating and inhibiting regulators (no link operator).}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a matrix whose rows are \strong{vectors of average node link operator

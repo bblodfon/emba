@@ -5,23 +5,28 @@
 \title{Get average activity difference matrix based on the number of true positives}
 \usage{
 get_avg_activity_diff_mat_based_on_tp_predictions(
-  models,
   models.synergies.tp,
-  models.stable.state
+  models.stable.state,
+  penalty = 0
 )
 }
 \arguments{
-\item{models}{character vector. The model names.}
-
 \item{models.synergies.tp}{an integer vector of TP values. The \emph{names}
-attribute holds the models' names and have to be in the same order as in the
-\code{models} parameter.}
+attribute must hold the models' names. Consider using the function
+\code{\link{calculate_models_synergies_tp}}.}
 
 \item{models.stable.state}{a \code{data.frame} (nxm) with n models and m nodes. The row
-names specify the models' names (same order as in the \code{models}
+names specify the models' names (same order as in the \code{models.synergies.tp}
 parameter) whereas the column names specify the network nodes
 (gene, proteins, etc.). Possible values for each \emph{model-node element}
 are either \emph{0} (inactive node) or \emph{1} (active node).}
+
+\item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
+penalty and a value of 1 is the strickest possible penalty. Default value is 0.
+This penalty is used as part of a weighted term to the difference in a value of
+interest (e.g. activity or link operator difference) between two group of
+models, to account for the difference in the number of models from each
+respective model group.}
 }
 \value{
 a matrix whose rows are \strong{vectors of
@@ -33,11 +38,13 @@ synergies and the columns represent the network's node names.
 Values are in the [-1,1] interval.
 }
 \description{
-This function finds all the TP values of the models given (e.g. 0,1,2,3),
+This function finds all the TP values of the models given (e.g. 0,1,2,3) and
 generates every pairwise combination (e.g. the group matchings: (0,1), (1,3),
-etc.) and uses the \code{\link{get_avg_activity_diff_based_on_tp_predictions}}
+etc.). Then, it uses the \code{\link{get_avg_activity_diff_based_on_tp_predictions}}
 function on each generated classification group matching, comparing thus all
-groups of models with different true positive (TP) values.
+groups of models with different true positive (TP) values, while taking into
+account the given \code{penalty} factor and the number of models in each
+respective model group.
 }
 \seealso{
 \code{\link{get_vector_diff}}
