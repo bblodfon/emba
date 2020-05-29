@@ -1,8 +1,8 @@
 # emba 0.1.5
 
 - Added tests! Coverage is now TOFILL%.
-- Change MCC calculation to return 0 when undefined/`NaN` MCC scores were produced (which is the correct limiting value - see [Chicco at al. (2020)](https://doi.org/10.1186/s12864-019-6413-7)). Thus previous versions handling of `NaN` MCC scores is now deprecated.
-- Add the `penalty` parameter to account for the difference in model group size when calculating the average activity or link operator data differences.
+- Change MCC calculation to return 0 when undefined/`NaN` MCC scores were produced (which is the correct limiting value - see [Chicco at al. (2020)](https://doi.org/10.1186/s12864-019-6413-7)). Thus, the previous versions handling of `NaN` MCC scores, is now deprecated.
+- Add the `penalty` parameter to account for the difference in model group size when calculating the average activity or link operator data differences. This minimizes the bias in the returned biomarkers.
     - For the implementation check the function `emba::get_vector_diff()` and the corresponding [StackOverflow question](https://math.stackexchange.com/questions/3547139/formula-for-weighted-average-difference).
     - To get the same results as with previous versions of this library, use `penalty=0` in the general `emba::biomarker_*` functions (though the results will probably be very biased and that's why the default value for the `penalty` is now **0.1**).
 - The following functions do not have the `models` input anymore:
@@ -14,6 +14,7 @@
   - Return value is now a `data.frame` object instead of a `matrix`.
   - The models names do not have the annoying `.gitsbe` extension anymore.
   - These changes affect the following functions: `get_link_operators_from_models_dir`, `get_stable_state_from_models_dir` and `get_model_names`.
+- Plot (`plot_*`) functions refactoring
 
 # emba 0.1.4
 
