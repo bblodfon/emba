@@ -40,6 +40,6 @@ Imports:
     dplyr,
     tidyr,
     stringr,
-    tibble (>= 3.0.0)
+    tibble
 Suggests: 
     testthat
