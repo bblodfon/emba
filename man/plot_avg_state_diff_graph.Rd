@@ -31,7 +31,7 @@ comparing the average model classified in the 'good' category vs the average
 'bad' one.
 }
 \examples{
-topology.file = system.file("extdata", "example.sif", packag?e = "emba", mustWork = TRUE)
+topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
 net = construct_network(topology.file)
 diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51,-0.86,-0.80)
 names(diff) = c("A","C","B","D","W","I","E","J","F","K")

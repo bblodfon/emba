@@ -246,7 +246,7 @@ add_numbers_above_the_bars = function(stats, bp, color) {
 #' @param title string. The title of the \code{visNetwork} plot.
 #'
 #' @examples
-#' topology.file = system.file("extdata", "example.sif", packag?e = "emba", mustWork = TRUE)
+#' topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
 #' net = construct_network(topology.file)
 #' diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51,-0.86,-0.80)
 #' names(diff) = c("A","C","B","D","W","I","E","J","F","K")
@@ -307,7 +307,7 @@ plot_avg_state_diff_graph_vis = function(net, diff, nodes.size = 20, title) {
 #' @param title string. The title of the igraph plot
 #'
 #' @examples
-#' topology.file = system.file("extdata", "example.sif", packag?e = "emba", mustWork = TRUE)
+#' topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
 #' net = construct_network(topology.file)
 #' diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51,-0.86,-0.80)
 #' names(diff) = c("A","C","B","D","W","I","E","J","F","K")
@@ -370,7 +370,7 @@ plot_avg_state_diff_graph = function(net, diff, layout = NULL, title) {
 #' @param title string. The title of the igraph plot
 #'
 #' @examples
-#' topology.file = system.file("extdata", "example.sif", packag?e = "emba", mustWork = TRUE)
+#' topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
 #' net = construct_network(topology.file)
 #' diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51)
 #' names(diff) = c("A","C","B","D","W","I","E","J")

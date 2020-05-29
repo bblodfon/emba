@@ -37,7 +37,7 @@ node (white) will indicate nodes that do not have the link operator in their
 respective boolean equation (where they function as the target).
 }
 \examples{
-topology.file = system.file("extdata", "example.sif", packag?e = "emba", mustWork = TRUE)
+topology.file = system.file("extdata", "example.sif", package = "emba", mustWork = TRUE)
 net = construct_network(topology.file)
 diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51)
 names(diff) = c("A","C","B","D","W","I","E","J")
