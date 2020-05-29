@@ -4,30 +4,36 @@
 \alias{plot_avg_state_diff_graph_vis}
 \title{Plot the graph of average state differences (visNetwork)}
 \usage{
-plot_avg_state_diff_graph_vis(net, diff, layout, title)
+plot_avg_state_diff_graph_vis(net, diff, nodes.size = 20, title)
 }
 \arguments{
-\item{net}{igraph graph object (to be translated to a \emph{visNetwork} object)}
+\item{net}{igraph graph object (to be translated to a \code{visNetwork} object)}
 
-\item{diff}{numeric vector. Every value is in the [-1,1] interval and
+\item{diff}{numeric vector. Every value must be in the [-1,1] interval and
 represents the average activity difference of each node. The node names have
 to be specified in the \emph{names} attribute of the given vector. For example,
 \code{diff} could be the result of using the function
-\code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}.}
+\code{\link{get_avg_activity_diff_based_on_specific_synergy_prediction}}}
 
-\item{layout}{a (nx2) numeric matrix of x-y coordinates (2 columns) for each
-of the nodes (n) in the \code{net} igraph object}
+\item{nodes.size}{an integer specifying the size of the nodes. Default value: 20.}
 
-\item{title}{string. The title of the visNetwork plot}
+\item{title}{string. The title of the \code{visNetwork} plot.}
 }
 \description{
 This function uses the \code{\link[visNetwork]{visNetwork}} package to plot a
-network of nodes. The nodes are positioned according to the specified coordinates
-given by the \code{layout} parameter and the colors are derived using the
-\code{diff} values and the \code{\link{get_node_colors}} function. The color
-of each node indicates how much more inhibited or active that node is, when
-comparing the average model classified in the 'good' category vs the average
-'bad' one.
+network of nodes. The nodes are positioned by default in a hierarchical layout
+and their colors are derived using the \code{diff} values and the
+\code{\link{get_node_colors}} function. The color of each node indicates how
+much more inhibited or active that node is, when comparing the average model
+classified in the 'good' category vs the average 'bad' one.
+}
+\examples{
+topology.file = system.file("extdata", "example.sif", packag?e = "emba", mustWork = TRUE)
+net = construct_network(topology.file)
+diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51,-0.86,-0.80)
+names(diff) = c("A","C","B","D","W","I","E","J","F","K")
+plot_avg_state_diff_graph_vis(net, diff, title = "TEST")
+
 }
 \seealso{
 Other network plotting functions: 

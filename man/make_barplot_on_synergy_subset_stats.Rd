@@ -8,6 +8,7 @@ make_barplot_on_synergy_subset_stats(
   synergy.subset.stats,
   threshold.for.subset.removal,
   bottom.margin,
+  ylim.add = 0,
   cell.line = NULL
 )
 }
@@ -30,6 +31,10 @@ size = 2 => bottom.margin = 6,
 size = 3 => bottom.margin = 9,
 size = 4 => bottom.margin = 12, etc.}
 
+\item{ylim.add}{integer. Signifies the height to add to the upper
+\code{ylim} parameter on the barplot, in addition to the maximum bar height
+across the whole plot. Default value is 0.}
+
 \item{cell.line}{string. The name of the cell line to be used in the title
 of the produced plot. Default value: NULL (the cell line name will not be
 added to the title).}
@@ -37,4 +42,11 @@ added to the title).}
 \description{
 Use this function to easily make a barplot that shows the amount of models
 that predicted each synergy subset out of the set of all observed synergies.
+}
+\examples{
+synergy.subset.stats = c(1,4,3,2)
+names(synergy.subset.stats) = c("A-B", "B-C", "C-A", "C-D")
+make_barplot_on_synergy_subset_stats(synergy.subset.stats,
+threshold.for.subset.removal = 0, bottom.margin = 4, ylim.add = 0.5)
+
 }

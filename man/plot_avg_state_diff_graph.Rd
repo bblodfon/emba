@@ -4,7 +4,7 @@
 \alias{plot_avg_state_diff_graph}
 \title{Plot the graph of average state differences (igraph)}
 \usage{
-plot_avg_state_diff_graph(net, diff, layout, title)
+plot_avg_state_diff_graph(net, diff, layout = NULL, title)
 }
 \arguments{
 \item{net}{igraph graph object}
@@ -16,7 +16,8 @@ to be specified in the \emph{names} attribute of the given vector. For example,
 \code{\link{get_avg_activity_diff_based_on_tp_predictions}}.}
 
 \item{layout}{a (nx2) numeric matrix of x-y coordinates (2 columns) for each
-of the nodes (n) in the \code{net} igraph object}
+of the nodes (n) in the \code{net} igraph object. If NULL, we use the default
+layout provided by \code{\link[igraph]{layout_nicely}}.}
 
 \item{title}{string. The title of the igraph plot}
 }
@@ -28,6 +29,14 @@ given by the \code{layout} parameter and the colors are derived using the
 of each node indicates how much more inhibited or active that node is, when
 comparing the average model classified in the 'good' category vs the average
 'bad' one.
+}
+\examples{
+topology.file = system.file("extdata", "example.sif", packag?e = "emba", mustWork = TRUE)
+net = construct_network(topology.file)
+diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51,-0.86,-0.80)
+names(diff) = c("A","C","B","D","W","I","E","J","F","K")
+plot_avg_state_diff_graph(net, diff, title = "TEST")
+
 }
 \seealso{
 \code{\link{get_node_colors}}

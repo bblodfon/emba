@@ -6,12 +6,13 @@
 \usage{
 make_barplot_on_models_stats(
   models.stats,
-  cell.line,
+  cell.line = NULL,
   title,
   xlab,
   ylab,
   cont.values = FALSE,
-  threshold = 0
+  threshold = 0,
+  ylim.add = 0
 )
 }
 \arguments{
@@ -34,9 +35,20 @@ to 3 digits after the decimal point. Default value: FALSE.}
 
 \item{threshold}{integer. Values from the \code{model.stats} that are \emph{less
 or equal} to the threshold will be pruned. Use it when there too many
-categories and the graph appears too dense. Default value: 0}
+categories and the figure appears too dense. Default value: 0}
+
+\item{ylim.add}{integer. Signifies the height to add to the upper
+\code{ylim} parameter on the barplot, in addition to the maximum bar height
+across the whole plot. Default value is 0.}
 }
 \description{
 Use this function to produce a bar plot when the input is the result of using
 the \link[base]{table} function to a numeric vector
+}
+\examples{
+x = c(rep(1,100), rep(2,423), rep(3,231), rep(NaN,531))
+make_barplot_on_models_stats(models.stats = table(x, useNA = "ifany"),
+title = "True Positives Distribution across models",
+xlab = "Number of TP values", ylab = "Number of models")
+
 }
