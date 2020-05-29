@@ -4,7 +4,7 @@
 \alias{plot_avg_link_operator_diff_graphs}
 \title{Plot the graphs from an average link operator differences matrix}
 \usage{
-plot_avg_link_operator_diff_graphs(net, diff.mat, layout)
+plot_avg_link_operator_diff_graphs(net, diff.mat, layout = NULL)
 }
 \arguments{
 \item{net}{igraph graph object}
@@ -15,14 +15,16 @@ classification (e.g. number of TP predictions) and whose names are set in the \c
 attribute of the matrix (usually denoting the different classification
 groups, e.g. (1,2) means the models that predicted 1 TP synergy vs the models
 that predicted 2 TP synergies, if the classification is done by number of TP
-predictions). The columns represent the network's node names.}
+predictions). The columns represent the network's node names. Could be the
+result of using the function \code{\link{get_avg_link_operator_diff_mat_based_on_tp_predictions}}.}
 
 \item{layout}{a (nx2) numeric matrix of x-y coordinates (2 columns) for each
-of the nodes (n) in the \code{net} igraph object}
+of the nodes (n) in the \code{net} igraph object. If NULL, we use the default
+layout provided by \code{\link[igraph]{layout_nicely}}.}
 }
 \description{
-This function presents a convenient way to use many times the
-\code{\link{plot_avg_link_operator_diff_graph}} function.
+This function presents a convenient way to use the
+\code{\link{plot_avg_link_operator_diff_graph}} function multiple times.
 }
 \seealso{
 Other network plotting functions: 
