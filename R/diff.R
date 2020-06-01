@@ -841,7 +841,8 @@ get_avg_link_operator_diff_based_on_synergy_set_cmp = function(synergy.set.str,
 #' penalty. Default value is 0.
 #'
 #' @return the vector of differences between the two given vectors based on the
-#' formula: \deqn{vec1 - vec2 * (min(m1,m2)/max(m1,m2))^penalty)}
+#' formula: \deqn{(vec1 - vec2) * w}, where \eqn{w = (min(m1,m2)/max(m1,m2))^p}
+#' and \eqn{p = penalty}.
 #'
 #' See also related \href{https://math.stackexchange.com/questions/3547139/formula-for-weighted-average-difference}{StackOverflow question}.
 #' If \code{vec1} has \code{names}, the returned vector will have the same names
