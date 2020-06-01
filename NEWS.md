@@ -1,6 +1,7 @@
 # emba 0.1.5
 
-- Added tests! Coverage is now TOFILL%.
+- Finally added tests to the package! Coverage is now 76%.
+- Used the [pgkdown](https://github.com/r-lib/pkgdown/) package to create static html documentation for emba. [Check it here](https://bblodfon.github.io/emba/index.html)!
 - Change MCC calculation to return 0 when undefined/`NaN` MCC scores were produced (which is the correct limiting value - see [Chicco at al. (2020)](https://doi.org/10.1186/s12864-019-6413-7)). Thus, the previous versions handling of `NaN` MCC scores, is now deprecated.
 - Add the `penalty` parameter to account for the difference in model group size when calculating the average activity or link operator data differences. This minimizes the bias in the returned biomarkers.
     - For the implementation check the function `emba::get_vector_diff()` and the corresponding [StackOverflow question](https://math.stackexchange.com/questions/3547139/formula-for-weighted-average-difference).
