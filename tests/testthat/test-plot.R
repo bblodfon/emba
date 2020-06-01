@@ -4,7 +4,7 @@ test_that("plot object is created and returned", {
   models.cluster.ids = c(2,2,3,1,2,3,1,3)
   num.of.mcc.classes = 3
 
-  expect_true(is.list(plot_mcc_classes_hist(models.mcc, models.cluster.ids, num.of.mcc.classes)))
+  expect_true(plot_mcc_classes_hist(models.mcc, models.cluster.ids, num.of.mcc.classes))
   dev.off()
 })
 
@@ -12,12 +12,12 @@ context("Testing 'make_barplot_on_models_stats'")
 test_that("plot object is created and returned", {
   models.tp = c(rep(1,100), rep(2,423), rep(3,231), rep(NaN,531))
 
-  expect_true(is.matrix(make_barplot_on_models_stats(models.stats = table(models.tp, useNA = "ifany"),
+  expect_true(make_barplot_on_models_stats(models.stats = table(models.tp, useNA = "ifany"),
     title = "True Positives Distribution across models",
-    xlab = "Number of TP values", ylab = "Number of models")))
-  expect_true(is.matrix(make_barplot_on_models_stats(models.stats = table(models.tp),
+    xlab = "Number of TP values", ylab = "Number of models"))
+  expect_true(make_barplot_on_models_stats(models.stats = table(models.tp),
     title = "True Positives Distribution across models", cell.line = "AGS",
-    xlab = "Number of TP values", ylab = "Number of models", cont.values = TRUE)))
+    xlab = "Number of TP values", ylab = "Number of models", cont.values = TRUE))
   dev.off()
 })
 
@@ -25,9 +25,9 @@ context("Testing 'make_barplot_on_synergy_subset_stats'")
 test_that("plot object is created and returned", {
   synergy.subset.stats = c(1,4,3,2)
   names(synergy.subset.stats) = c("A-B", "B-C", "C-A", "C-D")
-  expect_true(is.matrix(make_barplot_on_synergy_subset_stats(
+  expect_true(make_barplot_on_synergy_subset_stats(
     synergy.subset.stats, threshold.for.subset.removal = 0,
-    bottom.margin = 4, ylim.add = 0.5, cell.line = "AGS")))
+    bottom.margin = 4, ylim.add = 0.5, cell.line = "AGS"))
   dev.off()
 })
 
@@ -68,7 +68,7 @@ test_that("an igraph plot object is created and returned", {
   diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51,-0.86,-0.80)
   names(diff) = c("A","C","B","D","W","I","E","J","F","K")
 
-  expect_true(is.list(plot_avg_state_diff_graph(net, diff, title = "TEST")))
+  expect_true(plot_avg_state_diff_graph(net, diff, title = "TEST"))
   dev.off()
 })
 
@@ -79,7 +79,7 @@ test_that("an igraph plot object is created and returned", {
   diff = c(-0.95,-0.05,0.46,0.39,-0.04,0.72,-0.12,-0.51)
   names(diff) = c("A","C","B","D","W","I","E","J")
 
-  expect_true(is.list(plot_avg_link_operator_diff_graph(net, diff, title = "TEST")))
+  expect_true(plot_avg_link_operator_diff_graph(net, diff, title = "TEST"))
   dev.off()
 })
 

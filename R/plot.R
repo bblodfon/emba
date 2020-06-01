@@ -39,6 +39,8 @@ plot_mcc_classes_hist = function(models.mcc, models.cluster.ids, num.of.mcc.clas
 
   legend("topright", legend = mcc.class.ids, title = "MCC Classes",
          col = rainbow.colors, lty = 1, lwd = 10)
+
+  TRUE
 }
 
 #' Bar plot of model stats
@@ -120,7 +122,7 @@ make_barplot_on_models_stats =
            col = "yellow", srt = 90, font = 2)
     }
 
-    return(bp)
+    TRUE
 }
 
 #' Get the refined x-axis values
@@ -209,7 +211,7 @@ make_barplot_on_synergy_subset_stats = function(synergy.subset.stats,
 
   add_numbers_above_the_bars(synergy.subset.stats, bp, color = "red")
 
-  return(bp)
+  TRUE
 }
 
 #' Add numbers horizontally above the bars of a barplot
@@ -340,6 +342,8 @@ plot_avg_state_diff_graph = function(net, diff, layout = NULL, title) {
         legend = c("More inhibited", "No difference", "More activated"),
         title = expression(bold("Good model activity state")),
         pt.bg = col, pt.cex = 2, cex = 0.8, bty = "n", ncol = 1)
+
+  TRUE
 }
 
 #' Plot the graph of average link operator differences (igraph)
@@ -404,6 +408,8 @@ plot_avg_link_operator_diff_graph = function(net, diff, layout = NULL, title) {
          legend = c("AND NOT", "OR NOT", "No difference", "no link operator"),
          title = expression(bold("Good model link operator")),
          pt.bg = col.2, pt.cex = 2, cex = 0.8, bty = "n", ncol = 1)
+
+  TRUE
 }
 
 #' Get the node colors
