@@ -1,0 +1,48 @@
+template:
+  params:
+    bootswatch: united
+
+reference:
+- title: General
+  desc: Run a full biomarker analysis on a given boolean model ensemble dataset
+- contents:
+  - starts_with("biomarker_")
+- title: Model Data Differences
+  desc: Get characteristic data model differences based on specified model groupings
+- contents:
+  - matches("diff")
+  - -matches("plot")
+- title: DrugLogics Pipeline Input
+  desc: Load the DrugLogics pipeline simulation results into R
+- contents:
+  - get_synergy_scores
+  - get_model_predictions
+  - get_observed_synergies
+  - get_stable_state_from_models_dir
+  - get_link_operators_from_models_dir
+  - get_fitness_from_models_dir
+  - get_node_names
+  - get_model_names
+  - get_edges_from_topology_file
+  - construct_network
+- title: Confusion Matrix Calculation
+- contents:
+  - starts_with("calculate_")
+- title: Helpers
+- contents:
+  - get_observed_model_predictions
+  - get_unobserved_model_predictions
+  - get_synergy_subset_stats
+  - get_synergy_comparison_sets
+  - count_models_that_predict_synergies
+  - is_comb_element_of
+  - validate_observed_synergies_data
+  - get_alt_drugname
+  - filter_network
+  - assign_link_operator_value_to_equation
+- title: Plot
+- contents:
+  - matches("plot")
+- title: Print
+- contents:
+  - starts_with("print_")
