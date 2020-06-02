@@ -19,7 +19,7 @@ Can be the result of using the function \code{\link{calculate_models_mcc}}.}
 \item{models.stable.state}{a \code{data.frame} (nxm) with n models and m nodes. The row
 names specify the models' names whereas the column names specify the network nodes
 (gene, proteins, etc.). Possible values for each \emph{model-node element}
-are either \emph{0} (inactive node) or \emph{1} (active node).}
+can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.}
 
 \item{num.of.mcc.classes}{numeric. A positive integer larger than 2 that
 signifies the number of mcc classes (groups) that we should split the models

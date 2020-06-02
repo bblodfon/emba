@@ -15,7 +15,7 @@
 #' names specify the models' names (same order as in the \code{models.synergies.tp}
 #' parameter) whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
 #' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
 #' penalty and a value of 1 is the strickest possible penalty. Default value is 0.
 #' This penalty is used as part of a weighted term to the difference in a value of
@@ -138,7 +138,7 @@ get_avg_link_operator_diff_mat_based_on_tp_predictions =
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
 #' @param num.low integer. The number of true positives representing the 'bad'
 #' model class.
 #' @param num.high integer. The number of true positives representing the 'good'
@@ -218,7 +218,7 @@ get_avg_activity_diff_based_on_tp_predictions =
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
 #' signifies the number of mcc classes (groups) that we should split the models
 #' MCC values.
@@ -352,7 +352,7 @@ get_avg_link_operator_diff_mat_based_on_mcc_clustering =
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
 #' @param mcc.class.ids a numeric vector of group/class ids starting from 1,
 #' e.g. \code{c(1,2,3)} (3 MCC classes).
 #' @param models.cluster.ids a numeric vector of cluster ids assigned to each
@@ -461,7 +461,7 @@ get_models_based_on_mcc_class_id =
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
 #' @param predicted.synergies a character vector of the synergies (drug
 #' combination names) that were predicted by \strong{at least one} of the models
 #' in the dataset. It must be a subset of the column names (the drug combinations)
@@ -586,7 +586,7 @@ get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction =
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
 #' @param drug.comb string. The drug combination which will be used to split
 #' the models. It must be included in the column names of the \code{model.predictions}
 #' object.
@@ -669,7 +669,7 @@ get_avg_activity_diff_based_on_specific_synergy_prediction =
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify the network nodes
 #' (gene, proteins, etc.). Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node).
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
 #' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
 #' penalty and a value of 1 is the strickest possible penalty. Default value is 0.
 #' This penalty is used as part of a weighted term to the difference in a value of

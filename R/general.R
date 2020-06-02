@@ -12,12 +12,11 @@
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models).
-#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
-#' names of the matrix specify the models' names whereas the column names
-#' specify the network nodes (gene, proteins, etc.).
-#' Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node). Note that the
-#' rows (models) have to be in the same order as in the \code{model.predictions}
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes.
+#' The row names specify the models' names whereas the column names specify the
+#' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node element}
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
+#' Note that the rows (models) have to be in the same order as in the \code{model.predictions}
 #' parameter.
 #' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify
@@ -100,6 +99,7 @@ biomarker_tp_analysis =
   stopifnot(threshold >= 0 & threshold <= 1)
   models = rownames(model.predictions)
   stopifnot(all(models == rownames(models.stable.state)))
+  stopifnot(all(models.stable.state >= 0, models.stable.state <= 1))
 
   # Split model.predictions to positive (observed) and negative (non-observed) results
   observed.model.predictions =
@@ -180,12 +180,11 @@ biomarker_tp_analysis =
 #' element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models).
-#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
-#' names specify the models' names whereas the column names specify the network
-#' nodes (gene, proteins, etc.).
-#' Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node). Note that the
-#' rows (models) have to be in the same order as in the \code{model.predictions}
+#' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes.
+#' The row names specify the models' names whereas the column names specify the
+#' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node element}
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
+#' Note that the rows (models) have to be in the same order as in the \code{model.predictions}
 #' parameter.
 #' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify
@@ -279,6 +278,7 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
   models = rownames(model.predictions)
 
   stopifnot(all(models == rownames(models.stable.state)))
+  stopifnot(all(models.stable.state >= 0, models.stable.state <= 1))
 
   # Split model.predictions to positive (observed) and negative (non-observed) results
   observed.model.predictions =
@@ -361,10 +361,9 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 #' combination inhibited model or in any of the two single-drug inhibited models).
 #' @param models.stable.state a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify the network
-#' nodes (gene, proteins, etc.).
-#' Possible values for each \emph{model-node element}
-#' are either \emph{0} (inactive node) or \emph{1} (active node). Note that the
-#' rows (models) have to be in the same order as in the \code{model.predictions}
+#' nodes (gene, proteins, etc.). Possible values for each \emph{model-node element}
+#' can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
+#' Note that the rows (models) have to be in the same order as in the \code{model.predictions}
 #' parameter.
 #' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes. The row
 #' names specify the models' names whereas the column names specify
@@ -443,6 +442,7 @@ biomarker_synergy_analysis =
     stopifnot(threshold >= 0 & threshold <= 1)
     models = rownames(model.predictions)
     stopifnot(all(models == rownames(models.stable.state)))
+    stopifnot(all(models.stable.state >= 0, models.stable.state <= 1))
 
     # Split model.predictions to positive (observed) and negative (non-observed) results
     observed.model.predictions =

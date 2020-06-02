@@ -21,12 +21,11 @@ element} are either \emph{0} (no synergy predicted), \emph{1} (synergy was
 predicted) or \emph{NA} (couldn't find stable states in either the drug
 combination inhibited model or in any of the two single-drug inhibited models).}
 
-\item{models.stable.state}{a \code{data.frame} (nxm) with n models and m nodes. The row
-names of the matrix specify the models' names whereas the column names
-specify the network nodes (gene, proteins, etc.).
-Possible values for each \emph{model-node element}
-are either \emph{0} (inactive node) or \emph{1} (active node). Note that the
-rows (models) have to be in the same order as in the \code{model.predictions}
+\item{models.stable.state}{a \code{data.frame} (nxm) with n models and m nodes.
+The row names specify the models' names whereas the column names specify the
+network nodes (gene, proteins, etc.). Possible values for each \emph{model-node element}
+can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.
+Note that the rows (models) have to be in the same order as in the \code{model.predictions}
 parameter.}
 
 \item{models.link.operator}{a \code{data.frame} (nxm) with n models and m nodes. The row

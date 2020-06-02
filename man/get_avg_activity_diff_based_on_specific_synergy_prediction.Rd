@@ -21,7 +21,7 @@ combination inhibited model or in any of the two single-drug inhibited models)}
 \item{models.stable.state}{a \code{data.frame} (nxm) with n models and m nodes. The row
 names specify the models' names whereas the column names specify the network nodes
 (gene, proteins, etc.). Possible values for each \emph{model-node element}
-are either \emph{0} (inactive node) or \emph{1} (active node).}
+can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.}
 
 \item{drug.comb}{string. The drug combination which will be used to split
 the models. It must be included in the column names of the \code{model.predictions}

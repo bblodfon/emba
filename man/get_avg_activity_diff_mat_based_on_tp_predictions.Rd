@@ -19,7 +19,7 @@ attribute must hold the models' names. Consider using the function
 names specify the models' names (same order as in the \code{models.synergies.tp}
 parameter) whereas the column names specify the network nodes
 (gene, proteins, etc.). Possible values for each \emph{model-node element}
-are either \emph{0} (inactive node) or \emph{1} (active node).}
+can be between \emph{0} (inactive node) and \emph{1} (active node) inclusive.}
 
 \item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
 penalty and a value of 1 is the strickest possible penalty. Default value is 0.
