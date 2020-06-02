@@ -27,16 +27,19 @@ a character vector that includes the node names that were found
 either as \emph{positive} or \emph{negative}.
 }
 \description{
-Use this function to find either positive or negative biomarkers across many
+Use this function to find either positive or negative biomarkers across multiple
 performance classification group matchings based on a given threshold between
-0 and 1. The logic behind the biomarker selection is that if there is at
-least one value in a column of
-the \code{diff.mat} matrix that surpasses the threshold given, then the
+0 and 1.
+}
+\details{
+The logic behind the biomarker selection is that if there is at least one value
+in a column of the \code{diff.mat} matrix that surpasses the threshold given, then the
 corresponding node (name of the column) is return as a biomarker. This means
 that for a single node, if at least one value that represents an average data
 difference (for example, the average activity state difference) between any
-of the given classification group comparisons (below) the threshold (negative
-threshold), then a \emph{positive} (\emph{negative}) biomarker is reported.
+of the given classification group comparisons is above the given threshold (or
+below the negative symmetric threshold), then a \emph{positive} (\emph{negative})
+biomarker is reported.
 }
 \seealso{
 Other biomarker functions: 

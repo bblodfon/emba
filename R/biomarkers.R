@@ -1,15 +1,17 @@
 #' Get biomarkers from average data differences matrix (per type)
 #'
-#' Use this function to find either positive or negative biomarkers across many
+#' Use this function to find either positive or negative biomarkers across multiple
 #' performance classification group matchings based on a given threshold between
-#' 0 and 1. The logic behind the biomarker selection is that if there is at
-#' least one value in a column of
-#' the \code{diff.mat} matrix that surpasses the threshold given, then the
+#' 0 and 1.
+#'
+#' The logic behind the biomarker selection is that if there is at least one value
+#' in a column of the \code{diff.mat} matrix that surpasses the threshold given, then the
 #' corresponding node (name of the column) is return as a biomarker. This means
 #' that for a single node, if at least one value that represents an average data
 #' difference (for example, the average activity state difference) between any
-#' of the given classification group comparisons (below) the threshold (negative
-#' threshold), then a \emph{positive} (\emph{negative}) biomarker is reported.
+#' of the given classification group comparisons is above the given threshold (or
+#' below the negative symmetric threshold), then a \emph{positive} (\emph{negative})
+#' biomarker is reported.
 #'
 #' @param diff.mat a matrix whose rows are vectors of average node data
 #' differences between two groups of models based on some kind of classification
@@ -61,30 +63,32 @@ get_biomarkers_per_type = function(diff.mat, threshold, type) {
 
 #' Get total biomarkers from average data differences matrix
 #'
-#' Use this function to find all biomarkers across many
+#' Use this function to find all biomarkers across multiple
 #' performance classification group matchings based on a given threshold between
-#' 0 and 1. The logic behind the biomarker selection is that if there is at
-#' least one value in a column of
-#' the \code{diff.mat} matrix that surpasses the threshold given, then the
-#' corresponding node (name of the column) is returned as a biomarker. This means
-#' that for a single node, if at least one value that represents an average data
-#' difference (for example, the average activity state difference) between any
-#' of the given classification group comparisons is above (below) the threshold
-#' (negative threshold), then a \emph{positive} (\emph{negative}) biomarker is
-#' reported.
+#' 0 and 1.
 #'
 #' @section Details:
 #' This function uses the \code{\link{get_biomarkers_per_type}} function
 #' to get the biomarkers (nodes) of both types (positive and negative) from the
-#' average data differences matrix. If a node though is found to surpass the
-#' significance threshold
-#' level given \emph{both negatively and positively}, we will keep it as a biomarker
+#' average data differences matrix. The logic behind the biomarker selection is
+#' that if there is at least one value in a column of the \code{diff.mat} matrix
+#' that surpasses the threshold given, then the corresponding node (name of the
+#' column) is returned as a biomarker.
+#' This means that for a single node, if at least one value that represents an average data
+#' difference (for example, the average activity state difference) between any
+#' of the given classification group comparisons is above the given threshold
+#' (or below the negative symmetric threshold), then a \emph{positive}
+#' (\emph{negative}) biomarker is reported.
+#'
+#' In the case of a node which is found to surpass the
+#' significance threshold level given \emph{both negatively and positively},
+#' we will keep it as a biomarker
 #' in the category which corresponds to the \strong{comparison of the highest
 #' classification groups}. For example, if the data comes from a model performance
 #' classification based on the MCC score and in the comparison of the MCC classes
-#' (1,3) the node of interest had an average difference of -0.89 (a negative
+#' (1,3) the node of interest had an average difference of \emph{-0.89} (a negative
 #' biomarker) while for the comparison of the (3,4) MCC classes it had a value
-#' of 0.91 (a positive biomarker), then we will keep that node \emph{only as a
+#' of \emph{0.91} (a positive biomarker), then we will keep that node \emph{only as a
 #' positive biomarker}. The logic behind this is that
 #' the 'higher' performance-wise are the classification groups that we compare,
 #' the more sure we are that the average data difference corresponds to a
@@ -130,6 +134,7 @@ get_biomarkers = function(diff.mat, threshold) {
     for (biomarker in common.biomarkers) {
       logical.vector = diff.mat[, biomarker] > threshold |
         diff.mat[, biomarker] < (-threshold)
+      # the higher the row comparison index, the 'higher' are the performance-wise classification groups that the data difference came from
       comparison.index = max(which(logical.vector == TRUE))
       if (diff.mat[comparison.index, biomarker] > threshold)
         biomarkers.pos = append(biomarkers.pos, biomarker)
