@@ -34,7 +34,6 @@ Imports:
     igraph (>= 1.2.4),
     visNetwork (>= 2.0.9),
     Ckmeans.1d.dp (>= 4.2.2),
-    magrittr (>= 1.5),
     usefun (>= 0.4.3),
     readr,
     dplyr,

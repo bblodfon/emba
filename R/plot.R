@@ -256,7 +256,7 @@ add_numbers_above_the_bars = function(stats, bp, color) {
 #'
 #' @family network plotting functions
 #'
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' @importFrom visNetwork toVisNetworkData visNetwork visLegend
 #' @export
 plot_avg_state_diff_graph_vis = function(net, diff, nodes.size = 20, title) {

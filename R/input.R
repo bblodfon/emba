@@ -19,7 +19,7 @@
 #' model.predictions = get_model_predictions(model.predictions.file)
 #'
 #' @importFrom utils read.table
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' @importFrom tibble column_to_rownames
 #' @export
 get_model_predictions = function(model.predictions.file) {
@@ -96,8 +96,7 @@ get_observed_synergies =
 #' models.stable.state = get_stable_state_from_models_dir(models.dir)
 #'
 #' @importFrom stringr str_count
-#' @importFrom magrittr %>%
-#' @importFrom tidyr separate
+#' @importFrom tidyr %>% separate
 #' @importFrom dplyr mutate_if
 #'
 #' @export
