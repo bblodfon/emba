@@ -120,7 +120,7 @@
 </h1>
 <ul>
 <li>Finally added tests to the package! <strong>Coverage is now 76%</strong>.</li>
-<li>Used the <a href="https://github.com/r-lib/pkgdown/">pgkdown</a> package to create static html documentation for emba. <a href="https://bblodfon.github.io/emba/index.html">Check it here</a>!</li>
+<li>Used the <a href="https://github.com/r-lib/pkgdown/">pkgdown</a> package to create static html documentation for emba. <a href="https://bblodfon.github.io/emba/index.html">Check it here</a>!</li>
 <li>Change MCC calculation to return 0 when undefined/<code>NaN</code> MCC scores were produced (which is the correct limiting value - see <a href="https://doi.org/10.1186/s12864-019-6413-7">Chicco at al. (2020)</a>). Thus, the previous versions handling of <code>NaN</code> MCC scores, is now deprecated.</li>
 <li>Add the <code>penalty</code> parameter to account for the difference in model group size when calculating the average activity or link operator data differences. This minimizes the bias in the returned biomarkers.
 <ul>
@@ -128,6 +128,7 @@
 <li>To get the same results as with previous versions of this library, use <code>penalty=0</code> in the general <code>emba::biomarker_*</code> functions (though the results will probably be very biased and that’s why the default value for the <code>penalty</code> is now <strong>0.1</strong>).</li>
 </ul>
 </li>
+<li>Changed documentation to specify that the <code>models.stable.state</code> parameter used in various functions can take any values in the [0,1] interval and not just 0 (<em>inactive</em>) and 1 (<em>active</em>).</li>
 <li>The following functions do not take the input parameter <code>models</code> anymore:
 <ul>
 <li><code><a href="../reference/get_avg_link_operator_diff_mat_based_on_tp_predictions.html">emba::get_avg_link_operator_diff_mat_based_on_tp_predictions</a></code></li>
