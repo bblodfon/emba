@@ -25,6 +25,7 @@ models_ss = models_ss[rownames(dff),] # keep the order as in the dff
 colnames(df_new) = colnames(models_lo)
 models_lo = rbind(models_lo, df_new[-1,])
 models_lo = models_lo[rownames(dff),] # keep the order as in the dff
+models_ss_cont = models_ss_cont[rownames(dff),] # keep the order as in the dff (from R/sysdata.rda)
 
 context("Testing 'get_avg_{activity/link_operator}_diff_mat_based_on_tp_predictions'")
 test_that("it returns proper results", {
@@ -32,24 +33,29 @@ test_that("it returns proper results", {
   res2 = get_avg_activity_diff_mat_based_on_tp_predictions(models_tp, models_ss, penalty = 0.1)
   res3 = get_avg_link_operator_diff_mat_based_on_tp_predictions(models_tp, models_lo)
   res4 = get_avg_link_operator_diff_mat_based_on_tp_predictions(models_tp, models_lo, penalty = 0.1)
+  res5 = get_avg_activity_diff_mat_based_on_tp_predictions(models_tp, models_ss_cont, penalty = 0.1)
 
   expect_equal(dim(res1), c(3,5))
   expect_equal(dim(res2), c(3,5))
   expect_equal(dim(res3), c(3,5))
   expect_equal(dim(res4), c(3,5))
+  expect_equal(dim(res5), c(3,5))
 
   expect_equal(colnames(res1), colnames(models_ss))
   expect_equal(colnames(res2), colnames(models_ss))
   expect_equal(colnames(res3), colnames(models_lo))
   expect_equal(colnames(res4), colnames(models_lo))
+  expect_equal(colnames(res5), colnames(models_ss_cont))
 
   expect_equal(rownames(res1), c("(1,2)", "(1,3)", "(2,3)"))
   expect_equal(rownames(res2), c("(1,2)", "(1,3)", "(2,3)"))
   expect_equal(rownames(res3), c("(1,2)", "(1,3)", "(2,3)"))
   expect_equal(rownames(res4), c("(1,2)", "(1,3)", "(2,3)"))
+  expect_equal(rownames(res5), c("(1,2)", "(1,3)", "(2,3)"))
 
   expect_equal(unname(res1[1,]), c(0.5, 0.5, 0.5, 0.5, 0.25))
   expect_equal(unname(res3[1,]), c(0.5, 0, 0.75, 0.5, 0.25))
+  expect_equal(res5["(1,2)", "NLK"], 0.343, tolerance = 0.01)
 
   # same number of models in each group, same result no matter the penalty
   expect_equal(res1[3,], res2[3,])
@@ -78,23 +84,29 @@ test_that("it returns proper results", {
     num.of.mcc.classes = 2, penalty = 0.1)
   res4 = get_avg_link_operator_diff_mat_based_on_mcc_clustering(models_mcc, models_lo,
     num.of.mcc.classes = 3, penalty = 0.4)
+  res5 = get_avg_link_operator_diff_mat_based_on_mcc_clustering(models_mcc, models_ss_cont,
+    num.of.mcc.classes = 3, penalty = 0.1)
 
   expect_equal(dim(res1), c(3,5))
   expect_equal(dim(res2), c(3,5))
   expect_equal(dim(res3), c(1,5))
   expect_equal(dim(res4), c(3,5))
+  expect_equal(dim(res5), c(3,5))
 
   expect_equal(colnames(res1), colnames(models_ss))
   expect_equal(colnames(res2), colnames(models_ss))
   expect_equal(colnames(res3), colnames(models_ss))
   expect_equal(colnames(res4), colnames(models_lo))
+  expect_equal(colnames(res5), colnames(models_ss_cont))
 
   expect_equal(rownames(res1), c("(1,2)", "(1,3)", "(2,3)"))
   expect_equal(rownames(res2), c("(1,2)", "(1,3)", "(2,3)"))
   expect_equal(rownames(res3), c("(1,2)"))
   expect_equal(rownames(res4), c("(1,2)", "(1,3)", "(2,3)"))
+  expect_equal(rownames(res5), c("(1,2)", "(1,3)", "(2,3)"))
 
   expect_equal(unname(res3[1,]), c(0.0633, 0.0633, 0.0633, 0.0633, -0.0633), tolerance = 0.0001)
+  expect_equal(res5["(1,3)", "NLK"], 0.0095, tolerance = 0.0001)
 
   # same number of models in each group, same result no matter the penalty
   expect_equal(res1[3,], res2[3,])
@@ -119,13 +131,19 @@ test_that("it returns proper results", {
   synergies = c("r-u", "f-l")
   res1 = get_avg_activity_diff_mat_based_on_specific_synergy_prediction(model.predictions = dff, models.stable.state = models_ss, predicted.synergies = synergies, penalty = 0.2)
   res2 = get_avg_link_operator_diff_mat_based_on_specific_synergy_prediction(model.predictions = dff, models.link.operator = models_lo, predicted.synergies = synergies)
+  res3 = get_avg_activity_diff_mat_based_on_specific_synergy_prediction(model.predictions = dff, models.stable.state = models_ss_cont, predicted.synergies = synergies, penalty = 0.1)
 
   expect_equal(unname(res1[1,]), c(-0.2904, -0.2904, -0.2904, -0.2904, 0.2904), tolerance = 0.0001)
   expect_equal(unname(res2[2,]), c(0.5, 0.5, 0, 0.5, 0))
+  expect_equal(res3["f-l", "NLK"], -0.271, tolerance = 0.01)
+
   expect_equal(colnames(res1), colnames(models_ss))
   expect_equal(colnames(res2), colnames(models_lo))
+  expect_equal(colnames(res3), colnames(models_ss_cont))
+
   expect_equal(rownames(res1), synergies)
   expect_equal(rownames(res2), synergies)
+  expect_equal(rownames(res3), synergies)
 })
 
 context("Testing 'get_avg_activity_diff_based_on_specific_synergy_prediction'")
@@ -163,14 +181,19 @@ test_that("it returns proper results", {
   diff3 = get_avg_link_operator_diff_based_on_synergy_set_cmp(
     synergy.set.str = "i-k,g-o,w-x,n-s,b-m,c-y", synergy.subset.str = "i-k,c-y",
     model.predictions = dff, models.link.operator = models_lo)
+  diff4 = get_avg_activity_diff_based_on_synergy_set_cmp(
+    synergy.set.str = "r-u,i-k,g-o", synergy.subset.str = "r-u,g-o",
+    model.predictions = dff, models.stable.state = models_ss_cont)
 
   expect_equal(unname(diff1), c(-0.4, -0.4, -0.4, -0.4, 0.4))
   expect_equal(unname(diff2), c(0.1, 0.1, 0.1, 0.1, -0.1))
   expect_equal(unname(diff3), c(-0.2, -0.6, 0.8, -0.2, 0.4))
+  expect_equal(unname(diff4), c(0.007, -0.0234, -0.016, 0.2098, 0.097), tolerance = 0.001)
 
   expect_equal(names(diff1), colnames(models_ss))
   expect_equal(names(diff2), colnames(models_ss))
   expect_equal(names(diff3), colnames(models_lo))
+  expect_equal(names(diff4), colnames(models_ss_cont))
 })
 
 context("Testing 'get_vector_diff'")
