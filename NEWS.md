@@ -6,6 +6,7 @@
 - Add the `penalty` parameter to account for the difference in model group size when calculating the average activity or link operator data differences. This minimizes the bias in the returned biomarkers.
     - For the implementation check the function `emba::get_vector_diff` and the corresponding [StackOverflow question](https://math.stackexchange.com/questions/3547139/formula-for-weighted-average-difference).
     - To get the same results as with previous versions of this library, use `penalty=0` in the general `emba::biomarker_*` functions (though the results will probably be very biased and that's why the default value for the `penalty` is now **0.1**).
+- Changed documentation to specify that the `models.stable.state` parameter used in various functions can take any values in the [0,1] interval and not just 0 (*inactive*) and 1 (*active*).
 - The following functions do not take the input parameter `models` anymore:
   - `emba::get_avg_link_operator_diff_mat_based_on_tp_predictions`
   - `emba::get_avg_activity_diff_mat_based_on_tp_predictions`
