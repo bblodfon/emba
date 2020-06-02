@@ -17,8 +17,8 @@ positive* predictions/*Matthews correlation coefficient* score) or synergy predi
 of observed synergies and find the average activity difference per network 
 node between all model group pairs. Thus, given user-specific thresholds,
 important nodes (*biomarkers*) can be accessed in the sense that they make the 
-models predict specific synergies (*synergy* biomarkers) or have better 
-performance in general (*performance* biomarkers). 
+models predict specific synergies (*synergy biomarkers*) or have better 
+performance in general (*performance biomarkers*). 
 
 Lastly, if the boolean models have a [specific equation form](https://druglogics.github.io/druglogics-doc/gitsbe-description.html#default-equation) and differ only in their link operator, *link operator* biomarkers can also be found.
 
