@@ -7,7 +7,7 @@
 get_synergy_biomarkers_from_dir(
   predicted.synergies,
   biomarkers.dir,
-  models.dir,
+  models.dir = NULL,
   node.names = NULL
 )
 }
@@ -17,8 +17,9 @@ combination names) that were predicted by \strong{at least one} of the models
 in the dataset.}
 
 \item{biomarkers.dir}{string. It specifies the full path name of the
-directory which holds the biomarker files. The biomarker files must be
-formatted as: \emph{\%drug.comb\%_biomarkers_active} or
+directory which holds the biomarker files (without the ending character
+\emph{/}). The biomarker files must be formatted as:
+\emph{\%drug.comb\%_biomarkers_active} or
 \emph{\%drug.comb\%_biomarkers_inhibited}, where \%drug.comb\% is an element
 of the \code{predicted.synergies} vector.}
 
@@ -29,13 +30,17 @@ needed in order to call \code{\link{get_node_names}}.}
 not NULL, then it will be used instead of the \code{models.dir} parameter.
 The \code{node.names} should include all the nodes that are reported as
 biomarkers in the biomarker files inside the \code{biomarkers.dir} directory.
+Note that the biomarker nodes in the files will be included in the returned
+\code{data.frame} object no matter the \code{node.names} specified.
 Default value: NULL.}
 }
 \value{
 a data.frame, whose columns represent the network nodes and the
 rows the predicted synergies. Possible values for each \emph{synergy-node}
 element are either \emph{1} (\emph{active state} biomarker), \emph{-1}
-(\emph{inhibited state} biomarker) or \emph{0} (not a biomarker).
+(\emph{inhibited state} biomarker) or \emph{0} (not a biomarker or the node
+is not at all present in the network or the drug combination is not a
+synergistic one).
 }
 \description{
 This function reads the synergy biomarker files inside the given directory and merges
