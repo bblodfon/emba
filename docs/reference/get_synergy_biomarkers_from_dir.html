@@ -129,7 +129,7 @@ directory given (see <code>biomarkers.dir</code> parameter).</p>
     <pre class="usage"><span class='fu'>get_synergy_biomarkers_from_dir</span>(
   <span class='no'>predicted.synergies</span>,
   <span class='no'>biomarkers.dir</span>,
-  <span class='no'>models.dir</span>,
+  <span class='kw'>models.dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>node.names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
@@ -145,8 +145,9 @@ in the dataset.</p></td>
     <tr>
       <th>biomarkers.dir</th>
       <td><p>string. It specifies the full path name of the
-directory which holds the biomarker files. The biomarker files must be
-formatted as: <em>%drug.comb%_biomarkers_active</em> or
+directory which holds the biomarker files (without the ending character
+<em>/</em>). The biomarker files must be formatted as:
+<em>%drug.comb%_biomarkers_active</em> or
 <em>%drug.comb%_biomarkers_inhibited</em>, where %drug.comb% is an element
 of the <code>predicted.synergies</code> vector.</p></td>
     </tr>
@@ -161,6 +162,8 @@ needed in order to call <code><a href='get_node_names.html'>get_node_names</a></
 not NULL, then it will be used instead of the <code>models.dir</code> parameter.
 The <code>node.names</code> should include all the nodes that are reported as
 biomarkers in the biomarker files inside the <code>biomarkers.dir</code> directory.
+Note that the biomarker nodes in the files will be included in the returned
+<code>data.frame</code> object no matter the <code>node.names</code> specified.
 Default value: NULL.</p></td>
     </tr>
     </table>
@@ -170,7 +173,9 @@ Default value: NULL.</p></td>
     <p>a data.frame, whose columns represent the network nodes and the
 rows the predicted synergies. Possible values for each <em>synergy-node</em>
 element are either <em>1</em> (<em>active state</em> biomarker), <em>-1</em>
-(<em>inhibited state</em> biomarker) or <em>0</em> (not a biomarker).</p>
+(<em>inhibited state</em> biomarker) or <em>0</em> (not a biomarker or the node
+is not at all present in the network or the drug combination is not a
+synergistic one).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

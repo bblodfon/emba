@@ -40,16 +40,9 @@
 
 
 <meta property="og:title" content="Get biomarkers from average data differences matrix (per type) — get_biomarkers_per_type" />
-<meta property="og:description" content="Use this function to find either positive or negative biomarkers across many
+<meta property="og:description" content="Use this function to find either positive or negative biomarkers across multiple
 performance classification group matchings based on a given threshold between
-0 and 1. The logic behind the biomarker selection is that if there is at
-least one value in a column of
-the diff.mat matrix that surpasses the threshold given, then the
-corresponding node (name of the column) is return as a biomarker. This means
-that for a single node, if at least one value that represents an average data
-difference (for example, the average activity state difference) between any
-of the given classification group comparisons (below) the threshold (negative
-threshold), then a positive (negative) biomarker is reported." />
+0 and 1." />
 
 
 
@@ -126,16 +119,9 @@ threshold), then a positive (negative) biomarker is reported." />
     </div>
 
     <div class="ref-description">
-    <p>Use this function to find either positive or negative biomarkers across many
+    <p>Use this function to find either positive or negative biomarkers across multiple
 performance classification group matchings based on a given threshold between
-0 and 1. The logic behind the biomarker selection is that if there is at
-least one value in a column of
-the <code>diff.mat</code> matrix that surpasses the threshold given, then the
-corresponding node (name of the column) is return as a biomarker. This means
-that for a single node, if at least one value that represents an average data
-difference (for example, the average activity state difference) between any
-of the given classification group comparisons (below) the threshold (negative
-threshold), then a <em>positive</em> (<em>negative</em>) biomarker is reported.</p>
+0 and 1.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_biomarkers_per_type</span>(<span class='no'>diff.mat</span>, <span class='no'>threshold</span>, <span class='no'>type</span>)</pre>
@@ -170,6 +156,16 @@ biomarkers are found.</p></td>
 
     <p>a character vector that includes the node names that were found
 either as <em>positive</em> or <em>negative</em>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The logic behind the biomarker selection is that if there is at least one value
+in a column of the <code>diff.mat</code> matrix that surpasses the threshold given, then the
+corresponding node (name of the column) is return as a biomarker. This means
+that for a single node, if at least one value that represents an average data
+difference (for example, the average activity state difference) between any
+of the given classification group comparisons is above the given threshold (or
+below the negative symmetric threshold), then a <em>positive</em> (<em>negative</em>)
+biomarker is reported.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other biomarker functions: 

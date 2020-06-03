@@ -2,7 +2,7 @@ pandoc: 2.9.2
 pkgdown: 1.5.1
 pkgdown_sha: ~
 articles: []
-last_built: 2020-06-02T19:29Z
+last_built: 2020-06-03T19:03Z
 urls:
   reference: https://bblodfon.github.io/emba/reference
   article: https://bblodfon.github.io/emba/articles

@@ -37,6 +37,7 @@ reference:
   - get_synergy_subset_stats
   - get_synergy_comparison_sets
   - count_models_that_predict_synergies
+  - starts_with("get_biomarkers")
   - is_comb_element_of
   - validate_observed_synergies_data
   - get_alt_drugname
