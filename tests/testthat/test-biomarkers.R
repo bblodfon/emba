@@ -52,3 +52,36 @@ test_that("it returns proper results", {
   expect_equal(res7$biomarkers.pos, character())
   expect_equal(res7$biomarkers.neg, character())
 })
+
+context("Testing 'get_synergy_biomarkers_from_dir'")
+test_that("it returns proper results", {
+  biomarkers.dir = system.file("extdata", "biomarkers", package = "emba", mustWork = TRUE)
+
+  # check: both `node.names` and `models.dir` are not specified
+  expect_error(get_synergy_biomarkers_from_dir(biomarkers.dir = "", predicted.synergies = ""))
+
+  res1 = get_synergy_biomarkers_from_dir(biomarkers.dir, predicted.synergies = c("A-B"),
+    node.names = c('A1','A2','B3','A4','A3','B1'))
+  res2 = get_synergy_biomarkers_from_dir(biomarkers.dir, predicted.synergies = c("A-B"),
+    node.names = c('A1','B3','A2','A4','A3','B1','Noooo'))
+  res3 = get_synergy_biomarkers_from_dir(biomarkers.dir, predicted.synergies = c("A-B"),
+    node.names = c('A1','B3','A2','A4','Noooo','A3','B1'))
+  res4 = get_synergy_biomarkers_from_dir(biomarkers.dir,
+    predicted.synergies = c('A-B', 'C-D'), node.names = c('Noooo'))
+
+  expect_equal(dim(res1), c(1,6))
+  expect_equal(dim(res2), c(1,7))
+  expect_equal(dim(res3), c(1,7))
+  expect_equal(dim(res4), c(2,7))
+
+  expect_equal(colnames(res1), c('A1','A2','B3','A4','A3','B1'))
+  expect_equal(colnames(res2), c('A1','B3','A2','A4','A3','B1','Noooo'))
+  expect_equal(colnames(res3), c('A1','B3','A2','A4','Noooo','A3','B1'))
+  expect_equal(colnames(res4), c('Noooo','A1','A2','B1','A3','A4','B3'))
+
+  expect_equal(unname(unlist(res1[1,])), c(1,1,-1,-1,-1,1))
+  expect_equal(unname(unlist(res2[1,])), c(1,-1,1,-1,-1,1,0))
+  expect_equal(unname(unlist(res3[1,])), c(1,-1,1,-1,0,-1,1))
+  expect_equal(unname(unlist(res4[1,])), c(0,1,1,1,-1,-1,-1))
+  expect_equal(unname(unlist(res4[2,])), rep(0,7))
+})
