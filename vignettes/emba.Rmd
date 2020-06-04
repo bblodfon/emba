@@ -1,0 +1,71 @@
+---
+title: "emba"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{emba}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup}
+library(emba)
+library(dplyr)
+
+
+```
+
+
+```{r test}
+set.seed(42) # for reproducibility
+
+# 1000 models, 80 nodes
+model_names = paste0("model", 1:1000)
+node_names  = paste0("x", 1:30)
+
+#model_predictions = emba:::model_predictions_df %>% as.data.frame()
+# duplicate data.frame to have more data
+#model_pred = dplyr::bind_cols(model_predictions, model_predictions)
+
+model_pred = as.data.frame(matrix(
+  data = round(rnorm(n = 1000 * 100, mean = 0.46, sd = 0.1)),
+  nrow = 1000, ncol = 100))
+
+# create random drug combination names
+drug_combos = combn(x = LETTERS, m = 2, FUN = function(x){paste0(x, collapse = "-")})
+
+rownames(model_pred) = model_names
+colnames(model_pred) = drug_combos[1:100]
+
+model_stable_states = as.data.frame(matrix(
+  data = round(runif(n = 1000 * 30, min = 0, max = 1)), 
+  #data = round(rnorm(n = 1000 * 30, mean = 0.5, sd = 0.1)),
+  nrow = 1000, ncol = 30))
+
+colnames(model_stable_states) = node_names
+rownames(model_stable_states) = model_names
+```
+
+
+```{r testing values, echo=FALSE, include=FALSE}
+#for (i in 1:10000) {
+  #observed.synergies = sample(x = drug_combos[1:100], size = 6)
+  #observed.synergies = c("C-J","A-C","C-M","D-U","B-X","A-F") # TP
+  observed.synergies = c("C-U","C-K","E-H","A-W","B-R","B-E") # MCC same
+  
+  a = emba::biomarker_tp_analysis(model.predictions = model_pred, models.stable.state = model_stable_states, observed.synergies = observed.synergies, threshold = 0.6, penalty = 0.1)
+  
+  a = biomarker_mcc_analysis(model.predictions = model_pred, models.stable.state = model_stable_states, 
+  observed.synergies = observed.synergies, num.of.mcc.classes = 9, threshold = 0.5, penalty = 0)
+  
+  #print(range(a$diff.state.tp.mat))
+  #if (max(a$diff.state.tp.mat) > 0.7 | min(a$diff.state.tp.mat) < -0.7) {
+  #print(paste(i,range(a$diff.state.mcc.mat)))
+    
+  # if (max(a$diff.state.mcc.mat) > 0.5 | min(a$diff.state.mcc.mat) < -0.5) {
+  #   print(observed.synergies)
+  #   break
+  # }
+#}
+
+```
+
