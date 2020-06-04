@@ -97,6 +97,7 @@ biomarker_tp_analysis =
            observed.synergies, threshold, calculate.subsets.stats = FALSE, penalty = 0.1) {
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
+  stopifnot(all(observed.synergies %in% colnames(model.predictions)))
   models = rownames(model.predictions)
   stopifnot(all(models == rownames(models.stable.state)))
   stopifnot(all(models.stable.state >= 0, models.stable.state <= 1))
@@ -273,6 +274,7 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
+  stopifnot(all(observed.synergies %in% colnames(model.predictions)))
   stopifnot(num.of.mcc.classes >= 2)
   number.of.drug.comb.tested = ncol(model.predictions)
   models = rownames(model.predictions)
@@ -441,6 +443,7 @@ biomarker_synergy_analysis =
     # check input
     stopifnot(threshold >= 0 & threshold <= 1)
     models = rownames(model.predictions)
+    stopifnot(all(observed.synergies %in% colnames(model.predictions)))
     stopifnot(all(models == rownames(models.stable.state)))
     stopifnot(all(models.stable.state >= 0, models.stable.state <= 1))
 
