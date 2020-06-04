@@ -11,7 +11,6 @@ biomarker_mcc_analysis(
   observed.synergies,
   threshold,
   num.of.mcc.classes = 5,
-  calculate.subsets.stats = FALSE,
   penalty = 0.1
 )
 }
@@ -52,12 +51,6 @@ biomarkers are found.}
 signifies the number of mcc classes (groups) that we should split the models
 MCC values. Default value: 5.}
 
-\item{calculate.subsets.stats}{logical. If \emph{TRUE}, then the results will
-include a vector of integers, representing the number of models that predicted
-every subset of the given \code{observed.synergies} (where at least one model
-predicts every synergy in the subset). The default value is \emph{FALSE}, since
-the powerset of the predicted \code{observed.synergies} can be very large to compute.}
-
 \item{penalty}{value between 0 and 1 (inclusive). A value of 0 means no
 penalty and a value of 1 is the strickest possible penalty. Default value is 0.1.
 This penalty is used as part of a weighted term to the difference in a value of
@@ -75,9 +68,6 @@ a list with various elements:
   \item \code{predicted.synergies}: a character vector of the synergies (drug
   combination names) that were predicted by \strong{at least one} of the models
   in the dataset.
-  \item \code{synergy.subset.stats}: an integer vector with elements the number
-  of models the predicted each \strong{observed synergy subset} if the
-  \emph{calculate.subsets.stats} option is enabled.
   \item \code{models.mcc}: a numeric vector of MCC scores, one for each model.
   Values are in the [-1,1] interval.
   \item \code{diff.state.mcc.mat}: a matrix whose rows are \strong{vectors of

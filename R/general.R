@@ -34,11 +34,6 @@
 #' below its negative value) a biomarker will be registered in the returned result.
 #' Values closer to 1 translate to a more strict threshold and thus less
 #' biomarkers are found.
-#' @param calculate.subsets.stats logical. If \emph{TRUE}, then the results will
-#' include a vector of integers, representing the number of models that predicted
-#' every subset of the given \code{observed.synergies} (where at least one model
-#' predicts every synergy in the subset). The default value is \emph{FALSE}, since
-#' the powerset of the predicted \code{observed.synergies} can be very large to compute.
 #' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
 #' penalty and a value of 1 is the strickest possible penalty. Default value is 0.1.
 #' This penalty is used as part of a weighted term to the difference in a value of
@@ -55,9 +50,6 @@
 #'   \item \code{predicted.synergies}: a character vector of the synergies (drug
 #'   combination names) that were predicted by \strong{at least one} of the models
 #'   in the dataset.
-#'   \item \code{synergy.subset.stats}: an integer vector with elements the number
-#'   of models the predicted each \strong{observed synergy subset} if the
-#'   \emph{calculate.subsets.stats} option is enabled.
 #'   \item \code{models.synergies.tp}: an integer vector of true positive (TP)
 #'   values, one for each model.
 #'   \item \code{diff.tp.mat}: a matrix whose rows are \strong{vectors of
@@ -94,7 +86,7 @@
 #' @export
 biomarker_tp_analysis =
   function(model.predictions, models.stable.state, models.link.operator = NULL,
-           observed.synergies, threshold, calculate.subsets.stats = FALSE, penalty = 0.1) {
+           observed.synergies, threshold, penalty = 0.1) {
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
   stopifnot(all(observed.synergies %in% colnames(model.predictions)))
@@ -118,11 +110,6 @@ biomarker_tp_analysis =
   # check: the predicted synergies is a subset of the observed ones
   stopifnot(all(predicted.synergies %in% observed.synergies))
 
-  # Find the number of predictive models for every synergy subset
-  if (calculate.subsets.stats) {
-    synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
-  }
-
   # Count the predictions of the observed synergies per model (TP)
   models.synergies.tp = calculate_models_synergies_tp(observed.model.predictions)
 
@@ -139,9 +126,6 @@ biomarker_tp_analysis =
   res.list$observed.model.predictions = observed.model.predictions
   res.list$unobserved.model.predictions = unobserved.model.predictions
   res.list$predicted.synergies = predicted.synergies
-  if (calculate.subsets.stats) {
-    res.list$synergy.subset.stats = synergy.subset.stats
-  }
   res.list$models.synergies.tp = models.synergies.tp
   res.list$diff.state.tp.mat = diff.state.tp.mat
   res.list$biomarkers.tp.active = biomarkers.state.list$biomarkers.pos
@@ -206,11 +190,6 @@ biomarker_tp_analysis =
 #' @param num.of.mcc.classes numeric. A positive integer larger than 2 that
 #' signifies the number of mcc classes (groups) that we should split the models
 #' MCC values. Default value: 5.
-#' @param calculate.subsets.stats logical. If \emph{TRUE}, then the results will
-#' include a vector of integers, representing the number of models that predicted
-#' every subset of the given \code{observed.synergies} (where at least one model
-#' predicts every synergy in the subset). The default value is \emph{FALSE}, since
-#' the powerset of the predicted \code{observed.synergies} can be very large to compute.
 #' @param penalty value between 0 and 1 (inclusive). A value of 0 means no
 #' penalty and a value of 1 is the strickest possible penalty. Default value is 0.1.
 #' This penalty is used as part of a weighted term to the difference in a value of
@@ -227,9 +206,6 @@ biomarker_tp_analysis =
 #'   \item \code{predicted.synergies}: a character vector of the synergies (drug
 #'   combination names) that were predicted by \strong{at least one} of the models
 #'   in the dataset.
-#'   \item \code{synergy.subset.stats}: an integer vector with elements the number
-#'   of models the predicted each \strong{observed synergy subset} if the
-#'   \emph{calculate.subsets.stats} option is enabled.
 #'   \item \code{models.mcc}: a numeric vector of MCC scores, one for each model.
 #'   Values are in the [-1,1] interval.
 #'   \item \code{diff.state.mcc.mat}: a matrix whose rows are \strong{vectors of
@@ -269,8 +245,8 @@ biomarker_tp_analysis =
 #' @family general analysis functions
 #' @export
 biomarker_mcc_analysis = function(model.predictions, models.stable.state,
-  models.link.operator = NULL, observed.synergies, threshold, num.of.mcc.classes = 5,
-  calculate.subsets.stats = FALSE, penalty = 0.1) {
+  models.link.operator = NULL, observed.synergies, threshold,
+  num.of.mcc.classes = 5, penalty = 0.1) {
 
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
@@ -298,11 +274,6 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
   # check: the predicted synergies is a subset of the observed ones
   stopifnot(all(predicted.synergies %in% observed.synergies))
 
-  # Find the number of predictive models for every synergy subset
-  if (calculate.subsets.stats) {
-    synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
-  }
-
   # Calculate Matthews Correlation Coefficient (MCC) for every model
   models.mcc = calculate_models_mcc(observed.model.predictions,
                                     unobserved.model.predictions,
@@ -321,9 +292,6 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
   res.list$observed.model.predictions = observed.model.predictions
   res.list$unobserved.model.predictions = unobserved.model.predictions
   res.list$predicted.synergies = predicted.synergies
-  if (calculate.subsets.stats) {
-    res.list$synergy.subset.stats = synergy.subset.stats
-  }
   res.list$models.mcc = models.mcc
   res.list$diff.state.mcc.mat = diff.state.mcc.mat
   res.list$biomarkers.mcc.active = biomarkers.state.list$biomarkers.pos
