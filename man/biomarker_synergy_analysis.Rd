@@ -63,10 +63,6 @@ respective model group.}
 \value{
 a list with various elements:
 \itemize{
-  \item \code{observed.model.predictions}: the part of the \code{model.predictions}
-  data that includes the \code{observed.synergies}.
-  \item \code{unobserved.model.predictions}: the complementary part of the
-  \code{model.predictions} data that does not include the \code{observed.synergies}
   \item \code{predicted.synergies}: a character vector of the synergies (drug
   combination names) that were predicted by \strong{at least one} of the models
   in the dataset.

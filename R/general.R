@@ -43,10 +43,6 @@
 #'
 #' @return a list with various elements:
 #' \itemize{
-#'   \item \code{observed.model.predictions}: the part of the \code{model.predictions}
-#'   data that includes the \code{observed.synergies}.
-#'   \item \code{unobserved.model.predictions}: the complementary part of the
-#'   \code{model.predictions} data that does not include the \code{observed.synergies}
 #'   \item \code{predicted.synergies}: a character vector of the synergies (drug
 #'   combination names) that were predicted by \strong{at least one} of the models
 #'   in the dataset.
@@ -123,8 +119,6 @@ biomarker_tp_analysis =
 
   # return all necessary data as elements of a list
   res.list = list()
-  res.list$observed.model.predictions = observed.model.predictions
-  res.list$unobserved.model.predictions = unobserved.model.predictions
   res.list$predicted.synergies = predicted.synergies
   res.list$models.synergies.tp = models.synergies.tp
   res.list$diff.state.tp.mat = diff.state.tp.mat
@@ -199,10 +193,6 @@ biomarker_tp_analysis =
 #'
 #' @return a list with various elements:
 #' \itemize{
-#'   \item \code{observed.model.predictions}: the part of the \code{model.predictions}
-#'   data that includes the \code{observed.synergies}.
-#'   \item \code{unobserved.model.predictions}: the complementary part of the
-#'   \code{model.predictions} data that does not include the \code{observed.synergies}
 #'   \item \code{predicted.synergies}: a character vector of the synergies (drug
 #'   combination names) that were predicted by \strong{at least one} of the models
 #'   in the dataset.
@@ -289,8 +279,6 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 
   # return all necessary data as elements of a list
   res.list = list()
-  res.list$observed.model.predictions = observed.model.predictions
-  res.list$unobserved.model.predictions = unobserved.model.predictions
   res.list$predicted.synergies = predicted.synergies
   res.list$models.mcc = models.mcc
   res.list$diff.state.mcc.mat = diff.state.mcc.mat
@@ -365,10 +353,6 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 #'
 #' @return a list with various elements:
 #' \itemize{
-#'   \item \code{observed.model.predictions}: the part of the \code{model.predictions}
-#'   data that includes the \code{observed.synergies}.
-#'   \item \code{unobserved.model.predictions}: the complementary part of the
-#'   \code{model.predictions} data that does not include the \code{observed.synergies}
 #'   \item \code{predicted.synergies}: a character vector of the synergies (drug
 #'   combination names) that were predicted by \strong{at least one} of the models
 #'   in the dataset.
@@ -455,8 +439,6 @@ biomarker_synergy_analysis =
 
     # return all necessary data as elements of a list
     res.list = list()
-    res.list$observed.model.predictions = observed.model.predictions
-    res.list$unobserved.model.predictions = unobserved.model.predictions
     res.list$predicted.synergies = predicted.synergies
     if (calculate.subsets.stats) {
       res.list$synergy.subset.stats = synergy.subset.stats
