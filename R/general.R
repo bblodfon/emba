@@ -321,7 +321,7 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 #'
 #' Use this function to discover \emph{synergy biomarkers}, i.e. nodes whose
 #' activity and/or boolean equation parameterization (link operator) affect the
-#' manifestation of synergies in the models. Models are classified to groups based on
+#' manifestation of synergies in the boolean models. Models are classified to groups based on
 #' whether they predict or not each of the predicted synergies.
 #'
 #' @param model.predictions a \code{data.frame} object with rows the models and
@@ -375,6 +375,13 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 #'   \item \code{synergy.subset.stats}: an integer vector with elements the number
 #'   of models the predicted each \strong{observed synergy subset} if the
 #'   \emph{calculate.subsets.stats} option is enabled.
+#'   \item \code{synergy.comparison.sets}: a \code{data.frame} with pairs of
+#'   \emph{(set, subset)} for each model-predicted synergy where each respective
+#'   subset misses just one synergy from the larger set (present only if the
+#'   \emph{calculate.subsets.stats} option is enabled). Can be used to refine
+#'   the synergy biomarkers by comparing any two synergy sets with the functions
+#'   \code{\link{get_avg_activity_diff_based_on_synergy_set_cmp}} or
+#'   \code{\link{get_avg_link_operator_diff_based_on_synergy_set_cmp}}.
 #'   \item \code{diff.state.synergies.mat}: a matrix whose rows are
 #'   \strong{vectors of average node activity state differences} between two
 #'   groups of models where the classification for each individual row was based
@@ -434,6 +441,7 @@ biomarker_synergy_analysis =
     # Find the number of predictive models for every synergy subset
     if (calculate.subsets.stats) {
       synergy.subset.stats = get_synergy_subset_stats(observed.model.predictions, predicted.synergies)
+      synergy.comparison.sets = get_synergy_comparison_sets(synergy.subset.stats)
     }
 
     # get the average activity state differences for each predicted synergy
@@ -452,6 +460,7 @@ biomarker_synergy_analysis =
     res.list$predicted.synergies = predicted.synergies
     if (calculate.subsets.stats) {
       res.list$synergy.subset.stats = synergy.subset.stats
+      res.list$synergy.comparison.sets = synergy.comparison.sets
     }
     res.list$diff.state.synergies.mat = diff.state.synergies.mat
     res.list$activity.biomarkers = activity.biomarkers
