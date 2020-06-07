@@ -11,7 +11,8 @@ get_synergy_biomarkers_per_cell_line(biomarkers.dirs)
 form of \emph{\{path\}/cell_line_name/\{dir\}}. The cell line name directory
 should be different for each element of the vector as we use it to fill in the
 \code{rownames} of each cell line-specific \code{data.frame} object.
-Inside each \emph{\{dir\}}, we read the synergy biomarkers from a file (if it
+Inside each \emph{\{dir\}} (the directory name does not matter, but 'biomarkers'
+is a good choice), we read the synergy biomarkers from a file (if it
 exists and is non-empty) with the name \emph{biomarkers_per_synergy}. This file
 has as first row the node names (columns) while every next row starts with the row name
 (drug combination name) followed by a series of numbers from the ternary set
@@ -33,4 +34,9 @@ element in each cell line-specific \code{data.frame} are either \emph{1}
 Use this function to get the synergy biomarkers for each cell line.
 The biomarkers must be stored in a single file inside each given cell line-specific
 directory.
+}
+\examples{
+dir = system.file("extdata", "AGS", "bio", package = "emba", mustWork = TRUE)
+res_list = get_synergy_biomarkers_per_cell_line(biomarkers.dirs = c(dir))
+
 }

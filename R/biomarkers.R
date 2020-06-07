@@ -248,7 +248,8 @@ get_synergy_biomarkers_from_dir =
 #' form of \emph{\{path\}/cell_line_name/\{dir\}}. The cell line name directory
 #' should be different for each element of the vector as we use it to fill in the
 #' \code{rownames} of each cell line-specific \code{data.frame} object.
-#' Inside each \emph{\{dir\}}, we read the synergy biomarkers from a file (if it
+#' Inside each \emph{\{dir\}} (the directory name does not matter, but 'biomarkers'
+#' is a good choice), we read the synergy biomarkers from a file (if it
 #' exists and is non-empty) with the name \emph{biomarkers_per_synergy}. This file
 #' has as first row the node names (columns) while every next row starts with the row name
 #' (drug combination name) followed by a series of numbers from the ternary set
@@ -264,6 +265,10 @@ get_synergy_biomarkers_from_dir =
 #' element in each cell line-specific \code{data.frame} are either \emph{1}
 #' (\emph{active state} biomarker), \emph{-1}
 #' (\emph{inhibited state} biomarker) or \emph{0} (not a biomarker).
+#'
+#' @examples
+#' dir = system.file("extdata", "AGS", "bio", package = "emba", mustWork = TRUE)
+#' res_list = get_synergy_biomarkers_per_cell_line(biomarkers.dirs = c(dir))
 #'
 #' @importFrom utils read.table
 #' @importFrom usefun get_parent_dir
@@ -309,6 +314,11 @@ get_synergy_biomarkers_per_cell_line = function(biomarkers.dirs) {
 #' rows the cell lines. Possible values for each \emph{cell line-node}
 #' element are either \emph{1} (\emph{active state} biomarker), \emph{-1}
 #' (\emph{inhibited state} biomarker) or \emph{0} (not a biomarker).
+#'
+#' @examples
+#' dir = system.file("extdata", "AGS", "bio", package = "emba", mustWork = TRUE)
+#' res = get_perf_biomarkers_per_cell_line(biomarkers.dirs = c(dir),
+#'   node.names = paste0("x", 1:20))
 #'
 #' @importFrom utils read.table
 #' @importFrom usefun get_parent_dir add_row_to_ternary_df

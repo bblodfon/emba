@@ -31,3 +31,9 @@ element are either \emph{1} (\emph{active state} biomarker), \emph{-1}
 Use this function to get the performance biomarkers from the respective
 files inside the given list of directories.
 }
+\examples{
+dir = system.file("extdata", "AGS", "bio", package = "emba", mustWork = TRUE)
+res = get_perf_biomarkers_per_cell_line(biomarkers.dirs = c(dir),
+  node.names = paste0("x", 1:20))
+
+}
