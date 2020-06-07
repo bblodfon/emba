@@ -122,7 +122,7 @@
 <a href="#emba-015" class="anchor"></a>emba 0.1.5<small> Unreleased </small>
 </h1>
 <ul>
-<li>Finally added tests to the package! <strong>Coverage is now 76%</strong>.</li>
+<li>Finally added tests to the package! <strong>Coverage is now 81%</strong>.</li>
 <li>Used the <a href="https://github.com/r-lib/pkgdown/">pkgdown</a> package to create static html documentation for emba. <a href="https://bblodfon.github.io/emba/index.html">Check it here</a>!</li>
 <li>Change MCC calculation to return 0 when undefined/<code>NaN</code> MCC scores were produced (which is the correct limiting value - see <a href="https://doi.org/10.1186/s12864-019-6413-7">Chicco at al. (2020)</a>). Thus, the previous versions handling of <code>NaN</code> MCC scores, is now deprecated.</li>
 <li>Add the <code>penalty</code> parameter to account for the difference in model group size when calculating the average activity or link operator data differences. This minimizes the bias in the returned biomarkers.
@@ -132,7 +132,7 @@
 </ul>
 </li>
 <li>Changed documentation to specify that the <code>models.stable.state</code> parameter used in various functions can take any values in the [0,1] interval and not just 0 (<em>inactive</em>) and 1 (<em>active</em>).</li>
-<li>The following functions do not take the input parameter <code>models</code> anymore:
+<li>The following functions do not take the redundant parameter <code>models</code> anymore:
 <ul>
 <li><code><a href="../reference/get_avg_link_operator_diff_mat_based_on_tp_predictions.html">emba::get_avg_link_operator_diff_mat_based_on_tp_predictions</a></code></li>
 <li><code><a href="../reference/get_avg_activity_diff_mat_based_on_tp_predictions.html">emba::get_avg_activity_diff_mat_based_on_tp_predictions</a></code></li>
@@ -147,8 +147,8 @@
 <li>These changes affect the following functions: <code><a href="../reference/get_link_operators_from_models_dir.html">emba::get_link_operators_from_models_dir</a></code>, <code><a href="../reference/get_stable_state_from_models_dir.html">emba::get_stable_state_from_models_dir</a></code> and <code><a href="../reference/get_model_names.html">emba::get_model_names</a></code>.</li>
 </ul>
 </li>
-<li>Plot (<code>emba::plot_*</code>) functions refactoring</li>
-<li>Various small bug fixes :)</li>
+<li>The general functions <code><a href="../reference/biomarker_mcc_analysis.html">emba::biomarker_mcc_analysis</a></code> and <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis</a></code> do not use the <code>calculate.subsets.stats</code> input option anymore. The <code><a href="../reference/biomarker_synergy_analysis.html">emba::biomarker_synergy_analysis</a></code> continues to do so and now also calculates and returns all possible synergy set and subset pairs that miss just one of the model predicted synergies (<code><a href="../reference/get_synergy_comparison_sets.html">emba::get_synergy_comparison_sets</a></code>).</li>
+<li>Various small bug fixes and other code refactoring :)</li>
 </ul>
 </div>
     <div id="emba-014" class="section level1">

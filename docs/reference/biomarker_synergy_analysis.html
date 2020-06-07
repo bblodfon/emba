@@ -42,7 +42,7 @@
 <meta property="og:title" content="Biomarker analysis per synergy predicted — biomarker_synergy_analysis" />
 <meta property="og:description" content="Use this function to discover synergy biomarkers, i.e. nodes whose
 activity and/or boolean equation parameterization (link operator) affect the
-manifestation of synergies in the models. Models are classified to groups based on
+manifestation of synergies in the boolean models. Models are classified to groups based on
 whether they predict or not each of the predicted synergies." />
 
 
@@ -125,7 +125,7 @@ whether they predict or not each of the predicted synergies." />
     <div class="ref-description">
     <p>Use this function to discover <em>synergy biomarkers</em>, i.e. nodes whose
 activity and/or boolean equation parameterization (link operator) affect the
-manifestation of synergies in the models. Models are classified to groups based on
+manifestation of synergies in the boolean models. Models are classified to groups based on
 whether they predict or not each of the predicted synergies.</p>
     </div>
 
@@ -216,6 +216,13 @@ respective model group.</p></td>
 <li><p><code>synergy.subset.stats</code>: an integer vector with elements the number
   of models the predicted each <strong>observed synergy subset</strong> if the
   <em>calculate.subsets.stats</em> option is enabled.</p></li>
+<li><p><code>synergy.comparison.sets</code>: a <code>data.frame</code> with pairs of
+  <em>(set, subset)</em> for each model-predicted synergy where each respective
+  subset misses just one synergy from the larger set (present only if the
+  <em>calculate.subsets.stats</em> option is enabled). Can be used to refine
+  the synergy biomarkers by comparing any two synergy sets with the functions
+  <code><a href='get_avg_activity_diff_based_on_synergy_set_cmp.html'>get_avg_activity_diff_based_on_synergy_set_cmp</a></code> or
+  <code><a href='get_avg_link_operator_diff_based_on_synergy_set_cmp.html'>get_avg_link_operator_diff_based_on_synergy_set_cmp</a></code>.</p></li>
 <li><p><code>diff.state.synergies.mat</code>: a matrix whose rows are
   <strong>vectors of average node activity state differences</strong> between two
   groups of models where the classification for each individual row was based

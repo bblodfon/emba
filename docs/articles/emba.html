@@ -83,7 +83,43 @@
 
     
     
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">emba</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">emba</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)</pre></body></html></div>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">42</span>) <span class="co"># for reproducibility</span>
+
+<span class="co"># 1000 models, 80 nodes</span>
+<span class="no">model_names</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"model"</span>, <span class="fl">1</span>:<span class="fl">1000</span>)
+<span class="no">node_names</span>  <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"x"</span>, <span class="fl">1</span>:<span class="fl">30</span>)
+
+<span class="co">#model_predictions = emba:::model_predictions_df %&gt;% as.data.frame()</span>
+<span class="co"># duplicate data.frame to have more data</span>
+<span class="co">#model_pred = dplyr::bind_cols(model_predictions, model_predictions)</span>
+
+<span class="no">model_pred</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(
+  <span class="kw">data</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span> <span class="kw">=</span> <span class="fl">1000</span> * <span class="fl">100</span>, <span class="kw">mean</span> <span class="kw">=</span> <span class="fl">0.46</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fl">0.1</span>)),
+  <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1000</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">100</span>))
+
+<span class="co"># create random drug combination names</span>
+<span class="no">drug_combos</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/combn.html">combn</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">LETTERS</span>, <span class="kw">m</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">FUN</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>){<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="no">x</span>, <span class="kw">collapse</span> <span class="kw">=</span> <span class="st">"-"</span>)})
+
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">model_pred</span>) <span class="kw">=</span> <span class="no">model_names</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">model_pred</span>) <span class="kw">=</span> <span class="no">drug_combos</span>[<span class="fl">1</span>:<span class="fl">100</span>]
+
+<span class="no">model_stable_states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(
+  <span class="kw">data</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">n</span> <span class="kw">=</span> <span class="fl">1000</span> * <span class="fl">30</span>, <span class="kw">min</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">max</span> <span class="kw">=</span> <span class="fl">1</span>)),
+  <span class="co">#data = round(rnorm(n = 1000 * 30, mean = 0.5, sd = 0.1)),</span>
+  <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1000</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">30</span>))
+
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">model_stable_states</span>) <span class="kw">=</span> <span class="no">node_names</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">model_stable_states</span>) <span class="kw">=</span> <span class="no">model_names</span></pre></body></html></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

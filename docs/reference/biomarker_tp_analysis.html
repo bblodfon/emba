@@ -139,7 +139,6 @@ the number of TPs).</p>
   <span class='kw'>models.link.operator</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>observed.synergies</span>,
   <span class='no'>threshold</span>,
-  <span class='kw'>calculate.subsets.stats</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='fl'>0.1</span>
 )</pre>
 
@@ -189,14 +188,6 @@ Values closer to 1 translate to a more strict threshold and thus less
 biomarkers are found.</p></td>
     </tr>
     <tr>
-      <th>calculate.subsets.stats</th>
-      <td><p>logical. If <em>TRUE</em>, then the results will
-include a vector of integers, representing the number of models that predicted
-every subset of the given <code>observed.synergies</code> (where at least one model
-predicts every synergy in the subset). The default value is <em>FALSE</em>, since
-the powerset of the predicted <code>observed.synergies</code> can be very large to compute.</p></td>
-    </tr>
-    <tr>
       <th>penalty</th>
       <td><p>value between 0 and 1 (inclusive). A value of 0 means no
 penalty and a value of 1 is the strickest possible penalty. Default value is 0.1.
@@ -217,9 +208,6 @@ respective model group.</p></td>
 <li><p><code>predicted.synergies</code>: a character vector of the synergies (drug
   combination names) that were predicted by <strong>at least one</strong> of the models
   in the dataset.</p></li>
-<li><p><code>synergy.subset.stats</code>: an integer vector with elements the number
-  of models the predicted each <strong>observed synergy subset</strong> if the
-  <em>calculate.subsets.stats</em> option is enabled.</p></li>
 <li><p><code>models.synergies.tp</code>: an integer vector of true positive (TP)
   values, one for each model.</p></li>
 <li><p><code>diff.tp.mat</code>: a matrix whose rows are <strong>vectors of

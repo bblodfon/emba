@@ -157,6 +157,10 @@ rows the cell lines. Possible values for each <em>cell line-node</em>
 element are either <em>1</em> (<em>active state</em> biomarker), <em>-1</em>
 (<em>inhibited state</em> biomarker) or <em>0</em> (not a biomarker).</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"AGS"</span>, <span class='st'>"bio"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"emba"</span>, <span class='kw'>mustWork</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>get_perf_biomarkers_per_cell_line</span>(<span class='kw'>biomarkers.dirs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>dir</span>),
+  <span class='kw'>node.names</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"x"</span>, <span class='fl'>1</span>:<span class='fl'>20</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

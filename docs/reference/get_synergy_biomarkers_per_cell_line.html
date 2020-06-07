@@ -138,7 +138,8 @@ directory.</p>
 form of <em>{path}/cell_line_name/{dir}</em>. The cell line name directory
 should be different for each element of the vector as we use it to fill in the
 <code>rownames</code> of each cell line-specific <code>data.frame</code> object.
-Inside each <em>{dir}</em>, we read the synergy biomarkers from a file (if it
+Inside each <em>{dir}</em> (the directory name does not matter, but 'biomarkers'
+is a good choice), we read the synergy biomarkers from a file (if it
 exists and is non-empty) with the name <em>biomarkers_per_synergy</em>. This file
 has as first row the node names (columns) while every next row starts with the row name
 (drug combination name) followed by a series of numbers from the ternary set
@@ -159,6 +160,9 @@ element in each cell line-specific <code>data.frame</code> are either <em>1</em>
 (<em>active state</em> biomarker), <em>-1</em>
 (<em>inhibited state</em> biomarker) or <em>0</em> (not a biomarker).</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"AGS"</span>, <span class='st'>"bio"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"emba"</span>, <span class='kw'>mustWork</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>res_list</span> <span class='kw'>=</span> <span class='fu'>get_synergy_biomarkers_per_cell_line</span>(<span class='kw'>biomarkers.dirs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>dir</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
