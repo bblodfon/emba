@@ -85,3 +85,35 @@ test_that("it returns proper results", {
   expect_equal(unname(unlist(res4[1,])), c(0,1,1,1,-1,-1,-1))
   expect_equal(unname(unlist(res4[2,])), rep(0,7))
 })
+
+context("Testing 'get_synergy_biomarkers_per_cell_line'")
+test_that("it returns proper results", {
+  biomarkers.dir = system.file("extdata", "AGS", "bio", package = "emba", mustWork = TRUE)
+
+  res_list = get_synergy_biomarkers_per_cell_line(biomarkers.dirs = c(biomarkers.dir, tempdir()))
+
+  expect_type(res_list, "list")
+  expect_equal(length(res_list), 2)
+  expect_equal(names(res_list)[1], "AGS")
+  expect_equal(dim(res_list$AGS), c(2,5))
+  expect_equal(colnames(res_list$AGS), paste0("x", 1:5))
+  expect_equal(rownames(res_list$AGS), c("A-B", "C-D"))
+  expect_equal(res_list$AGS["A-B", "x3"], 1)
+  expect_equal(res_list$AGS["C-D", "x5"], -1)
+})
+
+context("Testing 'get_perf_biomarkers_per_cell_line'")
+test_that("it returns proper results", {
+  biomarkers.dir = system.file("extdata", "AGS", "bio", package = "emba", mustWork = TRUE)
+
+  res = get_perf_biomarkers_per_cell_line(biomarkers.dirs = c(biomarkers.dir, tempdir()),
+    node.names = paste0("x", 1:20))
+
+  expect_s3_class(res, "data.frame")
+  expect_equal(dim(res), c(2,20))
+  expect_equal(colnames(res), paste0("x", 1:20))
+  expect_equal(rownames(res)[2], "AGS")
+  expect_equal(unname(unlist(res["AGS", c("x2","x4","x15")])), c(1,1,1))
+  expect_equal(unname(unlist(res["AGS", c("x7","x11")])), c(-1,-1))
+  expect_equal(unname(unlist(res[1,])), rep(0,20))
+})
