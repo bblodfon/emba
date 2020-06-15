@@ -15,12 +15,15 @@
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
 #'
+#' @importFrom tidyr %>%
+#' @importFrom dplyr select
+#' @importFrom tidyselect all_of
 #' @export
 get_observed_model_predictions = function(model.predictions, observed.synergies) {
   drug.combinations.tested = colnames(model.predictions)
-  return(model.predictions[,sapply(drug.combinations.tested, function(drug.comb) {
-    is_comb_element_of(drug.comb, observed.synergies)
-  })])
+  cols = names(which(sapply(drug.combinations.tested,
+    function(drug.comb) is_comb_element_of(drug.comb, observed.synergies))))
+  model.predictions %>% select(all_of(cols))
 }
 
 #' Subset the model predictions to the (false) non-observed synergies
@@ -40,12 +43,15 @@ get_observed_model_predictions = function(model.predictions, observed.synergies)
 #' predicted) or \emph{NA} (couldn't find stable states in either the drug
 #' combination inhibited model or in any of the two single-drug inhibited models)
 #'
+#' @importFrom tidyr %>%
+#' @importFrom dplyr select
+#' @importFrom tidyselect all_of
 #' @export
 get_unobserved_model_predictions = function(model.predictions, observed.synergies) {
   drug.combinations.tested = colnames(model.predictions)
-  return(model.predictions[,sapply(drug.combinations.tested, function(drug.comb) {
-    !is_comb_element_of(drug.comb, observed.synergies)
-  })])
+  cols = names(which(sapply(drug.combinations.tested,
+    function(drug.comb) !is_comb_element_of(drug.comb, observed.synergies))))
+  model.predictions %>% select(all_of(cols))
 }
 
 #' Find the number of predictive models for every synergy subset

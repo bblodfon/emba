@@ -85,9 +85,9 @@ biomarker_tp_analysis =
            observed.synergies, threshold, penalty = 0.1) {
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
+  stopifnot(length(observed.synergies) > 0)
   stopifnot(all(observed.synergies %in% colnames(model.predictions)))
-  models = rownames(model.predictions)
-  stopifnot(all(models == rownames(models.stable.state)))
+  stopifnot(all(rownames(model.predictions) == rownames(models.stable.state)))
   stopifnot(all(models.stable.state >= 0, models.stable.state <= 1))
 
   # Split model.predictions to positive (observed) and negative (non-observed) results
@@ -127,7 +127,8 @@ biomarker_tp_analysis =
 
   if (!is.null(models.link.operator)) {
     # check
-    stopifnot(all(models == rownames(models.link.operator)))
+    stopifnot(all(rownames(model.predictions) == rownames(models.link.operator)))
+    stopifnot(all(models.link.operator == 0 | models.link.operator == 1 | models.link.operator == 0.5))
 
     # Make all possible classification group matchings and get the average
     # link operator differences
@@ -240,12 +241,11 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 
   # check input
   stopifnot(threshold >= 0 & threshold <= 1)
+  stopifnot(length(observed.synergies) > 0)
   stopifnot(all(observed.synergies %in% colnames(model.predictions)))
   stopifnot(num.of.mcc.classes >= 2)
   number.of.drug.comb.tested = ncol(model.predictions)
-  models = rownames(model.predictions)
-
-  stopifnot(all(models == rownames(models.stable.state)))
+  stopifnot(all(rownames(model.predictions) == rownames(models.stable.state)))
   stopifnot(all(models.stable.state >= 0, models.stable.state <= 1))
 
   # Split model.predictions to positive (observed) and negative (non-observed) results
@@ -287,7 +287,8 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 
   if (!is.null(models.link.operator)) {
     # check
-    stopifnot(all(models == rownames(models.link.operator)))
+    stopifnot(all(rownames(model.predictions) == rownames(models.link.operator)))
+    stopifnot(all(models.link.operator == 0 | models.link.operator == 1 | models.link.operator == 0.5))
 
     # Make all possible classification group matchings and get the average
     # link operator differences
@@ -401,9 +402,9 @@ biomarker_synergy_analysis =
            observed.synergies, threshold, calculate.subsets.stats = FALSE, penalty = 0.1) {
     # check input
     stopifnot(threshold >= 0 & threshold <= 1)
-    models = rownames(model.predictions)
+    stopifnot(length(observed.synergies) > 0)
     stopifnot(all(observed.synergies %in% colnames(model.predictions)))
-    stopifnot(all(models == rownames(models.stable.state)))
+    stopifnot(all(rownames(model.predictions) == rownames(models.stable.state)))
     stopifnot(all(models.stable.state >= 0, models.stable.state <= 1))
 
     # Split model.predictions to positive (observed) and negative (non-observed) results
@@ -449,7 +450,8 @@ biomarker_synergy_analysis =
 
     if (!is.null(models.link.operator)) {
       # check
-      stopifnot(all(models == rownames(models.link.operator)))
+      stopifnot(all(rownames(model.predictions) == rownames(models.link.operator)))
+      stopifnot(all(models.link.operator == 0 | models.link.operator == 1 | models.link.operator == 0.5))
 
       # get the average link operator differences for each predicted synergy
       diff.link.synergies.mat =

@@ -60,12 +60,22 @@ test_that("it returns proper results", {
 
   res = get_observed_model_predictions(model.predictions = dff,
     observed.synergies = c("d-e", "r-u"))
-  expect_equal(dim(res), c(5, 2))
+  expect_equal(dim(res), c(5,2))
 
   res2 = get_unobserved_model_predictions(model.predictions = dff,
     observed.synergies = c("i-k", "g-o", "w-x", "n-s", "f-l", "b-m", "c-y", "z-a"))
-  expect_equal(dim(res2), c(5, 2))
-  expect_identical(colnames(res), colnames(res2))
+  expect_equal(dim(res2), c(5,2))
+  expect_identical(res, res2)
+
+  # 1 column selection
+  res3 = get_observed_model_predictions(model.predictions = dff,
+    observed.synergies = "d-e")
+  expect_equal(dim(res3), c(5,1))
+
+  res4 = get_unobserved_model_predictions(model.predictions = dff,
+    observed.synergies = c("r-u", "i-k", "g-o", "w-x", "n-s", "f-l", "b-m", "c-y", "z-a"))
+  expect_equal(dim(res4), c(5,1))
+  expect_identical(res3, res4)
 })
 
 context("Testing 'get_synergy_subset_stats' and 'get_synergy_comparison_sets'")
