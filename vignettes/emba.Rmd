@@ -7,65 +7,126 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup}
+# Intro
+
+The *emba* R package stands for *Ensemble (Boolean) Model Biomarker Analysis*.
+It's main purpose is to be used on a dataset consisted of an **ensemble of boolean models**.
+These models are usually (but not necessarily) different versions of the same initial model, parameterized in different ways (e.g. some boolean operators have changed from *OR* to *AND* or vice-versa).
+Furthermore, this model dataset must be tested in-silico against a list of drug combinations, in order to assess which drugs combinations behave synergistically for which models.
+An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (documentation available [here](https://druglogics.github.io/druglogics-doc/)).
+
+Then, given a list of lab-observed and verified **synergies** ^[Entirely different discussion how the assessement of these synergies based on experimental data was performed!], this package enables the easy grouping of the models into different classes based on different performance metric evaluations.
+This group classification enables the discovery and visualization of **biomarkers** - nodes who activity and/or boolean model parameterization might affect either the performance of those models or the manifestation of the predicted synergies.
+
+In the next sections we will describe the main inputs and outputs of the *general analysis* functions (which group a lot of functionality into one), provide some insights on the implementation behind.
+Biomarkers will be assessed and visualized using a randomly-generated dataset.
+For analyses using this package on more *properly generated* boolean ensemble datasets (using output from the aforementioned DrugLogics software pipeline) see this [GitHub repository](https://github.com/bblodfon/gitsbe-model-analysis/).
+See this [example analysis](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) for all the intermediate steps included in the *general analysis* functions.
+
+# Setup
+
+```{r setup, message=FALSE}
+# libraries
 library(emba)
+library(usefun)
 library(dplyr)
 
+# reproducibility
+set.seed(42)
+```
+
+# Input
+
+## Test dataset
+
+The test dataset we will use has $7500$ boolean models with $139$ nodes each. 
+It helps to think of each model as a **network of nodes** where the edges represent either activation or inhibition of the corresponding target and the nodes activity can be either active (1) or inactive (0).
+The models have been assessed for synergy against a total of $153$ drug combinations.
+
+```{r input-1}
+data.list = readRDS(file = "data.rds")
+
+model.predictions = data.list$model.predictions
+models.stable.state = data.list$models.stable.state
+models.link.operator = data.list$models.equations
+observed.synergies = data.list$observed.synergies
+
+# drug combinations
+drug.combos = colnames(model.predictions)
+
+# change model names (shorter names)
+model.names = paste0("model", 1:7500)
+rownames(model.predictions) = model.names
+rownames(models.stable.state) = model.names
+rownames(models.link.operator) = model.names
+```
+
+## Model Predictions
+
+The model predictions is a `data.frame` whose values (corresponding to a specific model-drug combination element) can be one of the following:
+
+- 0 (no synergy predicted)
+- 1 (synergy was predicted)
+- `NA` (in case the model couldn't be assessed for synergy, e.g. there were no stable states in either the drug combination perturbed model or in any of the two single-drug perturbed models).
+
+```{r input-2}
+model.predictions[1:5, 77:84] %>% knitr::kable(caption = "Model predictions example")
+```
+
+## Model stable states
+
+Each model must have a stable state configuration where all the nodes have stabilized to either 0 (inactive state) or 1 (active state).
+In other words, a **fixpoint attractor**.
+Of course, if a model has multiple attractors or other methods are used to derive a solution to the system of boolean equations that is the model itself, then continuous activity state values (in the $[0,1]$ interval) are also supported.
+
+```{r input-3}
+models.stable.state[1:5, 5:11] %>% knitr::kable(caption = "Stable activity states example")
+```
+
+## Model link operators
+
+This is a non-essential input for the general functions we will use, but we include it here since the test dataset supports it.
+
+If each boolean model is a list of boolean equations of the form:
+`T = (A1 OR A2 OR ...) AND NOT (I1 OR I2 OR ...)`, where the `A` and `I` nodes are the activating and inhibiting regulators respectively of the target node `T` and the `AND NOT` is the **link (balance) operator**, we can specify a link operator `data.frame` object whose values (corresponding to a specific model-node element) can be one of the following:
+
+- 0 (`AND NOT` link operator)
+- 1 (`OR NOT` link operator) 
+- 0.5 (if the node is not targeted by *both* activating and inhibiting regulators and thus the corresponding boolean equation has no link operator)
+
+```{r input-4}
+models.link.operator[1:5, 1:10] %>% knitr::kable(caption = "Models link operator example")
+```
+
+Note that in the test dataset, the nodes (columns of the `models.link.operator` object) who didn't have a link operator are pruned.
+
+## Observed synergies
+
+A list of *gold standard* drug combinations which will have been termed as **synergistic** via experimental and/or other computational methods.
+
+```{r input-5, results='asis'}
+usefun::pretty_print_vector_values(observed.synergies, vector.values.str = "observed synergies")
+```
+
+# Performance biomarkers
+
+## TP-based analysis
+
+```{r analysis-1}
 
 ```
 
+## MCC-based analysis
 
-```{r test}
-set.seed(42) # for reproducibility
 
-# 1000 models, 80 nodes
-model_names = paste0("model", 1:1000)
-node_names  = paste0("x", 1:30)
+```{r analysis-2}
 
-#model_predictions = emba:::model_predictions_df %>% as.data.frame()
-# duplicate data.frame to have more data
-#model_pred = dplyr::bind_cols(model_predictions, model_predictions)
-
-model_pred = as.data.frame(matrix(
-  data = round(rnorm(n = 1000 * 100, mean = 0.46, sd = 0.1)),
-  nrow = 1000, ncol = 100))
-
-# create random drug combination names
-drug_combos = combn(x = LETTERS, m = 2, FUN = function(x){paste0(x, collapse = "-")})
-
-rownames(model_pred) = model_names
-colnames(model_pred) = drug_combos[1:100]
-
-model_stable_states = as.data.frame(matrix(
-  data = round(runif(n = 1000 * 30, min = 0, max = 1)), 
-  #data = round(rnorm(n = 1000 * 30, mean = 0.5, sd = 0.1)),
-  nrow = 1000, ncol = 30))
-
-colnames(model_stable_states) = node_names
-rownames(model_stable_states) = model_names
 ```
 
+# Synergy biomarkers
 
-```{r testing values, echo=FALSE, include=FALSE}
-#for (i in 1:10000) {
-  #observed.synergies = sample(x = drug_combos[1:100], size = 6)
-  #observed.synergies = c("C-J","A-C","C-M","D-U","B-X","A-F") # TP
-  observed.synergies = c("C-U","C-K","E-H","A-W","B-R","B-E") # MCC same
-  
-  a = emba::biomarker_tp_analysis(model.predictions = model_pred, models.stable.state = model_stable_states, observed.synergies = observed.synergies, threshold = 0.6, penalty = 0.1)
-  
-  a = biomarker_mcc_analysis(model.predictions = model_pred, models.stable.state = model_stable_states, 
-  observed.synergies = observed.synergies, num.of.mcc.classes = 9, threshold = 0.5, penalty = 0)
-  
-  #print(range(a$diff.state.tp.mat))
-  #if (max(a$diff.state.tp.mat) > 0.7 | min(a$diff.state.tp.mat) < -0.7) {
-  #print(paste(i,range(a$diff.state.mcc.mat)))
-    
-  # if (max(a$diff.state.mcc.mat) > 0.5 | min(a$diff.state.mcc.mat) < -0.5) {
-  #   print(observed.synergies)
-  #   break
-  # }
-#}
+```{r analysis-3}
+
 
 ```
 
