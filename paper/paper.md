@@ -4,17 +4,25 @@ tags:
   - R
   - boolean networks
   - biomarkers
-  - cancer
+  - mechanistic models
   - drug synergies
-  - drug combinations
+  - acti-cancer drug combinations
   - druglogics
 authors:
   - name: John Zobolas
     orcid: 0000-0002-3609-8674
     affiliation: 1
+  - name: Martin Kuiper
+    orcid: 0000-0002-1171-9876
+    affiliation: 1
+  - name: Åsmund Flobak
+    orcid: 0000-0002-3357-425X
+    affiliation: 2
 affiliations:
- - name: John Zobolas, PhD Candidate, NTNU
+ - name: Department of Biology, Norwegian University of Science and Technology (NTNU), Trondheim, Norway
    index: 1
+ - name: Department of Clinical and Molecular Medicine, Norwegian University of Science and Technology (NTNU), Trondheim, Norway
+   index: 2
 date: 15 June 2020
 bibliography: paper.bib
 ---
