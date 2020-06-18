@@ -41,7 +41,9 @@ It helps to think of each model as a **network of nodes** where the edges repres
 The models have been assessed for synergy against a total of $153$ drug combinations.
 
 ```{r input-1}
-data.list = readRDS(file = "data.rds")
+data_file = tempfile()
+utils::download.file(url = "https://github.com/bblodfon/emba/blob/master/vignettes/data.rds?raw=true", destfile = data_file)
+data.list = readRDS(file = data_file)
 
 model.predictions = data.list$model.predictions
 models.stable.state = data.list$models.stable.state
