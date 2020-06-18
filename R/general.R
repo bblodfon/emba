@@ -19,7 +19,8 @@
 #' Note that the rows (models) have to be in the same order as in the \code{model.predictions}
 #' parameter.
 #' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes. The row
-#' names specify the models' names whereas the column names specify
+#' names specify the models' names (same order as in the \code{model.predictions}
+#' parameter) whereas the column names specify
 #' the network nodes (gene, proteins, etc.). Possible values for each
 #' \emph{model-node element} are either \emph{0} (\strong{AND NOT} link operator),
 #' \emph{1} (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted
@@ -167,7 +168,8 @@ biomarker_tp_analysis =
 #' Note that the rows (models) have to be in the same order as in the \code{model.predictions}
 #' parameter.
 #' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes. The row
-#' names specify the models' names whereas the column names specify
+#' names specify the models' names (same order as in the \code{model.predictions}
+#' parameter) whereas the column names specify
 #' the network nodes (gene, proteins, etc.). Possible values for each
 #' \emph{model-node element} are either \emph{0} (\strong{AND NOT} link operator),
 #' \emph{1} (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted
@@ -325,7 +327,8 @@ biomarker_mcc_analysis = function(model.predictions, models.stable.state,
 #' Note that the rows (models) have to be in the same order as in the \code{model.predictions}
 #' parameter.
 #' @param models.link.operator a \code{data.frame} (nxm) with n models and m nodes. The row
-#' names specify the models' names whereas the column names specify
+#' names specify the models' names (same order as in the \code{model.predictions}
+#' parameter) whereas the column names specify
 #' the network nodes (gene, proteins, etc.). Possible values for each
 #' \emph{model-node element} are either \emph{0} (\strong{AND NOT} link operator),
 #' \emph{1} (\strong{OR NOT} link operator) or \emph{0.5} if the node is not targeted
