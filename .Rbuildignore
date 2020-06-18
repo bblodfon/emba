@@ -10,3 +10,4 @@
 ^paper$
 ^doc$
 ^Meta$
+^vignettes/data\.rds$
