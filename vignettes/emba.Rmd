@@ -30,9 +30,6 @@ See this [example analysis](https://bblodfon.github.io/gitsbe-model-analysis/ato
 library(emba)
 library(usefun)
 library(dplyr)
-
-# reproducibility
-set.seed(42)
 ```
 
 # Input
@@ -117,7 +114,6 @@ usefun::pretty_print_vector_values(observed.synergies, vector.values.str = "obse
 ```
 
 ## MCC-based analysis
-
 
 ```{r analysis-2}
 
