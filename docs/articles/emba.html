@@ -83,48 +83,333 @@
 
     
     
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">emba</span>)
+<div id="intro" class="section level1">
+<h1 class="hasAnchor">
+<a href="#intro" class="anchor"></a>Intro</h1>
+<p>The <em>emba</em> R package stands for <em>Ensemble (Boolean) Model Biomarker Analysis</em>. It’s main purpose is to be used on a dataset consisted of an <strong>ensemble of boolean models</strong>. These models are usually (but not necessarily) different versions of the same initial model, parameterized in different ways (e.g. some boolean operators have changed from <em>OR</em> to <em>AND</em> or vice-versa). Furthermore, this model dataset must be tested in-silico against a list of drug combinations, in order to assess which drugs combinations behave synergistically for which models. An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (documentation available <a href="https://druglogics.github.io/druglogics-doc/">here</a>).</p>
+<p>Then, given a list of lab-observed and verified <strong>synergies</strong> <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, this package enables the easy grouping of the models into different classes based on different performance metric evaluations. This group classification enables the discovery and visualization of <strong>biomarkers</strong> - nodes who activity and/or boolean model parameterization might affect either the performance of those models or the manifestation of the predicted synergies.</p>
+<p>In the next sections we will describe the main inputs and outputs of the <em>general analysis</em> functions (which group a lot of functionality into one), provide some insights on the implementation behind. Biomarkers will be assessed and visualized using a randomly-generated dataset. For analyses using this package on more <em>properly generated</em> boolean ensemble datasets (using output from the aforementioned DrugLogics software pipeline) see this <a href="https://github.com/bblodfon/gitsbe-model-analysis/">GitHub repository</a>. See this <a href="https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/">example analysis</a> for all the intermediate steps included in the <em>general analysis</em> functions.</p>
+</div>
+<div id="setup" class="section level1">
+<h1 class="hasAnchor">
+<a href="#setup" class="anchor"></a>Setup</h1>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># libraries</span>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">emba</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">usefun</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)</pre></body></html></div>
-<pre><code>## 
-## Attaching package: 'dplyr'</code></pre>
-<pre><code>## The following objects are masked from 'package:stats':
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">42</span>) <span class="co"># for reproducibility</span>
+</div>
+<div id="input" class="section level1">
+<h1 class="hasAnchor">
+<a href="#input" class="anchor"></a>Input</h1>
+<div id="test-dataset" class="section level2">
+<h2 class="hasAnchor">
+<a href="#test-dataset" class="anchor"></a>Test dataset</h2>
+<p>The test dataset we will use has <span class="math inline">\(7500\)</span> boolean models with <span class="math inline">\(139\)</span> nodes each. It helps to think of each model as a <strong>network of nodes</strong> where the edges represent either activation or inhibition of the corresponding target and the nodes activity can be either active (1) or inactive (0). The models have been assessed for synergy against a total of <span class="math inline">\(153\)</span> drug combinations.</p>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">data.list</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="kw">file</span> <span class="kw">=</span> <span class="st">"data.rds"</span>)
 
-<span class="co"># 1000 models, 80 nodes</span>
-<span class="no">model_names</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"model"</span>, <span class="fl">1</span>:<span class="fl">1000</span>)
-<span class="no">node_names</span>  <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"x"</span>, <span class="fl">1</span>:<span class="fl">30</span>)
+<span class="no">model.predictions</span> <span class="kw">=</span> <span class="no">data.list</span>$<span class="no">model.predictions</span>
+<span class="no">models.stable.state</span> <span class="kw">=</span> <span class="no">data.list</span>$<span class="no">models.stable.state</span>
+<span class="no">models.link.operator</span> <span class="kw">=</span> <span class="no">data.list</span>$<span class="no">models.equations</span>
+<span class="no">observed.synergies</span> <span class="kw">=</span> <span class="no">data.list</span>$<span class="no">observed.synergies</span>
 
-<span class="co">#model_predictions = emba:::model_predictions_df %&gt;% as.data.frame()</span>
-<span class="co"># duplicate data.frame to have more data</span>
-<span class="co">#model_pred = dplyr::bind_cols(model_predictions, model_predictions)</span>
+<span class="co"># drug combinations</span>
+<span class="no">drug.combos</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">model.predictions</span>)
 
-<span class="no">model_pred</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(
-  <span class="kw">data</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span> <span class="kw">=</span> <span class="fl">1000</span> * <span class="fl">100</span>, <span class="kw">mean</span> <span class="kw">=</span> <span class="fl">0.46</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fl">0.1</span>)),
-  <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1000</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">100</span>))
-
-<span class="co"># create random drug combination names</span>
-<span class="no">drug_combos</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/combn.html">combn</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">LETTERS</span>, <span class="kw">m</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">FUN</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>){<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="no">x</span>, <span class="kw">collapse</span> <span class="kw">=</span> <span class="st">"-"</span>)})
-
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">model_pred</span>) <span class="kw">=</span> <span class="no">model_names</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">model_pred</span>) <span class="kw">=</span> <span class="no">drug_combos</span>[<span class="fl">1</span>:<span class="fl">100</span>]
-
-<span class="no">model_stable_states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(
-  <span class="kw">data</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">n</span> <span class="kw">=</span> <span class="fl">1000</span> * <span class="fl">30</span>, <span class="kw">min</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">max</span> <span class="kw">=</span> <span class="fl">1</span>)),
-  <span class="co">#data = round(rnorm(n = 1000 * 30, mean = 0.5, sd = 0.1)),</span>
-  <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1000</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">30</span>))
-
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">model_stable_states</span>) <span class="kw">=</span> <span class="no">node_names</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">model_stable_states</span>) <span class="kw">=</span> <span class="no">model_names</span></pre></body></html></div>
+<span class="co"># change model names (shorter names)</span>
+<span class="no">model.names</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"model"</span>, <span class="fl">1</span>:<span class="fl">7500</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">model.predictions</span>) <span class="kw">=</span> <span class="no">model.names</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">models.stable.state</span>) <span class="kw">=</span> <span class="no">model.names</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">models.link.operator</span>) <span class="kw">=</span> <span class="no">model.names</span></pre></body></html></div>
+</div>
+<div id="model-predictions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#model-predictions" class="anchor"></a>Model Predictions</h2>
+<p>The model predictions is a <code>data.frame</code> whose values (corresponding to a specific model-drug combination element) can be one of the following:</p>
+<ul>
+<li>0 (no synergy predicted)</li>
+<li>1 (synergy was predicted)</li>
+<li>
+<code>NA</code> (in case the model couldn’t be assessed for synergy, e.g. there were no stable states in either the drug combination perturbed model or in any of the two single-drug perturbed models).</li>
+</ul>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">model.predictions</span>[<span class="fl">1</span>:<span class="fl">5</span>, <span class="fl">77</span>:<span class="fl">84</span>] <span class="kw">%&gt;%</span> <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Model predictions example"</span>)</pre></body></html></div>
+<table class="table">
+<caption>Model predictions example</caption>
+<thead><tr class="header">
+<th></th>
+<th align="right">PI-JN</th>
+<th align="right">PI-D1</th>
+<th align="right">PI-60</th>
+<th align="right">PI-SB</th>
+<th align="right">PI-RU</th>
+<th align="right">PI-D4</th>
+<th align="right">PI-F4</th>
+<th align="right">PI-ST</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>model1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td>model2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td>model3</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td>model4</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td>model5</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="model-stable-states" class="section level2">
+<h2 class="hasAnchor">
+<a href="#model-stable-states" class="anchor"></a>Model stable states</h2>
+<p>Each model must have a stable state configuration where all the nodes have stabilized to either 0 (inactive state) or 1 (active state). In other words, a <strong>fixpoint attractor</strong>. Of course, if a model has multiple attractors or other methods are used to derive a solution to the system of boolean equations that is the model itself, then continuous activity state values (in the <span class="math inline">\([0,1]\)</span> interval) are also supported.</p>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">models.stable.state</span>[<span class="fl">1</span>:<span class="fl">5</span>, <span class="fl">5</span>:<span class="fl">11</span>] <span class="kw">%&gt;%</span> <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Stable activity states example"</span>)</pre></body></html></div>
+<table class="table">
+<caption>Stable activity states example</caption>
+<thead><tr class="header">
+<th></th>
+<th align="right">MAP3K4</th>
+<th align="right">MAP2K4</th>
+<th align="right">IKBKG</th>
+<th align="right">IKBKB</th>
+<th align="right">AKT1</th>
+<th align="right">BRAF</th>
+<th align="right">SMAD3</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>model1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td>model2</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>model3</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td>model4</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td>model5</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="model-link-operators" class="section level2">
+<h2 class="hasAnchor">
+<a href="#model-link-operators" class="anchor"></a>Model link operators</h2>
+<p>This is a non-essential input for the general functions we will use, but we include it here since the test dataset supports it.</p>
+<p>If each boolean model is a list of boolean equations of the form: <code>T = (A1 OR A2 OR ...) AND NOT (I1 OR I2 OR ...)</code>, where the <code>A</code> and <code>I</code> nodes are the activating and inhibiting regulators respectively of the target node <code>T</code> and the <code>AND NOT</code> is the <strong>link (balance) operator</strong>, we can specify a link operator <code>data.frame</code> object whose values (corresponding to a specific model-node element) can be one of the following:</p>
+<ul>
+<li>0 (<code>AND NOT</code> link operator)</li>
+<li>1 (<code>OR NOT</code> link operator)</li>
+<li>0.5 (if the node is not targeted by <em>both</em> activating and inhibiting regulators and thus the corresponding boolean equation has no link operator)</li>
+</ul>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">models.link.operator</span>[<span class="fl">1</span>:<span class="fl">5</span>, <span class="fl">1</span>:<span class="fl">10</span>] <span class="kw">%&gt;%</span> <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Models link operator example"</span>)</pre></body></html></div>
+<table class="table">
+<caption>Models link operator example</caption>
+<thead><tr class="header">
+<th></th>
+<th align="right">MAP3K4</th>
+<th align="right">MAP2K4</th>
+<th align="right">IKBKB</th>
+<th align="right">AKT1</th>
+<th align="right">SMAD3</th>
+<th align="right">GSK3B</th>
+<th align="right">RAF1</th>
+<th align="right">GAB2</th>
+<th align="right">CTNNB1</th>
+<th align="right">NR3C1</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>model1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>model2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>model3</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>model4</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>model5</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>Note that in the test dataset, the nodes (columns of the <code>models.link.operator</code> object) who didn’t have a link operator are pruned.</p>
+</div>
+<div id="observed-synergies" class="section level2">
+<h2 class="hasAnchor">
+<a href="#observed-synergies" class="anchor"></a>Observed synergies</h2>
+<p>A list of <em>gold standard</em> drug combinations which will have been termed as <strong>synergistic</strong> via experimental and/or other computational methods.</p>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">observed.synergies</span>, <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"observed synergies"</span>)</pre></body></html></div>
+<blockquote>
+<p>17 observed synergies: AK-60, AK-BI, AK-D1, PI-D1, PD-G2, AK-G4, D1-G4, PI-JN, BI-P5, PD-P5, PI-P5, AK-PD, BI-PD, AK-PI, BI-PI, PD-PI, PK-ST</p>
+</blockquote>
+</div>
+</div>
+<div id="performance-biomarkers" class="section level1">
+<h1 class="hasAnchor">
+<a href="#performance-biomarkers" class="anchor"></a>Performance biomarkers</h1>
+<div id="tp-based-analysis" class="section level2">
+<h2 class="hasAnchor">
+<a href="#tp-based-analysis" class="anchor"></a>TP-based analysis</h2>
+</div>
+<div id="mcc-based-analysis" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mcc-based-analysis" class="anchor"></a>MCC-based analysis</h2>
+</div>
+</div>
+<div id="synergy-biomarkers" class="section level1">
+<h1 class="hasAnchor">
+<a href="#synergy-biomarkers" class="anchor"></a>Synergy biomarkers</h1>
+</div>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Entirely different discussion how the assessement of these synergies based on experimental data was performed!<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 

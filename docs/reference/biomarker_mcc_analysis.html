@@ -166,7 +166,8 @@ parameter.</p></td>
     <tr>
       <th>models.link.operator</th>
       <td><p>a <code>data.frame</code> (nxm) with n models and m nodes. The row
-names specify the models' names whereas the column names specify
+names specify the models' names (same order as in the <code>model.predictions</code>
+parameter) whereas the column names specify
 the network nodes (gene, proteins, etc.). Possible values for each
 <em>model-node element</em> are either <em>0</em> (<strong>AND NOT</strong> link operator),
 <em>1</em> (<strong>OR NOT</strong> link operator) or <em>0.5</em> if the node is not targeted
