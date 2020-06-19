@@ -3,10 +3,11 @@ title: 'emba: R package for analysis and visualization of biomarkers in boolean 
 tags:
   - R
   - boolean networks
+  - logical modeling
   - biomarkers
   - mechanistic models
   - drug synergies
-  - acti-cancer drug combinations
+  - anti-cancer drug combinations
   - druglogics
 authors:
   - name: John Zobolas
