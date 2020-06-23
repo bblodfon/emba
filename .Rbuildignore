@@ -11,3 +11,4 @@
 ^doc$
 ^Meta$
 ^vignettes/data\.rds$
+^CODE_OF_CONDUCT\.md$

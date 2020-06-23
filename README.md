@@ -36,6 +36,10 @@ devtools::install_github("bblodfon/emba")
 
 ## Usage
 
-Check the [documentation online](https://bblodfon.github.io/emba/).
+Check the [Get Started guide](https://bblodfon.github.io/emba/articles/emba.html).
 
-For an earlier usage of this package (version `0.1.1`), see this [analysis](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) performed on multiple boolean model datasets.
+For an earlier example usage of this package (version `0.1.1`), see this [analysis](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) performed on multiple boolean model datasets.
+
+## Code of Conduct
+
+Please note that the emba project is released with a [Contributor Code of Conduct](https://bblodfon.github.io/emba/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
