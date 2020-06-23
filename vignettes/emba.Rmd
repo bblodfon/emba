@@ -9,19 +9,19 @@ vignette: >
 
 # Intro
 
-The *emba* R package stands for *Ensemble (Boolean) Model Biomarker Analysis*.
+The *emba* R package name stands for *Ensemble (Boolean) Model Biomarker Analysis*.
 It's main purpose is to be used on a dataset consisted of an **ensemble of boolean models**.
-These models are usually (but not necessarily) different versions of the same initial model, parameterized in different ways (e.g. some boolean operators have changed from *OR* to *AND* or vice-versa).
-Furthermore, this model dataset must be tested in-silico against a list of drug combinations, in order to assess which drugs combinations behave synergistically for which models.
-An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (documentation available [here](https://druglogics.github.io/druglogics-doc/)).
+These models are usually (but not necessarily) different versions of the same initial model, parameterized in different ways (e.g. some boolean operators in the models equations have changed from *OR* to *AND* or vice-versa).
+A prerequisite for using this package, is that this model dataset must be tested in-silico against a list of drug combinations, in order to assess which drugs combinations behave *synergistically* for which models.
+An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (see [documentation](https://druglogics.github.io/druglogics-doc/)).
 
-Then, given a list of lab-observed and verified **synergies** ^[Entirely different discussion how the assessement of these synergies based on experimental data was performed!], this package enables the easy grouping of the models into different classes based on different performance metric evaluations.
-This group classification enables the discovery and visualization of **biomarkers** - nodes who activity and/or boolean model parameterization might affect either the performance of those models or the manifestation of the predicted synergies.
+Given a list of lab-observed and verified **synergies** ^[Note that the assessement of these synergies based on experimental data (usually High-Throughput Screening data) is an analysis on its own], this package enables the easy grouping of the models into different classes based on different performance metric evaluations.
+This group classification enables the discovery and visualization of **biomarkers** - nodes whose activity and/or boolean model parameterization might affect either the performance of those models or the manifestation of the predicted synergies.
 
-In the next sections we will describe the main inputs and outputs of the *general analysis* functions (which group a lot of functionality into one), provide some insights on the implementation behind.
-Biomarkers will be assessed and visualized using a randomly-generated dataset.
-For analyses using this package on more *properly generated* boolean ensemble datasets (using output from the aforementioned DrugLogics software pipeline) see this [GitHub repository](https://github.com/bblodfon/gitsbe-model-analysis/).
-See this [example analysis](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) for all the intermediate steps included in the *general analysis* functions.
+In the next sections we will describe the main inputs and outputs of the *general analysis* functions (which group a lot of functionality into one) and provide some insights on the implementation behind.
+Biomarkers will be assessed and visualized using a test dataset generated from the DrugLogics software mentioned above.
+For further analyses using this package on boolean model ensemble datasets see this [GitHub repository](https://github.com/bblodfon/gitsbe-model-analysis/).
+See also [an example](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) that demonstrates all the intermediate steps included in the *general analysis* functions.
 
 # Setup
 
