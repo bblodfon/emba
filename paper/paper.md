@@ -54,12 +54,12 @@ Furthermore, to facilitate the access to several software logical modeling tools
 The incorporated tools are accessed via a common programming interface (though originally implemented in different programming languages e.g. Java, Python, C++ and R) and offer a collection of features like accessing online model repositories [@Helikar2012], model editing [Naldi2018b], dynamical analysis (finding attractors, stochastic simulations, reachability properties, model-checking techniques) [@Naldi2018; @Stoll2017; @Pauleve2017; @Klarner2016; @Mussel2010] and model parameterization/optimization to fit experimental data  [@Terfve2012].
 Despite the diverse and multi-purpose logical modeling tools that exist, there is still a lack of data analysis-oriented software that assists with the discovery of predictive biomarkers in ensembles of parameterized boolean networks that have been subject to drug combination perturbations.
 
-The `emba` R package aims to fill that gap and provide a first implementation of such a novel software. 
+The `emba` R package aims to fill that gap and provide a first implementation of such a novel software.
 Initially, it was designed as a complementary software tool, to help the analysis of the parameterized boolean model ensembles which were produced by modules from the DrugLogics NTNU software pipeline (see respective documentation [@dl-doc]).
 Later, we generalized most of the functions in the package and modularized them to package-essential (that form the core of the `emba` package) and various general-purpose yet useful functions (that are now part of the dependency package `usefun` [@R-usefun]).
 The main functionality of the `emba` R package is to find *performance* and *synergy* biomarkers.
 Performance biomarkers are nodes in the input boolean networks whose activity state and/or model parameterization affects the prediction performance of those models.
-The prediction performance can be assessed via the number of true positive predictions or the more robust Matthews correlation coefficient score.
+The prediction performance can be assessed via the number of true positive predictions or the more robust Matthews correlation coefficient score. 
 On the other hand, synergy biomarkers are nodes which provide hints for the mechanisms behind the complex process of synergy manifestation in drug combination datasets.
 
 For more information, see our “Get started guide” and the reference manual in the package website [@emba-site].
