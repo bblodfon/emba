@@ -13,10 +13,10 @@ The *emba* R package name stands for *Ensemble (Boolean) Model Biomarker Analysi
 It's main purpose is to be used on a dataset consisted of an **ensemble of boolean models**.
 These models are usually (but not necessarily) different versions of the same initial model, parameterized in different ways (e.g. some boolean operators in the models equations have changed from *OR* to *AND* or vice-versa).
 A prerequisite for using this package, is that this model dataset must be tested in-silico against a list of drug combinations, in order to assess which drugs combinations behave *synergistically* for which models.
-An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (see [documentation](https://druglogics.github.io/druglogics-doc/)).
+An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (see respective [documentation](https://druglogics.github.io/druglogics-doc/)).
 
-Given a list of lab-observed and verified **synergies** ^[Note that the assessement of these synergies based on experimental data (usually High-Throughput Screening data) is an analysis on its own], this package enables the easy grouping of the models into different classes based on different performance metric evaluations.
-This group classification enables the discovery and visualization of **biomarkers** - nodes whose activity and/or boolean model parameterization might affect either the performance of those models or the manifestation of the predicted synergies.
+Given a list of *gold-standard* (lab-observed/verified) **synergies** ^[Note that the assessement of these synergies based on experimental data (usually High-Throughput Screening data) is an analysis on its own], this package enables the easy grouping of the models into different classes based on a specific performance metric evaluation.
+This model classification enables the discovery and visualization of **biomarkers** - nodes whose *activity* and/or boolean model *parameterization* might affect either the prediction performance of those models or the manifestation of the predicted synergies.
 
 In the next sections we will describe the main inputs and outputs of the *general analysis* functions (which group a lot of functionality into one) and provide some insights on the implementation behind.
 Biomarkers will be assessed and visualized using a test dataset generated from the DrugLogics software mentioned above.
@@ -30,6 +30,7 @@ See also [an example](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cel
 library(emba)
 library(usefun)
 library(dplyr)
+library(knitr)
 
 # function to plot without output `TRUE`
 pr = function(x) invisible(x)
@@ -79,7 +80,7 @@ More specifically, the model predictions is a `data.frame` whose values (corresp
 - `NA` (in case the model couldn't be assessed for synergy, e.g. there were no stable states in either the drug combination perturbed model or in any of the two single-drug perturbed models).
 
 ```{r input-2}
-model.predictions[1:5, 77:84] %>% knitr::kable(caption = "Model predictions example")
+model.predictions[1:5, 77:84] %>% kable(caption = "Model predictions example")
 ```
 
 ## Model stable states
@@ -89,7 +90,7 @@ In other words, a **fixpoint attractor**.
 Of course, if a model has multiple attractors or other methods are used to derive a solution to the system of boolean equations that is the model itself, then continuous activity state values (in the $[0,1]$ interval) are also supported.
 
 ```{r input-3}
-models.stable.state[1:5, 5:11] %>% knitr::kable(caption = "Model stable states example")
+models.stable.state[1:5, 5:11] %>% kable(caption = "Model stable states example")
 ```
 
 ## Model link operators
@@ -108,7 +109,7 @@ If each boolean model is a list of boolean equations of the form:
 - 0.5 (if the node is not targeted by *both* activating and inhibiting regulators and thus the corresponding boolean equation has **no link operator**)
 
 ```{r input-4}
-models.link.operator[1:5, 1:10] %>% knitr::kable(caption = "Models link operator example")
+models.link.operator[1:5, 1:10] %>% kable(caption = "Models link operator example")
 ```
 
 Note that in the test dataset, the nodes (columns of the `models.link.operator` object) who didn't have a link operator are pruned.
@@ -127,11 +128,13 @@ usefun::pretty_print_vector_values(observed.synergies, vector.values.str = "obse
 *Performance biomarkers* are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the prediction performance of those models.
 These nodes can be thus used as *indicators* of either activity or structural changes that have a positive effect on the prediction performance of our models.
 
-The models performance can be assessed via various ways. 
+The model performance can be assessed via various ways. 
 In this package we offer two ways to group the models to different classification categories: either based on the 
-**number of true positive (TP) predictions or on the Matthews correlation coefficient (MCC) score** with respect to the drug combination dataset tested.
+**number of true positive (TP) predictions** or on the **Matthews correlation coefficient (MCC) score** with respect to the drug combination dataset tested.
+The function `emba::biomarker_tp_analysis()` is used for the former classification and the function `emba::biomarker_mcc_analysis()` for the latter.
+Note that it's generally better to use the MCC classification, since it's a more robust performance evalution metric compared to the TP predictions, since it takes into account all of the four confusion matrix values.
 
-When the models have been grouped to different classification categories, their nodes activity or boolean model parameterization can be summarised in each group and compared to the others, obtaining thus the expected biomarkers.
+When the models have been grouped to different classification categories, their nodes activity or boolean model parameterization can be summarised in each group and compared to the others, obtaining thus the expected biomarkers using the methodology described below.
 
 ## TP-based analysis
 
@@ -148,7 +151,7 @@ tp.analysis.res = emba::biomarker_tp_analysis(
 
 The `penalty` term is used to reduce the bias when model groups have different *sizes*.
 For example, if I were to compare the average activity of nodes between two groups of models, with respective group sizes 5 and 1000, then the result would be heavily biased towards the group with the larger size, making thus the quality of the results coming out of this comparison questionable.
-With `penalty` values closer to 0 (more bias) we expect more biomarkers to be found.
+As such, with `penalty` values closer to 0, more bias is introduced and we expect more biomarkers to be found.
 See more info on `emba::get_vector_diff()`.
 
 Firstly, we get the predicted synergies - i.e. the drug combinations that are a subset of the observed ones and were **predicted by at least one** of the models in the dataset:
@@ -176,7 +179,7 @@ Next result we get is the **average activity differences** per network node for 
 tp.analysis.res$diff.state.tp.mat %>% 
   as.data.frame() %>%
   select(c("AKT","PTEN","PSEN1","STAT3","CEBPA")) %>% # show only part of the matrix
-  knitr::kable(caption = "Average Activity Difference Matrix")
+  kable(caption = "Average Activity Difference Matrix")
 ```
 
 - Rows represent the different classification group matchings, e.g. (1,2) means the models that predicted 1 TP synergy vs the models that predicted 2 TP synergies.
@@ -193,13 +196,13 @@ usefun::pretty_print_vector_values(tp.analysis.res$biomarkers.tp.inhibited,
   vector.values.str = "inhibited biomarkers")
 ```
 
-With the models initial network as an [igraph](https://igraph.org/r/) object (see `emba::construct_network()` on how to create such a `net` object), we can visualize every row of the above matrix easily as follows:
+With the models initial network as an [igraph](https://igraph.org/r/) object (see `emba::construct_network()` on how to create such a `net` object), we can visualize every row of the above matrix as follows:
 ```{r tp-analysis-6, fig.align='center', fig.width=7, fig.height=5.5}
 pr(emba::plot_avg_state_diff_graph(net, tp.analysis.res$diff.state.tp.mat["(2,3)",], 
   layout = nice.layout, title = "Bad models (2 TP) vs Good models (3 TP)"))
 ```
 
-Note that with less `penalty`, more bias would be introduced and thus more biomarkers would be found (even for a higher chosed `threshold`):
+Note that with less `penalty`, more bias would be introduced and thus more biomarkers would be found (even for a higher chosen `threshold`):
 ```{r tp-analysis-7, results='asis'}
 tp.analysis.res.biased = emba::biomarker_tp_analysis(
   model.predictions, 
@@ -216,12 +219,12 @@ usefun::pretty_print_vector_values(tp.analysis.res.biased$biomarkers.tp.inhibite
   vector.values.str = "inhibited biomarkers")
 ```
 
-Lats result we get is the **average link operator differences** per network node (whose boolean equation had a link operator) for all group classifications:
-```{r tp-analysis-8}
+Last result we get is the **average link operator differences** per network node (whose boolean equation had a link operator) for all group classifications:
+```{r tp-analysis-8, fig.align='center'}
 tp.analysis.res$diff.link.tp.mat %>% 
   as.data.frame() %>%
   select(c("AKT","PTEN","PSEN1","STAT3","CEBPA")) %>% # show only part of the matrix
-  knitr::kable(caption = "Average Link Operator Difference Matrix")
+  kable(caption = "Average Link Operator Difference Matrix")
 ```
 
 - Rows again represent the different classification group matchings, e.g. (1,2) means the models that predicted 1 TP synergy vs the models that predicted 2 TP synergies.
@@ -251,7 +254,6 @@ Interpreting the result regarding the `CEBPA` biomarker, we look back at its boo
 # Synergy biomarkers
 
 ```{r analysis-3}
-
 
 ```
 
