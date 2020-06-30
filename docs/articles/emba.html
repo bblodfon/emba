@@ -98,8 +98,9 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">usefun</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">knitr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">Ckmeans.1d.dp</span>)
 
-<span class="co"># function to plot without output `TRUE`</span>
+<span class="co"># wrapper to change print model to invisible</span>
 <span class="no">pr</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span>(<span class="no">x</span>)</pre></body></html></div>
 </div>
 <div id="input" class="section level1">
@@ -136,7 +137,7 @@
 <div id="model-predictions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-predictions" class="anchor"></a>Model Predictions</h2>
-<p>This data represents the results of <strong>in-silico testing the models ensemble against a drug combination dataset</strong>. More specifically, the model predictions is a <code>data.frame</code> whose values (corresponding to a specific <strong>model-drug combination element</strong>) can be one of the following:</p>
+<p>This data represents the results of <strong>in-silico testing the boolean models against a drug combination dataset</strong>. More specifically, the model predictions is a <code>data.frame</code> whose values (corresponding to a specific <strong>model-drug combination element</strong>) can be one of the following:</p>
 <ul>
 <li>0 (no synergy predicted)</li>
 <li>1 (synergy was predicted)</li>
@@ -219,7 +220,7 @@
 <div id="model-stable-states" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-stable-states" class="anchor"></a>Model stable states</h2>
-<p>Each model must have a <em>stable state configuration</em> where the nodes have fixed to either 0 (inactive state) or 1 (active state). In other words, a <strong>fixpoint attractor</strong>. Of course, if a model has multiple attractors or other methods are used to derive a solution to the system of boolean equations that is the model itself, then continuous activity state values (in the <span class="math inline">\([0,1]\)</span> interval) are also supported.</p>
+<p>Each <strong>model</strong> must have a <em>stable state configuration</em> where the <strong>nodes</strong> have fixed to either 0 (inactive state) or 1 (active state). In other words, a <strong>fixpoint attractor</strong>. Of course, if a model has multiple attractors or other methods are used to derive a solution to the system of boolean equations that is the model itself, then <em>continuous</em> activity state values (in the <span class="math inline">\([0,1]\)</span> interval) are also supported.</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">models.stable.state</span>[<span class="fl">1</span>:<span class="fl">5</span>, <span class="fl">5</span>:<span class="fl">11</span>] <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Model stable states example"</span>)</pre></body></html></div>
 <table class="table">
 <caption>Model stable states example</caption>
@@ -293,7 +294,7 @@
 <p>This is a non-essential input for the functions we will use, but we include it here since the test dataset supports it. It is a way to represent the <strong>structure (parameterization)</strong> of the boolean models in the dataset.</p>
 <p>If each boolean model is a list of boolean equations of the form:</p>
 <p><code>T = (A1 OR A2 OR ...) AND NOT (I1 OR I2 OR ...)</code></p>
-<p>, where the <code>A</code> and <code>I</code> nodes are the activating and inhibiting regulators respectively of the target node <code>T</code> and the <code>AND NOT</code> is the <strong>link (balance) operator</strong>, we can specify a link operator <code>data.frame</code> object whose values (corresponding to a specific <strong>model-node element</strong>) can be one of the following:</p>
+<p>, where the <code>A</code> and <code>I</code> nodes are the activating and inhibiting regulators respectively of the target node <code>T</code> and the <code>AND NOT</code> is the <strong>link (balance) operator</strong>, we can specify a <code>data.frame</code> object whose values (corresponding to a specific <strong>model-node element</strong>) can be one of the following:</p>
 <ul>
 <li>0 (<code>AND NOT</code> link operator)</li>
 <li>1 (<code>OR NOT</code> link operator)</li>
@@ -385,10 +386,10 @@
 </table>
 <p>Note that in the test dataset, the nodes (columns of the <code>models.link.operator</code> object) who didn’t have a link operator are pruned.</p>
 </div>
-<div id="observed-synergies" class="section level2">
+<div id="observed-gs-synergies" class="section level2">
 <h2 class="hasAnchor">
-<a href="#observed-synergies" class="anchor"></a>Observed synergies</h2>
-<p>A list of <em>gold standard</em> drug combinations which have been termed as <strong>synergistic</strong> via experimental and/or other computational methods. These drug combinations must be a subset of the ones tested in the models (the column names of the <code>model.predictions</code> data).</p>
+<a href="#observed-gs-synergies" class="anchor"></a>Observed (GS) synergies</h2>
+<p>A list of <em>gold standard (GS)</em> drug combinations which have been termed as <strong>synergistic</strong> via experimental and/or other computational methods. These drug combinations must be a subset of the ones tested in the models (the column names of the <code>model.predictions</code> data).</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">observed.synergies</span>, <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"observed synergies"</span>)</pre></body></html></div>
 <blockquote>
 <p>17 observed synergies: AK-60, AK-BI, AK-D1, PI-D1, PD-G2, AK-G4, D1-G4, PI-JN, BI-P5, PD-P5, PI-P5, AK-PD, BI-PD, AK-PI, BI-PI, PD-PI, PK-ST</p>
@@ -399,7 +400,7 @@
 <h1 class="hasAnchor">
 <a href="#performance-biomarkers" class="anchor"></a>Performance biomarkers</h1>
 <p><em>Performance biomarkers</em> are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the prediction performance of those models. These nodes can be thus used as <em>indicators</em> of either activity or structural changes that have a positive effect on the prediction performance of our models.</p>
-<p>The model performance can be assessed via various ways. In this package we offer two ways to group the models to different classification categories: either based on the <strong>number of true positive (TP) predictions</strong> or on the <strong>Matthews correlation coefficient (MCC) score</strong> with respect to the drug combination dataset tested. The function <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis()</a></code> is used for the former classification and the function <code><a href="../reference/biomarker_mcc_analysis.html">emba::biomarker_mcc_analysis()</a></code> for the latter. Note that it’s generally better to use the MCC classification, since it’s a more robust performance evalution metric compared to the TP predictions, since it takes into account all of the four confusion matrix values.</p>
+<p>The model performance can be assessed via various ways. In this package we offer two ways to group the models to different classification categories: either based on the <strong>number of true positive (TP) predictions</strong> or on the <strong>Matthews correlation coefficient (MCC) score</strong> with respect to the drug combination dataset tested. The function <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis()</a></code> is used for the former classification and the function <code><a href="../reference/biomarker_mcc_analysis.html">emba::biomarker_mcc_analysis()</a></code> for the latter. Note that it’s generally better to use the MCC classification, since it’s a more robust performance evalution metric compared to the number of TP predictions, since it takes into account all of the four confusion matrix values.</p>
 <p>When the models have been grouped to different classification categories, their nodes activity or boolean model parameterization can be summarised in each group and compared to the others, obtaining thus the expected biomarkers using the methodology described below.</p>
 <div id="tp-based-analysis" class="section level2">
 <h2 class="hasAnchor">
@@ -413,7 +414,8 @@
   <span class="kw">penalty</span> <span class="kw">=</span> <span class="fl">0.1</span>,
   <span class="kw">threshold</span> <span class="kw">=</span> <span class="fl">0.55</span>)</pre></body></html></div>
 <p>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em>. For example, if I were to compare the average activity of nodes between two groups of models, with respective group sizes 5 and 1000, then the result would be heavily biased towards the group with the larger size, making thus the quality of the results coming out of this comparison questionable. As such, with <code>penalty</code> values closer to 0, more bias is introduced and we expect more biomarkers to be found. See more info on <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</p>
-<p>Firstly, we get the predicted synergies - i.e. the drug combinations that are a subset of the observed ones and were <strong>predicted by at least one</strong> of the models in the dataset:</p>
+<hr>
+<p>As a first result, we get the predicted synergies - i.e. the drug combinations that are a subset of the observed ones and were <strong>predicted by at least one</strong> of the models in the dataset:</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">tp.analysis.res</span>$<span class="no">predicted.synergies</span>, <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"predicted synergies"</span>)</pre></body></html></div>
 <blockquote>
 <p>5 predicted synergies: AK-PD, BI-PD, BI-PI, PD-PI, PI-D1</p>
@@ -498,8 +500,8 @@
 </table>
 <ul>
 <li>Rows represent the different classification group matchings, e.g. (1,2) means the models that predicted 1 TP synergy vs the models that predicted 2 TP synergies.</li>
-<li>All values are in the [-1,1] interval. The more negative the activity difference value, the more <em>inhibited</em> is the node in the better performance models (e.g. <code>STAT3</code> node). The more positive the activity difference value, the more <em>active</em> is the node in the better performance models (e.g. <code>CEBPA</code> node).</li>
-<li>Based on the given <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
+<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. The more negative the activity difference value, the more <em>inhibited</em> is the node in the better performance models (e.g. <code>STAT3</code> node). The more positive the activity difference value, the more <em>active</em> is the node in the better performance models (e.g. <code>CEBPA</code> node).</li>
+<li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.55</code> and thus <code>CEBPA</code> and <code>PSEN1</code> are returned as active biomarkers:</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">tp.analysis.res</span>$<span class="no">biomarkers.tp.active</span>,
@@ -516,7 +518,7 @@
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span>(<span class="no">net</span>, <span class="no">tp.analysis.res</span>$<span class="no">diff.state.tp.mat</span>[<span class="st">"(2,3)"</span>,],
   <span class="kw">layout</span> <span class="kw">=</span> <span class="no">nice.layout</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Bad models (2 TP) vs Good models (3 TP)"</span>))</pre></body></html></div>
 <p><img src="emba_files/figure-html/tp-analysis-6-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>Note that with less <code>penalty</code>, more bias would be introduced and thus more biomarkers would be found (even for a higher chosed <code>threshold</code>):</p>
+<p>Note that with less <code>penalty</code>, more bias would be introduced and thus more biomarkers would be found (even for a higher chosen <code>threshold</code>):</p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">tp.analysis.res.biased</span> <span class="kw">=</span> <span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/biomarker_tp_analysis.html">biomarker_tp_analysis</a></span>(
   <span class="no">model.predictions</span>,
   <span class="no">models.stable.state</span>,
@@ -535,7 +537,7 @@
 <blockquote>
 <p>17 inhibited biomarkers: MAP3K7, MAP2K6, MAP2K3, NLK, IKBKG, STAT3, RXRA, SOCS3, TGFB1, HSPA1A, SALL4, ROCK1, TGFBR1, TRAF6, RHOA, PIK3R1, CASP9</p>
 </blockquote>
-<p>Lats result we get is the <strong>average link operator differences</strong> per network node (whose boolean equation had a link operator) for all group classifications:</p>
+<p>Last result we get is the <strong>average link operator differences</strong> per network node (whose boolean equation had a link operator) for all group classifications:</p>
 <div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">tp.analysis.res</span>$<span class="no">diff.link.tp.mat</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"STAT3"</span>,<span class="st">"CEBPA"</span>)) <span class="kw">%&gt;%</span> <span class="co"># show only part of the matrix</span>
@@ -603,7 +605,7 @@
 </table>
 <ul>
 <li>Rows again represent the different classification group matchings, e.g. (1,2) means the models that predicted 1 TP synergy vs the models that predicted 2 TP synergies.</li>
-<li>All values are in the [-1,1] interval. A value closer to -1 means that on average, the node’s boolean equation has the <em>AND NOT</em> link operator in the better performance models (e.g. <code>STAT3</code> node). A value closer to 1 means that on average, the node’s boolean equation has mostly the <em>OR NOT</em> link operator in the better performance models (e.g. <code>CEBPA</code> node).</li>
+<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. A value closer to <span class="math inline">\(-1\)</span> means that on average, the node’s boolean equation has the <em>AND NOT</em> link operator in the better performance models (e.g. <code>STAT3</code> node). A value closer to <span class="math inline">\(1\)</span> means that on average, the node’s boolean equation has mostly the <em>OR NOT</em> link operator in the better performance models (e.g. <code>CEBPA</code> node).</li>
 <li>Based on the given <code>threshold</code> level, a node is declared as a <strong>link operator biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.55</code> and thus <code>CEBPA</code> is returned as an <code>OR</code> link operator biomarker:</p>
@@ -617,12 +619,236 @@
 <blockquote>
 <p>0 ‘AND’ biomarkers:</p>
 </blockquote>
+<p>We can also visualize every row of the average link operator differences matrix as follows:</p>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_avg_link_operator_diff_graph.html">plot_avg_link_operator_diff_graph</a></span>(<span class="no">net</span>, <span class="no">tp.analysis.res</span>$<span class="no">diff.link.tp.mat</span>[<span class="st">"(2,3)"</span>,],
+  <span class="kw">layout</span> <span class="kw">=</span> <span class="no">nice.layout</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Bad models (2 TP) vs Good models (3 TP)"</span>))</pre></body></html></div>
+<p><img src="emba_files/figure-html/tp-analysis-10-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Interpreting the result regarding the <code>CEBPA</code> biomarker, we look back at its boolean equation and we see that the higher performance models must have the <code>OR NOT</code> link operator in order for <code>CEBPA</code> to be in an active (ON) state (an <code>AND NOT</code> results mostly on an inhibited state for <code>CEBPA</code>):</p>
 <p><code>CEBPA = (GSK3B OR MAP2K1 OR MEK1/2) OR NOT CTNNB1</code></p>
 </div>
 <div id="mcc-based-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mcc-based-analysis" class="anchor"></a>MCC-based analysis</h2>
+<p>We use the <code><a href="../reference/biomarker_mcc_analysis.html">emba::biomarker_mcc_analysis()</a></code> function with the specified inputs:</p>
+<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">mcc.analysis.res</span> <span class="kw">=</span> <span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/biomarker_mcc_analysis.html">biomarker_mcc_analysis</a></span>(
+  <span class="no">model.predictions</span>,
+  <span class="no">models.stable.state</span>,
+  <span class="no">models.link.operator</span>,
+  <span class="no">observed.synergies</span>,
+  <span class="kw">threshold</span> <span class="kw">=</span> <span class="fl">0.65</span>,
+  <span class="kw">num.of.mcc.classes</span> <span class="kw">=</span> <span class="fl">4</span>,
+  <span class="kw">penalty</span> <span class="kw">=</span> <span class="fl">0.2</span>)</pre></body></html></div>
+<ul>
+<li>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em> (default value is 0.1). See more info about this on the TP-based analysis above and on the documentation of the function <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</li>
+<li>We can choose the number of model groups to be created (<code>num.of.mcc.classes</code>, with default value 5). Internally, the function <code><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp()</a></code> is used to perform an optimal univariate <em>k-means</em> clustering on the models MCC scores, i.e. <strong>it groups the models to different MCC classes</strong>, with higher classes having higher MCC scores (corresponding thus to better performance models).</li>
+</ul>
+<hr>
+<p>First result is the predicted synergies, which are the same as the ones found with the TP-based analysis (the model predictions did not change). As such, the drug combinations which were <strong>predicted by at least one of the models</strong> in the dataset are:</p>
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">mcc.analysis.res</span>$<span class="no">predicted.synergies</span>, <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"predicted synergies"</span>)</pre></body></html></div>
+<blockquote>
+<p>5 predicted synergies: AK-PD, BI-PD, BI-PI, PD-PI, PI-D1</p>
+</blockquote>
+<p>We can get a first idea of the range and distribution of the models MCC scores with the next barplot:</p>
+<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/make_barplot_on_models_stats.html">make_barplot_on_models_stats</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">mcc.analysis.res</span>$<span class="no">models.mcc</span>),
+  <span class="kw">title</span> <span class="kw">=</span> <span class="st">"MCC scores"</span>, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"MCC value"</span>,
+  <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Number of models"</span>, <span class="kw">cont.values</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<p><img src="emba_files/figure-html/mcc-analysis-3-1.png" width="672" style="display: block; margin: auto;"></p>
+<ul>
+<li>There are no relatively bad models (MCC values close to <span class="math inline">\(-1\)</span>)</li>
+<li>Most of the models perform a little better than random prediction (<span class="math inline">\(MCC &gt; 0\)</span>)</li>
+</ul>
+<p>We can also plot the MCC-model histogram, which in addition shows the <em>density</em> (how many models) and <em>width</em> (MCC range) of each MCC class:</p>
+<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">models.mcc</span> <span class="kw">=</span> <span class="no">mcc.analysis.res</span>$<span class="no">models.mcc</span>
+<span class="no">num.of.mcc.classes</span> <span class="kw">=</span> <span class="fl">4</span>
+
+<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">models.mcc</span>, <span class="kw">k</span> <span class="kw">=</span> <span class="no">num.of.mcc.classes</span>)
+<span class="no">models.cluster.ids</span> <span class="kw">=</span> <span class="no">res</span>$<span class="no">cluster</span>
+
+<span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_mcc_classes_hist.html">plot_mcc_classes_hist</a></span>(<span class="no">models.mcc</span>, <span class="no">models.cluster.ids</span>, <span class="no">num.of.mcc.classes</span>))</pre></body></html></div>
+<p><img src="emba_files/figure-html/mcc-analysis-4-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>Next result we get is the <strong>average activity differences</strong> per network node for all group classifications:</p>
+<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="no">mcc.analysis.res</span>$<span class="no">diff.state.mcc.mat</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PPM1A"</span>, <span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"PTK2"</span>,<span class="st">"CEBPA"</span>)) <span class="kw">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Average Activity Difference Matrix"</span>)</pre></body></html></div>
+<table class="table">
+<caption>Average Activity Difference Matrix</caption>
+<thead><tr class="header">
+<th></th>
+<th align="right">AKT</th>
+<th align="right">PPM1A</th>
+<th align="right">PTEN</th>
+<th align="right">PSEN1</th>
+<th align="right">PTK2</th>
+<th align="right">CEBPA</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>(1,2)</td>
+<td align="right">-0.0263106</td>
+<td align="right">0.5637404</td>
+<td align="right">0.5637404</td>
+<td align="right">0.0002462</td>
+<td align="right">-0.5637404</td>
+<td align="right">-0.0180814</td>
+</tr>
+<tr class="even">
+<td>(1,3)</td>
+<td align="right">-0.0419764</td>
+<td align="right">0.6791224</td>
+<td align="right">0.6791224</td>
+<td align="right">-0.0004583</td>
+<td align="right">-0.6791224</td>
+<td align="right">0.0189502</td>
+</tr>
+<tr class="odd">
+<td>(1,4)</td>
+<td align="right">-0.0551735</td>
+<td align="right">0.6416618</td>
+<td align="right">0.6416618</td>
+<td align="right">0.0039844</td>
+<td align="right">-0.6416618</td>
+<td align="right">-0.0054756</td>
+</tr>
+<tr class="even">
+<td>(2,3)</td>
+<td align="right">-0.0196324</td>
+<td align="right">0.1787135</td>
+<td align="right">0.1787135</td>
+<td align="right">-0.0007511</td>
+<td align="right">-0.1787135</td>
+<td align="right">0.0390053</td>
+</tr>
+<tr class="odd">
+<td>(2,4)</td>
+<td align="right">-0.0300506</td>
+<td align="right">0.1517566</td>
+<td align="right">0.1517566</td>
+<td align="right">0.0034388</td>
+<td align="right">-0.1517566</td>
+<td align="right">0.0088853</td>
+</tr>
+<tr class="even">
+<td>(3,4)</td>
+<td align="right">-0.0138152</td>
+<td align="right">0.0141918</td>
+<td align="right">0.0141918</td>
+<td align="right">0.0036747</td>
+<td align="right">-0.0141918</td>
+<td align="right">-0.0191041</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Rows represent the different classification group matchings, e.g. (1,2) means the models that were in the 1st MCC class vs the models that were in the 2nd MCC class.</li>
+<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. The more negative the activity difference value, the more inhibited is the node in the better performance models (e.g. <code>PTK2</code>). The more positive the activity difference value, the more active is the node in the better performance models (e.g. <code>PPM1A,PTEN</code>).</li>
+<li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
+</ul>
+<p>In our case, <code>threshold = 0.65</code> and thus <code>PTEN</code> and <code>PPM1A</code> are returned as active biomarkers and <code>PTK2</code> as an inhibited biomarker:</p>
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">mcc.analysis.res</span>$<span class="no">biomarkers.mcc.active</span>,
+  <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"active biomarkers"</span>)</pre></body></html></div>
+<blockquote>
+<p>2 active biomarkers: PTEN, PPM1A</p>
+</blockquote>
+<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">mcc.analysis.res</span>$<span class="no">biomarkers.mcc.inhibited</span>,
+  <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"inhibited biomarkers"</span>)</pre></body></html></div>
+<blockquote>
+<p>1 inhibited biomarker: PTK2</p>
+</blockquote>
+<p>Note that looking at the respective boolean equations:</p>
+<ul>
+<li><code>PPM1A = PTEN</code></li>
+<li><code>PTK2 = not PTEN</code></li>
+</ul>
+<p>we conclude that <strong>the only activity biomarker of interest</strong> is <code>PTEN</code> as it’s activity state directly influences the <code>PPM1A</code> and <code>PTK2</code> nodes.</p>
+<p>With the models initial network as an <a href="https://igraph.org/r/">igraph</a> object (see <code><a href="../reference/construct_network.html">emba::construct_network()</a></code> on how to create such a <code>net</code> object), we can visualize every row of the above matrix as follows:</p>
+<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span>(<span class="no">net</span>, <span class="no">mcc.analysis.res</span>$<span class="no">diff.state.mcc.mat</span>[<span class="st">"(1,4)"</span>,],
+  <span class="kw">layout</span> <span class="kw">=</span> <span class="no">nice.layout</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Bad models (MCC Class 1) vs Good models (MCC Class 4)"</span>))</pre></body></html></div>
+<p><img src="emba_files/figure-html/mcc-analysis-7-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>Last result we get is the <strong>average link operator differences</strong> per network node (whose boolean equation had a link operator) for all group classifications:</p>
+<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">mcc.analysis.res</span>$<span class="no">diff.link.mcc.mat</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"CEBPA"</span>)) <span class="kw">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Average Link Operator Difference Matrix"</span>)</pre></body></html></div>
+<table class="table">
+<caption>Average Link Operator Difference Matrix</caption>
+<thead><tr class="header">
+<th></th>
+<th align="right">AKT</th>
+<th align="right">PTEN</th>
+<th align="right">PSEN1</th>
+<th align="right">CEBPA</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>(1,2)</td>
+<td align="right">0.2793768</td>
+<td align="right">0.5880847</td>
+<td align="right">0.0466807</td>
+<td align="right">-0.0280618</td>
+</tr>
+<tr class="even">
+<td>(1,3)</td>
+<td align="right">0.3182545</td>
+<td align="right">0.6791224</td>
+<td align="right">0.0115062</td>
+<td align="right">0.0114039</td>
+</tr>
+<tr class="odd">
+<td>(1,4)</td>
+<td align="right">0.2860364</td>
+<td align="right">0.6416618</td>
+<td align="right">-0.0109073</td>
+<td align="right">-0.0060220</td>
+</tr>
+<tr class="even">
+<td>(2,3)</td>
+<td align="right">0.0684637</td>
+<td align="right">0.1542205</td>
+<td align="right">-0.0343283</td>
+<td align="right">0.0407584</td>
+</tr>
+<tr class="odd">
+<td>(2,4)</td>
+<td align="right">0.0461114</td>
+<td align="right">0.1330813</td>
+<td align="right">-0.0457409</td>
+<td align="right">0.0160442</td>
+</tr>
+<tr class="even">
+<td>(3,4)</td>
+<td align="right">-0.0055788</td>
+<td align="right">0.0141918</td>
+<td align="right">-0.0179237</td>
+<td align="right">-0.0137708</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Rows again represent the different classification group matchings, e.g. (1,2) means the models that were in the 1st MCC class vs the models that were in the 2nd MCC class.</li>
+<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. A value closer to <span class="math inline">\(-1\)</span> means that on average, the node’s boolean equation has the <em>AND NOT</em> link operator in the better performance models (e.g. <code>STAT3</code> node). A value closer to <span class="math inline">\(1\)</span> means that on average, the node’s boolean equation has mostly the <em>OR NOT</em> link operator in the better performance models (e.g. <code>CEBPA</code> node).</li>
+<li>Based on the given <code>threshold</code> level, a node is declared as a <strong>link operator biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
+</ul>
+<p>In our case, <code>threshold = 0.65</code> and thus <code>PTEN</code> is returned as an <code>OR</code> link operator biomarker:</p>
+<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">mcc.analysis.res</span>$<span class="no">biomarkers.mcc.or</span>,
+  <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"'OR' biomarkers"</span>)</pre></body></html></div>
+<blockquote>
+<p>1 ‘OR’ biomarker: PTEN</p>
+</blockquote>
+<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">mcc.analysis.res</span>$<span class="no">biomarkers.mcc.and</span>,
+  <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"'AND' biomarkers"</span>)</pre></body></html></div>
+<blockquote>
+<p>0 ‘AND’ biomarkers:</p>
+</blockquote>
+<p>We can also visualize every row of the average link operator differences matrix as follows:</p>
+<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_avg_link_operator_diff_graph.html">plot_avg_link_operator_diff_graph</a></span>(<span class="no">net</span>, <span class="no">mcc.analysis.res</span>$<span class="no">diff.link.mcc.mat</span>[<span class="st">"(1,4)"</span>,],
+  <span class="kw">layout</span> <span class="kw">=</span> <span class="no">nice.layout</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Bad models (MCC Class 1) vs Good models (MCC Class 4)"</span>))</pre></body></html></div>
+<p><img src="emba_files/figure-html/mcc-analysis-10-1.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div id="comparing-the-2-methods" class="section level2">
+<h2 class="hasAnchor">
+<a href="#comparing-the-2-methods" class="anchor"></a>Comparing the 2 methods</h2>
+<p>Overall, we note that <strong>using the more robust MCC score</strong> to classify the models according to their prediction performance on the drug combination dataset they were tested on, <strong>produces more reliable biomarkers</strong> compared to using the simple number of true positive predictions. In addition, the biomarker results are different between the 2 methods, e.g. the TP-analysis revealed <code>CEBPA</code> as an active state performance biomarker whereas the MCC-based analysis showed <code>PTEN</code> to be so.</p>
 </div>
 </div>
 <div id="synergy-biomarkers" class="section level1">
