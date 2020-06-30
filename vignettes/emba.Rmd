@@ -31,8 +31,9 @@ library(emba)
 library(usefun)
 library(dplyr)
 library(knitr)
+library(Ckmeans.1d.dp)
 
-# function to plot without output `TRUE`
+# wrapper to change print model to invisible
 pr = function(x) invisible(x)
 ```
 
@@ -72,7 +73,7 @@ rownames(models.link.operator) = model.names
 
 ## Model Predictions
 
-This data represents the results of **in-silico testing the models ensemble against a drug combination dataset**.
+This data represents the results of **in-silico testing the boolean models against a drug combination dataset**.
 More specifically, the model predictions is a `data.frame` whose values (corresponding to a specific **model-drug combination element**) can be one of the following:
 
 - 0 (no synergy predicted)
@@ -85,9 +86,9 @@ model.predictions[1:5, 77:84] %>% kable(caption = "Model predictions example")
 
 ## Model stable states
 
-Each model must have a *stable state configuration* where the nodes have fixed to either 0 (inactive state) or 1 (active state).
+Each **model** must have a *stable state configuration* where the **nodes** have fixed to either 0 (inactive state) or 1 (active state).
 In other words, a **fixpoint attractor**.
-Of course, if a model has multiple attractors or other methods are used to derive a solution to the system of boolean equations that is the model itself, then continuous activity state values (in the $[0,1]$ interval) are also supported.
+Of course, if a model has multiple attractors or other methods are used to derive a solution to the system of boolean equations that is the model itself, then *continuous* activity state values (in the $[0,1]$ interval) are also supported.
 
 ```{r input-3}
 models.stable.state[1:5, 5:11] %>% kable(caption = "Model stable states example")
@@ -102,7 +103,7 @@ If each boolean model is a list of boolean equations of the form:
 
 `T = (A1 OR A2 OR ...) AND NOT (I1 OR I2 OR ...)`
 
-, where the `A` and `I` nodes are the activating and inhibiting regulators respectively of the target node `T` and the `AND NOT` is the **link (balance) operator**, we can specify a link operator `data.frame` object whose values (corresponding to a specific **model-node element**) can be one of the following:
+, where the `A` and `I` nodes are the activating and inhibiting regulators respectively of the target node `T` and the `AND NOT` is the **link (balance) operator**, we can specify a `data.frame` object whose values (corresponding to a specific **model-node element**) can be one of the following:
 
 - 0 (`AND NOT` link operator)
 - 1 (`OR NOT` link operator) 
@@ -114,9 +115,9 @@ models.link.operator[1:5, 1:10] %>% kable(caption = "Models link operator exampl
 
 Note that in the test dataset, the nodes (columns of the `models.link.operator` object) who didn't have a link operator are pruned.
 
-## Observed synergies
+## Observed (GS) synergies
 
-A list of *gold standard* drug combinations which have been termed as **synergistic** via experimental and/or other computational methods.
+A list of *gold standard (GS)* drug combinations which have been termed as **synergistic** via experimental and/or other computational methods.
 These drug combinations must be a subset of the ones tested in the models (the column names of the `model.predictions` data).
 
 ```{r input-5, results='asis'}
@@ -132,7 +133,7 @@ The model performance can be assessed via various ways.
 In this package we offer two ways to group the models to different classification categories: either based on the 
 **number of true positive (TP) predictions** or on the **Matthews correlation coefficient (MCC) score** with respect to the drug combination dataset tested.
 The function `emba::biomarker_tp_analysis()` is used for the former classification and the function `emba::biomarker_mcc_analysis()` for the latter.
-Note that it's generally better to use the MCC classification, since it's a more robust performance evalution metric compared to the TP predictions, since it takes into account all of the four confusion matrix values.
+Note that it's generally better to use the MCC classification, since it's a more robust performance evalution metric compared to the number of TP predictions, since it takes into account all of the four confusion matrix values.
 
 When the models have been grouped to different classification categories, their nodes activity or boolean model parameterization can be summarised in each group and compared to the others, obtaining thus the expected biomarkers using the methodology described below.
 
@@ -154,7 +155,9 @@ For example, if I were to compare the average activity of nodes between two grou
 As such, with `penalty` values closer to 0, more bias is introduced and we expect more biomarkers to be found.
 See more info on `emba::get_vector_diff()`.
 
-Firstly, we get the predicted synergies - i.e. the drug combinations that are a subset of the observed ones and were **predicted by at least one** of the models in the dataset:
+---
+
+As a first result, we get the predicted synergies - i.e. the drug combinations that are a subset of the observed ones and were **predicted by at least one** of the models in the dataset:
 ```{r tp-analysis-2, results = 'asis'}
 usefun::pretty_print_vector_values(tp.analysis.res$predicted.synergies, vector.values.str = "predicted synergies")
 ```
@@ -163,7 +166,7 @@ The percentage of true positive predicted synergies is thus `r round(100*length(
 Such a low number might be a sign that the models quality is poor (need for a different parameterization) or other reasons like incorrect assessement of the gold standard synergies, etc.
 
 The next informative barplot shows the distribution of models according to their true positive predictions:
-```{r tp-analysis-3, fig.align='center', fig.width=7, fig.height=5.5}
+```{r tp-analysis-3, fig.align='center', fig.width=7, fig.height=5.6}
 pr(emba::make_barplot_on_models_stats(table(tp.analysis.res$models.synergies.tp), 
   title = "True Positive Synergy Predictions",
   xlab = "Number of maximum correctly predicted synergies",
@@ -183,10 +186,10 @@ tp.analysis.res$diff.state.tp.mat %>%
 ```
 
 - Rows represent the different classification group matchings, e.g. (1,2) means the models that predicted 1 TP synergy vs the models that predicted 2 TP synergies.
-- All values are in the [-1,1] interval. 
+- All values are in the $[-1,1]$ interval. 
 The more negative the activity difference value, the more *inhibited* is the node in the better performance models (e.g. `STAT3` node).
 The more positive the activity difference value, the more *active* is the node in the better performance models (e.g. `CEBPA` node).
-- Based on the given `threshold` level, a node is declared as an **activity biomarker** if it's highest absolute value surpasses that threshold (see `emba::get_biomarkers()` for more info).
+- Based on a **user-given** `threshold` level, a node is declared as an **activity biomarker** if it's highest absolute value surpasses that threshold (see `emba::get_biomarkers()` for more info).
 
 In our case, `threshold = 0.55` and thus `CEBPA` and `PSEN1` are returned as active biomarkers:
 ```{r tp-analysis-5, results='asis'}
@@ -220,7 +223,7 @@ usefun::pretty_print_vector_values(tp.analysis.res.biased$biomarkers.tp.inhibite
 ```
 
 Last result we get is the **average link operator differences** per network node (whose boolean equation had a link operator) for all group classifications:
-```{r tp-analysis-8, fig.align='center'}
+```{r tp-analysis-8}
 tp.analysis.res$diff.link.tp.mat %>% 
   as.data.frame() %>%
   select(c("AKT","PTEN","PSEN1","STAT3","CEBPA")) %>% # show only part of the matrix
@@ -228,9 +231,9 @@ tp.analysis.res$diff.link.tp.mat %>%
 ```
 
 - Rows again represent the different classification group matchings, e.g. (1,2) means the models that predicted 1 TP synergy vs the models that predicted 2 TP synergies.
-- All values are in the [-1,1] interval. 
-A value closer to -1 means that on average, the node's boolean equation has the *AND NOT* link operator in the better performance models (e.g. `STAT3` node).
-A value closer to 1 means that on average, the node's boolean equation has mostly the *OR NOT* link operator in the better performance models (e.g. `CEBPA` node).
+- All values are in the $[-1,1]$ interval.
+A value closer to $-1$ means that on average, the node's boolean equation has the *AND NOT* link operator in the better performance models (e.g. `STAT3` node).
+A value closer to $1$ means that on average, the node's boolean equation has mostly the *OR NOT* link operator in the better performance models (e.g. `CEBPA` node).
 - Based on the given `threshold` level, a node is declared as a **link operator biomarker** if it's highest absolute value surpasses that threshold (see `emba::get_biomarkers()` for more info).
 
 In our case, `threshold = 0.55` and thus `CEBPA` is returned as an `OR` link operator biomarker:
@@ -241,19 +244,130 @@ usefun::pretty_print_vector_values(tp.analysis.res$biomarkers.tp.and,
   vector.values.str = "'AND' biomarkers")
 ```
 
+We can also visualize every row of the average link operator differences matrix as follows:
+```{r tp-analysis-10, fig.align='center', fig.width=7, fig.height=5.5}
+pr(emba::plot_avg_link_operator_diff_graph(net, tp.analysis.res$diff.link.tp.mat["(2,3)",], 
+  layout = nice.layout, title = "Bad models (2 TP) vs Good models (3 TP)"))
+```
+
 Interpreting the result regarding the `CEBPA` biomarker, we look back at its boolean equation and we see that the higher performance models must have the `OR NOT` link operator in order for `CEBPA` to be in an active (ON) state (an `AND NOT` results mostly on an inhibited state for `CEBPA`):
 
 `CEBPA = (GSK3B OR MAP2K1 OR MEK1/2) OR NOT CTNNB1`
 
 ## MCC-based analysis
 
-```{r analysis-2}
-
+We use the `emba::biomarker_mcc_analysis()` function with the specified inputs:
+```{r mcc-analysis-1}
+mcc.analysis.res = emba::biomarker_mcc_analysis(
+  model.predictions, 
+  models.stable.state, 
+  models.link.operator, 
+  observed.synergies, 
+  threshold = 0.65,
+  num.of.mcc.classes = 4,
+  penalty = 0.2)
 ```
+
+- The `penalty` term is used to reduce the bias when model groups have different *sizes* (default value is 0.1).
+See more info about this on the TP-based analysis above and on the documentation of the function `emba::get_vector_diff()`.
+- We can choose the number of model groups to be created (`num.of.mcc.classes`, with default value 5).
+Internally, the function `Ckmeans.1d.dp()` is used to perform an optimal univariate *k-means* clustering on the models MCC scores, i.e. **it groups the models to different MCC classes**, with higher classes having higher MCC scores (corresponding thus to better performance models).
+
+---
+
+First result is the predicted synergies, which are the same as the ones found with the TP-based analysis (the model predictions did not change).
+As such, the drug combinations which were **predicted by at least one of the models** in the dataset are:
+```{r mcc-analysis-2, results = 'asis'}
+usefun::pretty_print_vector_values(mcc.analysis.res$predicted.synergies, vector.values.str = "predicted synergies")
+```
+
+We can get a first idea of the range and distribution of the models MCC scores with the next barplot:
+```{r mcc-analysis-3, fig.align='center', fig.width=7, fig.height=5.8}
+pr(emba::make_barplot_on_models_stats(table(mcc.analysis.res$models.mcc), 
+  title = "MCC scores", xlab = "MCC value", 
+  ylab = "Number of models", cont.values = TRUE))
+```
+
+- There are no relatively bad models (MCC values close to $-1$)
+- Most of the models perform a little better than random prediction ($MCC > 0$)
+
+We can also plot the MCC-model histogram, which in addition shows the *density* (how many models) and *width* (MCC range) of each MCC class:
+```{r mcc-analysis-4, fig.align='center', fig.width=7, fig.height=5.5}
+models.mcc = mcc.analysis.res$models.mcc
+num.of.mcc.classes = 4
+
+res = Ckmeans.1d.dp(x = models.mcc, k = num.of.mcc.classes)
+models.cluster.ids = res$cluster
+
+pr(emba::plot_mcc_classes_hist(models.mcc, models.cluster.ids, num.of.mcc.classes))
+```
+
+Next result we get is the **average activity differences** per network node for all group classifications:
+```{r mcc-analysis-5}
+mcc.analysis.res$diff.state.mcc.mat %>%
+  as.data.frame() %>%
+  select(c("AKT","PPM1A", "PTEN","PSEN1","PTK2","CEBPA")) %>% # show only part of the matrix
+  kable(caption = "Average Activity Difference Matrix")
+```
+
+- Rows represent the different classification group matchings, e.g. (1,2) means the models that were in the 1st MCC class vs the models that were in the 2nd MCC class.
+- All values are in the $[-1,1]$ interval. 
+The more negative the activity difference value, the more inhibited is the node in the better performance models (e.g. `PTK2`). 
+The more positive the activity difference value, the more active is the node in the better performance models (e.g. `PPM1A,PTEN`).
+- Based on a **user-given** `threshold` level, a node is declared as an **activity biomarker** if it’s highest absolute value surpasses that threshold (see `emba::get_biomarkers()` for more info).
+
+In our case, `threshold = 0.65` and thus `PTEN` and `PPM1A` are returned as active biomarkers and `PTK2` as an inhibited biomarker:
+```{r mcc-analysis-6, results='asis'}
+usefun::pretty_print_vector_values(mcc.analysis.res$biomarkers.mcc.active,
+  vector.values.str = "active biomarkers")
+usefun::pretty_print_vector_values(mcc.analysis.res$biomarkers.mcc.inhibited,
+  vector.values.str = "inhibited biomarkers")
+```
+
+Note that looking at the respective boolean equations:
+
+- `PPM1A = PTEN`
+- `PTK2 = not PTEN`
+
+we conclude that **the only activity biomarker of interest** is `PTEN` as it's activity state directly influences the `PPM1A` and `PTK2` nodes.
+
+With the models initial network as an [igraph](https://igraph.org/r/) object (see `emba::construct_network()` on how to create such a `net` object), we can visualize every row of the above matrix as follows:
+```{r mcc-analysis-7, fig.align='center', fig.width=7, fig.height=5.5}
+pr(emba::plot_avg_state_diff_graph(net, mcc.analysis.res$diff.state.mcc.mat["(1,4)",], 
+  layout = nice.layout, title = "Bad models (MCC Class 1) vs Good models (MCC Class 4)"))
+```
+
+Last result we get is the **average link operator differences** per network node (whose boolean equation had a link operator) for all group classifications:
+```{r mcc-analysis-8}
+mcc.analysis.res$diff.link.mcc.mat %>% 
+  as.data.frame() %>%
+  select(c("AKT","PTEN","PSEN1","CEBPA")) %>% # show only part of the matrix
+  kable(caption = "Average Link Operator Difference Matrix")
+```
+
+- Rows again represent the different classification group matchings, e.g. (1,2) means the models that were in the 1st MCC class vs the models that were in the 2nd MCC class.
+- All values are in the $[-1,1]$ interval.
+A value closer to $-1$ means that on average, the node's boolean equation has the *AND NOT* link operator in the better performance models (e.g. `STAT3` node).
+A value closer to $1$ means that on average, the node's boolean equation has mostly the *OR NOT* link operator in the better performance models (e.g. `CEBPA` node).
+- Based on the given `threshold` level, a node is declared as a **link operator biomarker** if it's highest absolute value surpasses that threshold (see `emba::get_biomarkers()` for more info).
+
+In our case, `threshold = 0.65` and thus `PTEN` is returned as an `OR` link operator biomarker:
+```{r mcc-analysis-9, results='asis'}
+usefun::pretty_print_vector_values(mcc.analysis.res$biomarkers.mcc.or,
+  vector.values.str = "'OR' biomarkers")
+usefun::pretty_print_vector_values(mcc.analysis.res$biomarkers.mcc.and,
+  vector.values.str = "'AND' biomarkers")
+```
+
+We can also visualize every row of the average link operator differences matrix as follows:
+```{r mcc-analysis-10, fig.align='center', fig.width=7, fig.height=5.5}
+pr(emba::plot_avg_link_operator_diff_graph(net, mcc.analysis.res$diff.link.mcc.mat["(1,4)",], 
+  layout = nice.layout, title = "Bad models (MCC Class 1) vs Good models (MCC Class 4)"))
+```
+
+## Comparing the 2 methods
+
+Overall, we note that **using the more robust MCC score** to classify the models according to their prediction performance on the drug combination dataset they were tested on, **produces more reliable biomarkers** compared to using the simple number of true positive predictions.
+In addition, the biomarker results are different between the 2 methods, e.g. the TP-analysis revealed `CEBPA` as an active state performance biomarker whereas the MCC-based analysis showed `PTEN` to be so.
 
 # Synergy biomarkers
-
-```{r analysis-3}
-
-```
-
