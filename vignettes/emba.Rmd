@@ -20,8 +20,10 @@ This model classification enables the discovery and visualization of **biomarker
 
 In the next sections we will describe the main inputs and outputs of the *general analysis* functions (which group a lot of functionality into one) and provide some insights on the implementation behind.
 Biomarkers will be assessed and visualized using a test dataset generated from the DrugLogics software mentioned above.
+
 For further analyses using this package on boolean model ensemble datasets see this [GitHub repository](https://github.com/bblodfon/gitsbe-model-analysis/).
-See also [an example](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) that demonstrates all the intermediate steps included in the *general analysis* functions.
+See also [an example](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) that demonstrates all the intermediate steps included in the *general analysis* functions as well as other miscellaneous usages that this guide does not cover.
+Lastly, you might also want to check a [nice presentation](https://bblodfon.github.io/r-pres/digital_life_2019.html#12) I made for a conference about this package.
 
 # Setup
 
@@ -32,6 +34,8 @@ library(usefun)
 library(dplyr)
 library(knitr)
 library(Ckmeans.1d.dp)
+library(ComplexHeatmap)
+library(circlize)
 
 # wrapper to change print model to invisible
 pr = function(x) invisible(x)
@@ -371,3 +375,109 @@ Overall, we note that **using the more robust MCC score** to classify the models
 In addition, the biomarker results are different between the 2 methods, e.g. the TP-analysis revealed `CEBPA` as an active state performance biomarker whereas the MCC-based analysis showed `PTEN` to be so.
 
 # Synergy biomarkers
+
+*Synergy* biomarkers are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the manifestation of synergies.
+These nodes can be thus used as indicators of either activity or structural changes that make the models **predict specific drug combinations as synergistic**.
+
+The core idea behind the implementation is that the models are now classified to groups based on whether they **predict or not each of the predicted synergies** (which for the test dataset are the same 5 as found with the previous analyses).
+Thus, by comparing the average node activity or boolean model parameterization from the group that predicted a drug combination as a synergy vs the group that predicted it to be an antagonism, we can derive biomarkers for that drug combination.
+
+The function used to perform such an analysis is the `emba::biomarker_tp_analysis()`:
+
+```{r synergy-analysis-1}
+synergy.analysis.res = emba::biomarker_synergy_analysis(
+  model.predictions,
+  models.stable.state,
+  models.link.operator,
+  observed.synergies,
+  threshold = 0.5,
+  calculate.subsets.stats = TRUE,
+  penalty = 0.1)
+```
+
+---
+
+Now in addition to the predicted synergies, we get all the **subsets** for which a model predicted all drug combinations in that subset as *synergistic*.
+We can visualize this results with the `emba::make_barplot_on_synergy_subset_stats()` function:
+```{r synergy-analysis-2, fig.align='center', fig.width=7, fig.height=5.5}
+pr(emba::make_barplot_on_synergy_subset_stats(
+  synergy.analysis.res$synergy.subset.stats,
+  threshold.for.subset.removal = 1, 
+  bottom.mar = 9))
+```
+
+We observe that:
+
+- Almost half of the models ($3478$) predict none of the *gold standard* synergies
+- The `PI-D1` synergy is predicted by almost all the rest of the models
+- There were only $2$ models that predicted $3$ gold standard synergies, i.e. the set `BI-PD,PD-PI,PI-D1` which is the maximum number of predicted synergies by an individual model
+
+Next, we can visualize the *activity state differences* result for each of the model group comparisons (per predicted synergy) with a heatmap:
+```{r synergy-analysis-3, fig.align='center', fig.width=7, fig.height=5}
+ht = ComplexHeatmap::Heatmap(matrix = synergy.analysis.res$diff.state.synergies.mat,
+  name = "State Diff",
+  col = circlize::colorRamp2(c(-1, 0, 1), c("tomato", "grey", "gold")),
+  column_title = paste0("Average State Differences Heatmap"),
+  column_title_gp = gpar(fontsize = 14, fontface = "bold"),
+  row_title = "Predicted synergies", row_names_side = "left",
+  row_order = 1:nrow(synergy.analysis.res$diff.state.synergies.mat),
+  column_dend_height = unit(1, "inches"),
+  column_names_gp = gpar(fontsize = 5))
+
+ComplexHeatmap::draw(ht)
+```
+
+The heatmap shows that there are patterns in the data - i.e. there are common nodes who affect the prediction of several synergies.
+
+Of course, every row of that above matrix can be also network-plotted.
+We show the average state difference graph for the `PI-D1` synergy:
+```{r synergy-analysis-4, fig.align='center', fig.width=7, fig.height=5.5}
+pr(emba::plot_avg_state_diff_graph(net,
+  synergy.analysis.res$diff.state.synergies.mat["PI-D1",],
+  layout = nice.layout, title = "Prediction of PI-D1 (Good Models: synergy, Bad Models: antagonism)"))
+```
+
+Given the **user-defined** `threshold` ($0.5$) we also get as a result the activity state biomarkers.
+We can visualize them in another heatmap:
+```{r synergy-analysis-5, fig.align='center', fig.width=7, fig.height=5}
+biomarker.act.mat = usefun::prune_columns_from_df(
+  df = synergy.analysis.res$activity.biomarkers, value = 0)
+
+ht = ComplexHeatmap::Heatmap(matrix = as.matrix(biomarker.act.mat),
+  col = circlize::colorRamp2(c(-1, 0, 1), c("tomato", "grey", "gold")),
+  column_title = paste0("Activity State Biomarkers"),
+  column_title_gp = gpar(fontsize = 14, fontface = "bold"),
+  row_title = "Predicted synergies", row_names_side = "left",
+  row_order = 1:nrow(biomarker.act.mat),
+  rect_gp = gpar(col = "black", lwd = 0.3),
+  column_dend_height = unit(0.5, "inches"), 
+  heatmap_legend_param = list(at = c(-1, 1), title = "Activity State",
+    labels = c("Inhibited", "Active"), color_bar = "discrete",
+    title_position = "leftcenter", direction = "horizontal", ncol = 2))
+
+ComplexHeatmap::draw(ht, heatmap_legend_side = "bottom")
+```
+
+As we can observe, with the given configuration, we couldn't find activity biomarkers for every predicted synergy.
+This is justifiable, since the number models that predict a synergy vs the the number of models that don't predict it (i.e. predict *antagonism*) can be fairly unbalanced and the `penalty` term corrects for this.
+For example, comparing the models that predict `AK-PD` as synergistic vs those that predict it as antagonistic, we have:
+
+```{r synergy-analysis-6, results='asis'}
+drug.comb = "AK-PD"
+
+syn.models.num = sum(model.predictions[, drug.comb] == 1 & !is.na(model.predictions[, drug.comb]))
+ant.models.num  = sum(model.predictions[, drug.comb] == 0 & !is.na(model.predictions[, drug.comb]))
+
+pretty_print_string(paste0("Number of models (AK-PD): #Synergistic: ", syn.models.num, ", #Antagonistic: ", ant.models.num))
+```
+
+Lastly, we get the **average link operator differences** per network node (whose boolean equation had a link operator) when comparing the predicted synergy vs antagonism model groups in the `synergy.analysis.res$diff.link.synergies.mat` matrix result.
+The filtered link operator biomarkers (based on the given `threshold`) is given in the `synergy.analysis.res$link.operator.biomarkers` output.
+Both results can be visualized the same way as shown above.
+
+# R Session Info
+
+```{r r-session-info, comment=""}
+xfun::session_info()
+```
+
