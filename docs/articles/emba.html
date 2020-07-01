@@ -89,6 +89,7 @@
 <p>The <em>emba</em> R package name stands for <em>Ensemble (Boolean) Model Biomarker Analysis</em>. It’s main purpose is to be used on a dataset consisted of an <strong>ensemble of boolean models</strong>. These models are usually (but not necessarily) different versions of the same initial model, parameterized in different ways (e.g. some boolean operators in the models equations have changed from <em>OR</em> to <em>AND</em> or vice-versa). A prerequisite for using this package, is that this model dataset must be tested in-silico against a list of drug combinations, in order to assess which drugs combinations behave <em>synergistically</em> for which models. An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (see respective <a href="https://druglogics.github.io/druglogics-doc/">documentation</a>).</p>
 <p>Given a list of <em>gold-standard</em> (lab-observed/verified) <strong>synergies</strong> <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, this package enables the easy grouping of the models into different classes based on a specific performance metric evaluation. This model classification enables the discovery and visualization of <strong>biomarkers</strong> - nodes whose <em>activity</em> and/or boolean model <em>parameterization</em> might affect either the prediction performance of those models or the manifestation of the predicted synergies.</p>
 <p>In the next sections we will describe the main inputs and outputs of the <em>general analysis</em> functions (which group a lot of functionality into one) and provide some insights on the implementation behind. Biomarkers will be assessed and visualized using a test dataset generated from the DrugLogics software mentioned above.</p>
+<p>The complementary R package <a href="https://github.com/bblodfon/usefun">usefun</a> has various helpful functions that are used both inside the <em>emba</em> package and during the analysis below.</p>
 <p>For further analyses using this package on boolean model ensemble datasets see this <a href="https://github.com/bblodfon/gitsbe-model-analysis/">GitHub repository</a>. See also <a href="https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/">an example</a> that demonstrates all the intermediate steps included in the <em>general analysis</em> functions as well as other miscellaneous usages that this guide does not cover. Lastly, you might also want to check a <a href="https://bblodfon.github.io/r-pres/digital_life_2019.html#12">nice presentation</a> I made for a conference about this package.</p>
 </div>
 <div id="setup" class="section level1">
@@ -100,8 +101,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">knitr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">Ckmeans.1d.dp</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ComplexHeatmap</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">circlize</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">xfun</span>)
 
 <span class="co"># wrapper to change print model to invisible</span>
 <span class="no">pr</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span>(<span class="no">x</span>)</pre></body></html></div>
@@ -503,7 +503,7 @@
 </table>
 <ul>
 <li>Rows represent the different classification group matchings, e.g. (1,2) means the models that predicted 1 TP synergy vs the models that predicted 2 TP synergies.</li>
-<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. The more negative the activity difference value, the more <em>inhibited</em> is the node in the better performance models (e.g. <code>STAT3</code> node). The more positive the activity difference value, the more <em>active</em> is the node in the better performance models (e.g. <code>CEBPA</code> node).</li>
+<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. The more negative the activity difference value, the more <em>inhibited</em> the node is in the better performance models (e.g. <code>STAT3</code> node). The more positive the activity difference value, the more <em>active</em> the node is in the better performance models (e.g. <code>CEBPA</code> node).</li>
 <li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.55</code> and thus <code>CEBPA</code> and <code>PSEN1</code> are returned as active biomarkers:</p>
@@ -643,7 +643,7 @@
   <span class="kw">penalty</span> <span class="kw">=</span> <span class="fl">0.2</span>)</pre></body></html></div>
 <ul>
 <li>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em> (default value is 0.1). See more info about this on the TP-based analysis above and on the documentation of the function <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</li>
-<li>We can choose the number of model groups to be created (<code>num.of.mcc.classes</code>, with default value 5). Internally, the function <code><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp()</a></code> is used to perform an optimal univariate <em>k-means</em> clustering on the models MCC scores, i.e. <strong>it groups the models to different MCC classes</strong>, with higher classes having higher MCC scores (corresponding thus to better performance models).</li>
+<li>We can choose the number of model groups to be created (<code>num.of.mcc.classes</code> parameter, with default value 5). Internally, the function <code><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp()</a></code> is used to perform an optimal univariate <em>k-means</em> clustering on the models MCC scores, i.e. <strong>it groups the models to different MCC classes</strong>, with higher classes having higher MCC scores (corresponding thus to better performance models).</li>
 </ul>
 <hr>
 <p>First result is the predicted synergies, which are the same as the ones found with the TP-based analysis (the model predictions did not change). As such, the drug combinations which were <strong>predicted by at least one of the models</strong> in the dataset are:</p>
@@ -672,7 +672,7 @@
 <p>Next result we get is the <strong>average activity differences</strong> per network node for all group classifications:</p>
 <div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="no">mcc.analysis.res</span>$<span class="no">diff.state.mcc.mat</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PPM1A"</span>, <span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"PTK2"</span>,<span class="st">"CEBPA"</span>)) <span class="kw">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PPM1A"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"PTK2"</span>,<span class="st">"CEBPA"</span>)) <span class="kw">%&gt;%</span> <span class="co"># show only part of the matrix</span>
   <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Average Activity Difference Matrix"</span>)</pre></body></html></div>
 <table class="table">
 <caption>Average Activity Difference Matrix</caption>
@@ -744,7 +744,7 @@
 </table>
 <ul>
 <li>Rows represent the different classification group matchings, e.g. (1,2) means the models that were in the 1st MCC class vs the models that were in the 2nd MCC class.</li>
-<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. The more negative the activity difference value, the more inhibited is the node in the better performance models (e.g. <code>PTK2</code>). The more positive the activity difference value, the more active is the node in the better performance models (e.g. <code>PPM1A,PTEN</code>).</li>
+<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. The more negative the activity difference value, the more inhibited the node is in the better performance models (e.g. <code>PTK2</code>). The more positive the activity difference value, the more active the node is in the better performance models (e.g. <code>PPM1A,PTEN</code>).</li>
 <li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.65</code> and thus <code>PTEN</code> and <code>PPM1A</code> are returned as active biomarkers and <code>PTK2</code> as an inhibited biomarker:</p>
@@ -763,7 +763,7 @@
 <li><code>PPM1A = PTEN</code></li>
 <li><code>PTK2 = not PTEN</code></li>
 </ul>
-<p>we conclude that <strong>the only activity biomarker of interest</strong> is <code>PTEN</code> as it’s activity state directly influences the <code>PPM1A</code> and <code>PTK2</code> nodes.</p>
+<p>we conclude that <strong>the only activity biomarker of interest</strong> is <code>PTEN</code> as it’s the only regulator whose state directly influences the <code>PPM1A</code> and <code>PTK2</code> nodes.</p>
 <p>With the models initial network as an <a href="https://igraph.org/r/">igraph</a> object (see <code><a href="../reference/construct_network.html">emba::construct_network()</a></code> on how to create such a <code>net</code> object), we can visualize every row of the above matrix as follows:</p>
 <div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span>(<span class="no">net</span>, <span class="no">mcc.analysis.res</span>$<span class="no">diff.state.mcc.mat</span>[<span class="st">"(1,4)"</span>,],
   <span class="kw">layout</span> <span class="kw">=</span> <span class="no">nice.layout</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Bad models (MCC Class 1) vs Good models (MCC Class 4)"</span>))</pre></body></html></div>
@@ -771,7 +771,7 @@
 <p>Last result we get is the <strong>average link operator differences</strong> per network node (whose boolean equation had a link operator) for all group classifications:</p>
 <div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">mcc.analysis.res</span>$<span class="no">diff.link.mcc.mat</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"CEBPA"</span>)) <span class="kw">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"CEBPA"</span>,<span class="st">"STAT3"</span>,<span class="st">"JAK1"</span>)) <span class="kw">%&gt;%</span> <span class="co"># show only part of the matrix</span>
   <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Average Link Operator Difference Matrix"</span>)</pre></body></html></div>
 <table class="table">
 <caption>Average Link Operator Difference Matrix</caption>
@@ -781,6 +781,8 @@
 <th align="right">PTEN</th>
 <th align="right">PSEN1</th>
 <th align="right">CEBPA</th>
+<th align="right">STAT3</th>
+<th align="right">JAK1</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -789,6 +791,8 @@
 <td align="right">0.5880847</td>
 <td align="right">0.0466807</td>
 <td align="right">-0.0280618</td>
+<td align="right">-0.3069948</td>
+<td align="right">0.2806183</td>
 </tr>
 <tr class="even">
 <td>(1,3)</td>
@@ -796,6 +800,8 @@
 <td align="right">0.6791224</td>
 <td align="right">0.0115062</td>
 <td align="right">0.0114039</td>
+<td align="right">0.0664054</td>
+<td align="right">-0.0648736</td>
 </tr>
 <tr class="odd">
 <td>(1,4)</td>
@@ -803,6 +809,8 @@
 <td align="right">0.6416618</td>
 <td align="right">-0.0109073</td>
 <td align="right">-0.0060220</td>
+<td align="right">-0.6043843</td>
+<td align="right">0.5783232</td>
 </tr>
 <tr class="even">
 <td>(2,3)</td>
@@ -810,6 +818,8 @@
 <td align="right">0.1542205</td>
 <td align="right">-0.0343283</td>
 <td align="right">0.0407584</td>
+<td align="right">0.3818048</td>
+<td align="right">-0.3535848</td>
 </tr>
 <tr class="odd">
 <td>(2,4)</td>
@@ -817,6 +827,8 @@
 <td align="right">0.1330813</td>
 <td align="right">-0.0457409</td>
 <td align="right">0.0160442</td>
+<td align="right">-0.3147733</td>
+<td align="right">0.3112794</td>
 </tr>
 <tr class="even">
 <td>(3,4)</td>
@@ -824,12 +836,14 @@
 <td align="right">0.0141918</td>
 <td align="right">-0.0179237</td>
 <td align="right">-0.0137708</td>
+<td align="right">-0.5550172</td>
+<td align="right">0.5321063</td>
 </tr>
 </tbody>
 </table>
 <ul>
 <li>Rows again represent the different classification group matchings, e.g. (1,2) means the models that were in the 1st MCC class vs the models that were in the 2nd MCC class.</li>
-<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. A value closer to <span class="math inline">\(-1\)</span> means that on average, the node’s boolean equation has the <em>AND NOT</em> link operator in the better performance models (e.g. <code>STAT3</code> node). A value closer to <span class="math inline">\(1\)</span> means that on average, the node’s boolean equation has mostly the <em>OR NOT</em> link operator in the better performance models (e.g. <code>CEBPA</code> node).</li>
+<li>All values are in the <span class="math inline">\([-1,1]\)</span> interval. A value closer to <span class="math inline">\(-1\)</span> means that on average, the node’s boolean equation has the <em>AND NOT</em> link operator in the better performance models (e.g. <code>STAT3</code> node). A value closer to <span class="math inline">\(1\)</span> means that on average, the node’s boolean equation has mostly the <em>OR NOT</em> link operator in the better performance models (e.g. <code>PTEN</code> node).</li>
 <li>Based on the given <code>threshold</code> level, a node is declared as a <strong>link operator biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.65</code> and thus <code>PTEN</code> is returned as an <code>OR</code> link operator biomarker:</p>
@@ -858,7 +872,7 @@
 <h1 class="hasAnchor">
 <a href="#synergy-biomarkers" class="anchor"></a>Synergy biomarkers</h1>
 <p><em>Synergy</em> biomarkers are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the manifestation of synergies. These nodes can be thus used as indicators of either activity or structural changes that make the models <strong>predict specific drug combinations as synergistic</strong>.</p>
-<p>The core idea behind the implementation is that the models are now classified to groups based on whether they <strong>predict or not each of the predicted synergies</strong> (which for the test dataset are the same 5 as found with the previous analyses). Thus, by comparing the average node activity or boolean model parameterization from the group that predicted a drug combination as a synergy vs the group that predicted it to be an antagonism, we can derive biomarkers for that drug combination.</p>
+<p>The core idea behind the implementation is that the models are now classified to groups based on whether they <strong>predict or not each of the predicted synergies</strong> (which for the test dataset are the same 5 as found with the previous analyses). Thus, by comparing the average node activity or boolean model parameterization from the group that predicted a drug combination as a <strong>synergy</strong> vs the group that predicted it to be an <strong>antagonism</strong>, we can derive biomarkers for that drug combination.</p>
 <p>The function used to perform such an analysis is the <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis()</a></code>:</p>
 <div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="no">synergy.analysis.res</span> <span class="kw">=</span> <span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/biomarker_synergy_analysis.html">biomarker_synergy_analysis</a></span>(
   <span class="no">model.predictions</span>,
@@ -881,59 +895,200 @@
 <li>The <code>PI-D1</code> synergy is predicted by almost all the rest of the models</li>
 <li>There were only <span class="math inline">\(2\)</span> models that predicted <span class="math inline">\(3\)</span> gold standard synergies, i.e. the set <code>BI-PD,PD-PI,PI-D1</code> which is the maximum number of predicted synergies by an individual model</li>
 </ul>
-<p>Next, we can visualize the <em>activity state differences</em> result for each of the model group comparisons (per predicted synergy) with a heatmap:</p>
-<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="no">ht</span> <span class="kw">=</span> <span class="kw pkg">ComplexHeatmap</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html">Heatmap</a></span>(<span class="kw">matrix</span> <span class="kw">=</span> <span class="no">synergy.analysis.res</span>$<span class="no">diff.state.synergies.mat</span>,
-  <span class="kw">name</span> <span class="kw">=</span> <span class="st">"State Diff"</span>,
-  <span class="kw">col</span> <span class="kw">=</span> <span class="kw pkg">circlize</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/circlize/man/colorRamp2.html">colorRamp2</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tomato"</span>, <span class="st">"grey"</span>, <span class="st">"gold"</span>)),
-  <span class="kw">column_title</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Average State Differences Heatmap"</span>),
-  <span class="kw">column_title_gp</span> <span class="kw">=</span> <span class="fu">gpar</span>(<span class="kw">fontsize</span> <span class="kw">=</span> <span class="fl">14</span>, <span class="kw">fontface</span> <span class="kw">=</span> <span class="st">"bold"</span>),
-  <span class="kw">row_title</span> <span class="kw">=</span> <span class="st">"Predicted synergies"</span>, <span class="kw">row_names_side</span> <span class="kw">=</span> <span class="st">"left"</span>,
-  <span class="kw">row_order</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">synergy.analysis.res</span>$<span class="no">diff.state.synergies.mat</span>),
-  <span class="kw">column_dend_height</span> <span class="kw">=</span> <span class="fu">unit</span>(<span class="fl">1</span>, <span class="st">"inches"</span>),
-  <span class="kw">column_names_gp</span> <span class="kw">=</span> <span class="fu">gpar</span>(<span class="kw">fontsize</span> <span class="kw">=</span> <span class="fl">5</span>))
-
-<span class="kw pkg">ComplexHeatmap</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ComplexHeatmap/man/draw-dispatch.html">draw</a></span>(<span class="no">ht</span>)</pre></body></html></div>
-<p><img src="emba_files/figure-html/synergy-analysis-3-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>The heatmap shows that there are patterns in the data - i.e. there are common nodes who affect the prediction of several synergies.</p>
-<p>Of course, every row of that above matrix can be also network-plotted. We show the average state difference graph for the <code>PI-D1</code> synergy:</p>
+<p>Next result is the matrix of <em>activity state differences</em> vectors, one for each of the predicted synergies:</p>
+<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="no">synergy.analysis.res</span>$<span class="no">diff.state.synergies.mat</span>[,<span class="fl">1</span>:<span class="fl">8</span>] <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Average State Differences per Synergy Predicted"</span>, <span class="kw">digits</span> <span class="kw">=</span> <span class="fl">3</span>)</pre></body></html></div>
+<table class="table">
+<caption>Average State Differences per Synergy Predicted</caption>
+<thead><tr class="header">
+<th></th>
+<th align="right">MAP3K7</th>
+<th align="right">MAP2K6</th>
+<th align="right">MAP2K3</th>
+<th align="right">NLK</th>
+<th align="right">MAP3K4</th>
+<th align="right">MAP2K4</th>
+<th align="right">IKBKG</th>
+<th align="right">IKBKB</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>AK-PD</td>
+<td align="right">0.104</td>
+<td align="right">0.104</td>
+<td align="right">0.104</td>
+<td align="right">0.104</td>
+<td align="right">-0.016</td>
+<td align="right">0.054</td>
+<td align="right">0.104</td>
+<td align="right">0.016</td>
+</tr>
+<tr class="even">
+<td>BI-PD</td>
+<td align="right">-0.790</td>
+<td align="right">-0.790</td>
+<td align="right">-0.790</td>
+<td align="right">-0.790</td>
+<td align="right">-0.026</td>
+<td align="right">-0.416</td>
+<td align="right">-0.790</td>
+<td align="right">0.003</td>
+</tr>
+<tr class="odd">
+<td>BI-PI</td>
+<td align="right">0.045</td>
+<td align="right">0.045</td>
+<td align="right">0.045</td>
+<td align="right">0.045</td>
+<td align="right">0.004</td>
+<td align="right">0.044</td>
+<td align="right">0.045</td>
+<td align="right">0.018</td>
+</tr>
+<tr class="even">
+<td>PD-PI</td>
+<td align="right">-0.314</td>
+<td align="right">-0.314</td>
+<td align="right">-0.314</td>
+<td align="right">-0.314</td>
+<td align="right">0.005</td>
+<td align="right">-0.147</td>
+<td align="right">-0.314</td>
+<td align="right">-0.033</td>
+</tr>
+<tr class="odd">
+<td>PI-D1</td>
+<td align="right">0.080</td>
+<td align="right">0.080</td>
+<td align="right">0.080</td>
+<td align="right">0.080</td>
+<td align="right">0.002</td>
+<td align="right">0.103</td>
+<td align="right">0.080</td>
+<td align="right">-0.018</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Every row refers to a different predicted synergy in the dataset. The columns are the network nodes.</li>
+<li>Every row is the result of <strong>comparing two model groups</strong>: the <em>synergistic group</em> (models that predicted the row-annotated drug combination as <strong>synergistic</strong>) vs the <em>antagonistic group</em> (models that predicted the row-annotated drug combination as <strong>antagonistic</strong>).</li>
+<li>All values are in the <span class="math inline">\([−1,1]\)</span> interval. The more negative (positive) the activity difference value, the more inhibited (active) the node is in the synergistic model group.</li>
+<li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
+</ul>
+<p>Every row of the above matrix can be also network-plotted. We show for example the average state difference graph for the <code>PI-D1</code> synergy:</p>
 <div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span>(<span class="no">net</span>,
   <span class="no">synergy.analysis.res</span>$<span class="no">diff.state.synergies.mat</span>[<span class="st">"PI-D1"</span>,],
   <span class="kw">layout</span> <span class="kw">=</span> <span class="no">nice.layout</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Prediction of PI-D1 (Good Models: synergy, Bad Models: antagonism)"</span>))</pre></body></html></div>
 <p><img src="emba_files/figure-html/synergy-analysis-4-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>Given the <strong>user-defined</strong> <code>threshold</code> (<span class="math inline">\(0.5\)</span>) we also get as a result the activity state biomarkers. We can visualize them in another heatmap:</p>
-<div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="no">biomarker.act.mat</span> <span class="kw">=</span> <span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/prune_columns_from_df.html">prune_columns_from_df</a></span>(
+<p>Given the <strong>user-defined</strong> <code>threshold</code> (<span class="math inline">\(0.5\)</span>) we also get as a result the activity state biomarkers:</p>
+<div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="co"># prune nodes (columns) that were not found as biomarkers for any predicted synergy</span>
+<span class="no">biomarker.act.mat</span> <span class="kw">=</span> <span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/prune_columns_from_df.html">prune_columns_from_df</a></span>(
   <span class="kw">df</span> <span class="kw">=</span> <span class="no">synergy.analysis.res</span>$<span class="no">activity.biomarkers</span>, <span class="kw">value</span> <span class="kw">=</span> <span class="fl">0</span>)
 
-<span class="no">ht</span> <span class="kw">=</span> <span class="kw pkg">ComplexHeatmap</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html">Heatmap</a></span>(<span class="kw">matrix</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">biomarker.act.mat</span>),
-  <span class="kw">col</span> <span class="kw">=</span> <span class="kw pkg">circlize</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/circlize/man/colorRamp2.html">colorRamp2</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tomato"</span>, <span class="st">"grey"</span>, <span class="st">"gold"</span>)),
-  <span class="kw">column_title</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Activity State Biomarkers"</span>),
-  <span class="kw">column_title_gp</span> <span class="kw">=</span> <span class="fu">gpar</span>(<span class="kw">fontsize</span> <span class="kw">=</span> <span class="fl">14</span>, <span class="kw">fontface</span> <span class="kw">=</span> <span class="st">"bold"</span>),
-  <span class="kw">row_title</span> <span class="kw">=</span> <span class="st">"Predicted synergies"</span>, <span class="kw">row_names_side</span> <span class="kw">=</span> <span class="st">"left"</span>,
-  <span class="kw">row_order</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">biomarker.act.mat</span>),
-  <span class="kw">rect_gp</span> <span class="kw">=</span> <span class="fu">gpar</span>(<span class="kw">col</span> <span class="kw">=</span> <span class="st">"black"</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">0.3</span>),
-  <span class="kw">column_dend_height</span> <span class="kw">=</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">"inches"</span>),
-  <span class="kw">heatmap_legend_param</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">at</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1</span>, <span class="fl">1</span>), <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Activity State"</span>,
-    <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Inhibited"</span>, <span class="st">"Active"</span>), <span class="kw">color_bar</span> <span class="kw">=</span> <span class="st">"discrete"</span>,
-    <span class="kw">title_position</span> <span class="kw">=</span> <span class="st">"leftcenter"</span>, <span class="kw">direction</span> <span class="kw">=</span> <span class="st">"horizontal"</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>))
-
-<span class="kw pkg">ComplexHeatmap</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ComplexHeatmap/man/draw-dispatch.html">draw</a></span>(<span class="no">ht</span>, <span class="kw">heatmap_legend_side</span> <span class="kw">=</span> <span class="st">"bottom"</span>)</pre></body></html></div>
-<p><img src="emba_files/figure-html/synergy-analysis-5-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>As we can observe, with the given configuration, we couldn’t find activity biomarkers for every predicted synergy. This is justifiable, since the number models that predict a synergy vs the the number of models that don’t predict it (i.e. predict <em>antagonism</em>) can be fairly unbalanced and the <code>penalty</code> term corrects for this. For example, comparing the models that predict <code>AK-PD</code> as synergistic vs those that predict it as antagonistic, we have:</p>
-<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="no">drug.comb</span> <span class="kw">=</span> <span class="st">"AK-PD"</span>
+<span class="no">biomarker.act.mat</span>[, <span class="fl">4</span>:<span class="fl">12</span>] <span class="kw">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Activity State Biomarkers Per Synergy Predicted"</span>)</pre></body></html></div>
+<table class="table">
+<caption>Activity State Biomarkers Per Synergy Predicted</caption>
+<thead><tr class="header">
+<th></th>
+<th align="right">NLK</th>
+<th align="right">IKBKG</th>
+<th align="right">CREB1</th>
+<th align="right">STAT3</th>
+<th align="right">PTEN</th>
+<th align="right">PtsIns(3,4,5)P3</th>
+<th align="right">JAK1</th>
+<th align="right">TYK2</th>
+<th align="right">JAK3</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>AK-PD</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>BI-PD</td>
+<td align="right">-1</td>
+<td align="right">-1</td>
+<td align="right">0</td>
+<td align="right">-1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td>BI-PI</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>PD-PI</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>PI-D1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">-1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">-1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>In the above matrix, <span class="math inline">\(1\)</span> means <em>active state biomarker</em>, <span class="math inline">\(-1\)</span> <em>inhibited state biomarker</em> and <span class="math inline">\(0\)</span> means not a biomarker.</li>
+<li>Using the following code, you can filter and derive your own activity biomarkers matrix:</li>
+</ul>
+<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="co"># define your own threshold</span>
+<span class="no">my.thres</span> <span class="kw">=</span> <span class="fl">0.76</span>
+<span class="no">activity.biomarkers.new</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(
+  <span class="no">synergy.analysis.res</span>$<span class="no">diff.state.synergies.mat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>),
+  <span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/usefun/man/get_ternary_class_id.html">get_ternary_class_id</a></span>, <span class="no">my.thres</span>))</pre></body></html></div>
+<p>Note that there were predicted synergies (rows in the above matrix), for which we couldn’t find activity biomarkers (row was all zeros). This is justifiable, since the number of models in the synergistic and antagonistic model groups can be fairly unbalanced and the <code>penalty</code> term aim to correct this bias. For example, comparing the models that predict <code>AK-PD</code> as synergistic vs those that predict it as antagonistic, we have:</p>
+<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="no">drug.comb</span> <span class="kw">=</span> <span class="st">"AK-PD"</span>
 
 <span class="no">syn.models.num</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">model.predictions</span>[, <span class="no">drug.comb</span>] <span class="kw">==</span> <span class="fl">1</span> <span class="kw">&amp;</span> !<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">model.predictions</span>[, <span class="no">drug.comb</span>]))
 <span class="no">ant.models.num</span>  <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">model.predictions</span>[, <span class="no">drug.comb</span>] <span class="kw">==</span> <span class="fl">0</span> <span class="kw">&amp;</span> !<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">model.predictions</span>[, <span class="no">drug.comb</span>]))
 
-<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_string.html">pretty_print_string</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Number of models (AK-PD): #Synergistic: "</span>, <span class="no">syn.models.num</span>, <span class="st">", #Antagonistic: "</span>, <span class="no">ant.models.num</span>))</pre></body></html></div>
+<span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_string.html">pretty_print_string</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Number of models (AK-PD): #Synergistic: "</span>, <span class="no">syn.models.num</span>, <span class="st">", #Antagonistic: "</span>, <span class="no">ant.models.num</span>))</pre></body></html></div>
 <blockquote>
 <p>Number of models (AK-PD): #Synergistic: 3, #Antagonistic: 6214</p>
 </blockquote>
-<p>Lastly, we get the <strong>average link operator differences</strong> per network node (whose boolean equation had a link operator) when comparing the predicted synergy vs antagonism model groups in the <code>synergy.analysis.res$diff.link.synergies.mat</code> matrix result. The filtered link operator biomarkers (based on the given <code>threshold</code>) is given in the <code>synergy.analysis.res$link.operator.biomarkers</code> output. Both results can be visualized the same way as shown above.</p>
+<p>Lastly, the <code>synergy.analysis.res$diff.link.synergies.mat</code> result is a matrix that contains the <strong>average link operator differences</strong> per network node (whose boolean equation had a link operator) when comparing the synergistic vs antagonistic model groups for each predicted synergy. The corresponding <strong>link operator biomarkers</strong> (based on the given <code>threshold</code>) are given in the <code>synergy.analysis.res$link.operator.biomarkers</code> output.</p>
 </div>
 <div id="r-session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#r-session-info" class="anchor"></a>R Session Info</h1>
-<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="kw pkg">xfun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/xfun/man/session_info.html">session_info</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="kw pkg">xfun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/xfun/man/session_info.html">session_info</a></span>()</pre></body></html></div>
 <pre><code>R version 3.6.3 (2020-02-29)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
@@ -947,37 +1102,33 @@ Locale:
   LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 Package version:
-  askpass_1.1          assertthat_0.2.1     backports_1.1.7     
-  base64enc_0.1.3      BH_1.72.0.3          bibtex_0.4.2.2      
-  callr_3.4.3          circlize_0.4.10      Ckmeans.1d.dp_4.3.2 
-  cli_2.0.2            clipr_0.7.0          clue_0.3-57         
-  cluster_2.1.0        colorspace_1.4-1     compiler_3.6.3      
-  ComplexHeatmap_2.4.2 crayon_1.3.4         curl_4.3            
-  desc_1.2.0           digest_0.6.25        dplyr_0.8.5         
-  ellipsis_0.3.1       emba_0.1.5           evaluate_0.14       
-  fansi_0.4.1          fs_1.4.1             gbRd_0.4-11         
-  GetoptLong_1.0.0     GlobalOptions_0.1.2  glue_1.4.1          
-  graphics_3.6.3       grDevices_3.6.3      grid_3.6.3          
-  highlight_0.5.0      highr_0.8            hms_0.5.3           
-  htmltools_0.4.0      htmlwidgets_1.5.1    httr_1.4.1          
-  igraph_1.2.5         jsonlite_1.6.1       knitr_1.28          
-  lattice_0.20.41      lifecycle_0.2.0      magrittr_1.5        
-  markdown_1.1         MASS_7.3-51.6        Matrix_1.2.18       
-  memoise_1.1.0        methods_3.6.3        mime_0.9            
-  openssl_1.4.1        parallel_3.6.3       pillar_1.4.4        
-  pkgconfig_2.0.3      pkgdown_1.5.1        plogr_0.2.0         
-  png_0.1-7            processx_3.4.2       ps_1.3.3            
-  purrr_0.3.4          R6_2.4.1             RColorBrewer_1.1-2  
-  Rcpp_1.0.4.6         Rdpack_0.11-1        readr_1.3.1         
-  rematch2_2.1.2       rje_1.10.15          rjson_0.2.20        
-  rlang_0.4.6          rmarkdown_2.1        rprojroot_1.3-2     
-  rstudioapi_0.11      shape_1.4.4          stats_3.6.3         
-  stringi_1.4.6        stringr_1.4.0        sys_3.3             
-  tibble_3.0.1         tidyr_1.1.0          tidyselect_1.1.0    
-  tinytex_0.23         tools_3.6.3          usefun_0.4.7        
-  utf8_1.1.4           utils_3.6.3          vctrs_0.3.0         
-  visNetwork_2.0.9     whisker_0.4          withr_2.2.0         
-  xfun_0.14            xml2_1.3.2           yaml_2.2.1          </code></pre>
+  askpass_1.1         assertthat_0.2.1    backports_1.1.7    
+  base64enc_0.1.3     BH_1.72.0.3         bibtex_0.4.2.2     
+  callr_3.4.3         Ckmeans.1d.dp_4.3.2 cli_2.0.2          
+  clipr_0.7.0         compiler_3.6.3      crayon_1.3.4       
+  curl_4.3            desc_1.2.0          digest_0.6.25      
+  dplyr_0.8.5         ellipsis_0.3.1      emba_0.1.5         
+  evaluate_0.14       fansi_0.4.1         fs_1.4.1           
+  gbRd_0.4-11         glue_1.4.1          graphics_3.6.3     
+  grDevices_3.6.3     grid_3.6.3          highlight_0.5.0    
+  highr_0.8           hms_0.5.3           htmltools_0.4.0    
+  htmlwidgets_1.5.1   httr_1.4.1          igraph_1.2.5       
+  jsonlite_1.6.1      knitr_1.28          lattice_0.20.41    
+  lifecycle_0.2.0     magrittr_1.5        markdown_1.1       
+  MASS_7.3-51.6       Matrix_1.2.18       memoise_1.1.0      
+  methods_3.6.3       mime_0.9            openssl_1.4.1      
+  pillar_1.4.4        pkgconfig_2.0.3     pkgdown_1.5.1      
+  plogr_0.2.0         processx_3.4.2      ps_1.3.3           
+  purrr_0.3.4         R6_2.4.1            Rcpp_1.0.4.6       
+  Rdpack_0.11-1       readr_1.3.1         rematch2_2.1.2     
+  rje_1.10.15         rlang_0.4.6         rmarkdown_2.1      
+  rprojroot_1.3-2     rstudioapi_0.11     stats_3.6.3        
+  stringi_1.4.6       stringr_1.4.0       sys_3.3            
+  tibble_3.0.1        tidyr_1.1.0         tidyselect_1.1.0   
+  tinytex_0.23        tools_3.6.3         usefun_0.4.7       
+  utf8_1.1.4          utils_3.6.3         vctrs_0.3.0        
+  visNetwork_2.0.9    whisker_0.4         withr_2.2.0        
+  xfun_0.14           xml2_1.3.2          yaml_2.2.1         </code></pre>
 </div>
 <div class="footnotes">
 <hr>

@@ -19,7 +19,7 @@
   in NTNU). It has generic functions that can be used to split a boolean model 
   dataset to model groups with regards to the models predictive performance (number of true 
   positive predictions/Matthews correlation coefficient score) or synergy prediction based on a given set 
-  of observed synergies and find the average activity difference per network 
+  of gold standard synergies and find the average activity difference per network 
   node between all model group pairs. Thus, given user-specific thresholds,
   important nodes (biomarkers) can be accessed in the sense that they make the 
   models predict specific synergies (synergy biomarkers) or have better 
@@ -91,7 +91,7 @@
 <!-- badges: start -->
 
 <p>Analysis and visualization of an ensemble of boolean models for biomarker discovery in cancer cell networks.</p>
-<p>The package allows to easily load the simulation data results of the <a href="https://github.com/druglogics">DrugLogics</a> software pipeline that is used to predict synergistic drug combinations in cancer cell lines. It has generic functions that can be used to split a boolean model dataset to model groups with regards to the models predictive performance (number of <em>true positive</em> predictions/<em>Matthews correlation coefficient</em> score) or synergy prediction based on a given set of observed synergies and find the average activity difference per network node between all model group pairs. Thus, given user-specific thresholds, important nodes (<em>biomarkers</em>) can be accessed in the sense that they make the models predict specific synergies (<em>synergy biomarkers</em>) or have better performance in general (<em>performance biomarkers</em>).</p>
+<p>The package allows to easily load the simulation data results of the <a href="https://github.com/druglogics">DrugLogics</a> software pipeline that is used to predict synergistic drug combinations in cancer cell lines. It has generic functions that can be used to split a boolean model dataset to model groups with regards to the models predictive performance (number of <em>true positive</em> predictions/<em>Matthews correlation coefficient</em> score) or synergy prediction based on a given set of <em>gold standard</em> synergies and find the average activity difference per network node between all model group pairs. Thus, given user-specific thresholds, important nodes (<em>biomarkers</em>) can be accessed in the sense that they make the models predict specific synergies (<em>synergy biomarkers</em>) or have better performance in general (<em>performance biomarkers</em>).</p>
 <p>Lastly, if the boolean models have a <a href="https://druglogics.github.io/druglogics-doc/gitsbe-description.html#default-equation">specific equation form</a> and differ only in their link operator, <em>link operator</em> biomarkers can also be found.</p>
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
