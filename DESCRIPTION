@@ -45,7 +45,5 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    circlize,
-    ComplexHeatmap,
     xfun
 VignetteBuilder: knitr
