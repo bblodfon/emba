@@ -289,7 +289,7 @@ plot_avg_state_diff_graph_vis = function(net, diff, nodes.size = 20, title) {
 
 #' Plot the graph of average state differences (igraph)
 #'
-#' This function uses the \code{\link[igraph]{igraph}} package to plot a network
+#' This function uses the \code{\link[igraph]{plot.igraph}} package to plot a network
 #' of nodes. The nodes are positioned according to the specified coordinates
 #' given by the \code{layout} parameter and the colors are derived using the
 #' \code{diff} values and the \code{\link{get_node_colors}} function. The color
