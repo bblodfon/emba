@@ -135,7 +135,7 @@ The model performance can be assessed via various ways.
 In this package we offer two ways to group the models to different classification categories: either based on the 
 **number of true positive (TP) predictions** or on the **Matthews correlation coefficient (MCC) score** with respect to the drug combination dataset tested for synergy.
 The function `emba::biomarker_tp_analysis()` is used for the former classification and the function `emba::biomarker_mcc_analysis()` for the latter.
-Note that it's generally better to use the MCC classification, since it's a more robust performance evalution metric compared to the number of TP predictions, since it takes into account all of the four confusion matrix values.
+Note that it's generally better to use the MCC classification, since it's a more robust performance evaluation metric compared to the number of TP predictions, since it takes into account all of the four confusion matrix values.
 
 When the models have been grouped to different classification categories, their nodes activity or boolean model parameterization can be summarised in each group and compared to the others, obtaining thus the expected biomarkers using the methodology described below.
 
