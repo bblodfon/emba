@@ -86,7 +86,7 @@
 <div id="intro" class="section level1">
 <h1 class="hasAnchor">
 <a href="#intro" class="anchor"></a>Intro</h1>
-<p>The <em>emba</em> R package name stands for <em>Ensemble (Boolean) Model Biomarker Analysis</em>. It’s main purpose is to be used on a dataset consisted of an <strong>ensemble of boolean models</strong>. These models are usually (but not necessarily) different versions of the same initial model, parameterized in different ways (e.g. some boolean operators in the models equations have changed from <em>OR</em> to <em>AND</em> or vice-versa). A prerequisite for using this package, is that this model dataset must be tested in-silico against a list of drug combinations, in order to assess which drugs combinations behave <em>synergistically</em> for which models. An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (see respective <a href="https://druglogics.github.io/druglogics-doc/">documentation</a>).</p>
+<p>The <em>emba</em> R package name stands for <em>Ensemble (Boolean) Model Biomarker Analysis</em>. It’s main purpose is to be used on a dataset consisted of an <strong>ensemble of boolean models</strong>. These models are usually (but not necessarily) different versions of the same initial model, parameterized in different ways (e.g. some boolean operators in the model equations have changed from <em>OR</em> to <em>AND</em> or vice-versa). A prerequisite for using this package, is that this model dataset must be tested in-silico (using some computational way) against a list of drug combinations, in order to assess which drugs combinations behave <em>synergistically</em> for which models. An example software that generates such boolean model ensembles and performs a comprehensive drug response analysis on them is the DrugLogics NTNU software pipeline (see respective <a href="https://druglogics.github.io/druglogics-doc/">documentation</a>).</p>
 <p>Given a list of <em>gold-standard</em> (lab-observed/verified) <strong>synergies</strong> <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, this package enables the easy grouping of the models into different classes based on a specific performance metric evaluation. This model classification enables the discovery and visualization of <strong>biomarkers</strong> - nodes whose <em>activity</em> and/or boolean model <em>parameterization</em> might affect either the prediction performance of those models or the manifestation of the predicted synergies.</p>
 <p>In the next sections we will describe the main inputs and outputs of the <em>general analysis</em> functions (which group a lot of functionality into one) and provide some insights on the implementation behind. Biomarkers will be assessed and visualized using a test dataset generated from the DrugLogics software mentioned above.</p>
 <p>The complementary R package <a href="https://github.com/bblodfon/usefun">usefun</a> has various helpful functions that are used both inside the <em>emba</em> package and during the analysis below.</p>
@@ -101,9 +101,8 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">knitr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">Ckmeans.1d.dp</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">xfun</span>)
 
-<span class="co"># wrapper to change print model to invisible</span>
+<span class="co"># wrapper to change printing to invisible</span>
 <span class="no">pr</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span>(<span class="no">x</span>)</pre></body></html></div>
 </div>
 <div id="input" class="section level1">
@@ -112,11 +111,9 @@
 <div id="test-dataset" class="section level2">
 <h2 class="hasAnchor">
 <a href="#test-dataset" class="anchor"></a>Test dataset</h2>
-<p>The test dataset we will use has <span class="math inline">\(7500\)</span> boolean models with <span class="math inline">\(139\)</span> nodes each. It helps to think of each model as a <strong>network of nodes</strong> where the edges represent either activation or inhibition of the corresponding target and the nodes activity can be either active (1) or inactive (0).</p>
+<p>The test dataset we will use has <span class="math inline">\(7500\)</span> boolean models with <span class="math inline">\(139\)</span> nodes each. It helps to think of each boolean model as a <strong>network of nodes</strong> where the edges represent either activation or inhibition of the corresponding target and the nodes activity can be either active (1) or inactive (0).</p>
 <p>The models have been assessed for synergy against a total of <span class="math inline">\(153\)</span> drug combinations.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">data_file</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>()
-<span class="kw pkg">utils</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span>(<span class="kw">url</span> <span class="kw">=</span> <span class="st">"https://github.com/bblodfon/emba/blob/master/vignettes/data.rds?raw=true"</span>, <span class="kw">destfile</span> <span class="kw">=</span> <span class="no">data_file</span>)
-<span class="no">data.list</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="kw">file</span> <span class="kw">=</span> <span class="no">data_file</span>)
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">data.list</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span>(<span class="st">"https://github.com/bblodfon/emba/blob/master/vignettes/data.rds?raw=true"</span>))
 
 <span class="no">model.predictions</span> <span class="kw">=</span> <span class="no">data.list</span>$<span class="no">model.predictions</span>
 <span class="no">models.stable.state</span> <span class="kw">=</span> <span class="no">data.list</span>$<span class="no">models.stable.state</span>
@@ -297,11 +294,11 @@
 <p>This is a non-essential input for the functions we will use, but we include it here since the test dataset supports it. It is a way to represent the <strong>structure (parameterization)</strong> of the boolean models in the dataset.</p>
 <p>If each boolean model is a list of boolean equations of the form:</p>
 <p><code>T = (A1 OR A2 OR ...) AND NOT (I1 OR I2 OR ...)</code></p>
-<p>, where the <code>A</code> and <code>I</code> nodes are the activating and inhibiting regulators respectively of the target node <code>T</code> and the <code>AND NOT</code> is the <strong>link (balance) operator</strong>, we can specify a <code>data.frame</code> object whose values (corresponding to a specific <strong>model-node element</strong>) can be one of the following:</p>
+<p>, where the <code>A</code> and <code>I</code> nodes are the activating and inhibiting regulators respectively of the <strong>target node</strong> <code>T</code> and the <code>AND NOT</code> is the <strong>link (balance) operator</strong>, we can specify a <code>data.frame</code> object whose values (corresponding to a specific <strong>model-target node element</strong>) can be one of the following:</p>
 <ul>
 <li>0 (<code>AND NOT</code> link operator)</li>
 <li>1 (<code>OR NOT</code> link operator)</li>
-<li>0.5 (if the node is not targeted by <em>both</em> activating and inhibiting regulators and thus the corresponding boolean equation has <strong>no link operator</strong>)</li>
+<li>0.5 (if the target node does not have <em>both</em> activating and inhibiting regulators and thus the corresponding boolean equation has <strong>no link operator</strong>)</li>
 </ul>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">models.link.operator</span>[<span class="fl">1</span>:<span class="fl">5</span>, <span class="fl">1</span>:<span class="fl">10</span>] <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Models link operator example"</span>)</pre></body></html></div>
 <table class="table">
@@ -402,8 +399,8 @@
 <div id="performance-biomarkers" class="section level1">
 <h1 class="hasAnchor">
 <a href="#performance-biomarkers" class="anchor"></a>Performance biomarkers</h1>
-<p><em>Performance biomarkers</em> are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the prediction performance of those models. These nodes can be thus used as <em>indicators</em> of either activity or structural changes that have a positive effect on the prediction performance of our models.</p>
-<p>The model performance can be assessed via various ways. In this package we offer two ways to group the models to different classification categories: either based on the <strong>number of true positive (TP) predictions</strong> or on the <strong>Matthews correlation coefficient (MCC) score</strong> with respect to the drug combination dataset tested. The function <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis()</a></code> is used for the former classification and the function <code><a href="../reference/biomarker_mcc_analysis.html">emba::biomarker_mcc_analysis()</a></code> for the latter. Note that it’s generally better to use the MCC classification, since it’s a more robust performance evalution metric compared to the number of TP predictions, since it takes into account all of the four confusion matrix values.</p>
+<p><em>Performance biomarkers</em> are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the prediction performance of those models. These nodes can be thus used as indicators of either <em>activity</em> or <em>structural</em> changes that have a positive effect on the prediction performance of our models.</p>
+<p>The model performance can be assessed via various ways. In this package we offer two ways to group the models to different classification categories: either based on the <strong>number of true positive (TP) predictions</strong> or on the <strong>Matthews correlation coefficient (MCC) score</strong> with respect to the drug combination dataset tested for synergy. The function <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis()</a></code> is used for the former classification and the function <code><a href="../reference/biomarker_mcc_analysis.html">emba::biomarker_mcc_analysis()</a></code> for the latter. Note that it’s generally better to use the MCC classification, since it’s a more robust performance evalution metric compared to the number of TP predictions, since it takes into account all of the four confusion matrix values.</p>
 <p>When the models have been grouped to different classification categories, their nodes activity or boolean model parameterization can be summarised in each group and compared to the others, obtaining thus the expected biomarkers using the methodology described below.</p>
 <div id="tp-based-analysis" class="section level2">
 <h2 class="hasAnchor">
@@ -416,14 +413,14 @@
   <span class="no">observed.synergies</span>,
   <span class="kw">penalty</span> <span class="kw">=</span> <span class="fl">0.1</span>,
   <span class="kw">threshold</span> <span class="kw">=</span> <span class="fl">0.55</span>)</pre></body></html></div>
-<p>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em>. For example, if I were to compare the average activity of nodes between two groups of models, with respective group sizes 5 and 1000, then the result would be heavily biased towards the group with the larger size, making thus the quality of the results coming out of this comparison questionable. As such, with <code>penalty</code> values closer to 0, more bias is introduced and we expect more biomarkers to be found. See more info on <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</p>
+<p>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em>. For example, if I were to compare the average activity of nodes between two groups of models, with respective group sizes 5 and 1000, then the result would be heavily biased towards the group with the larger size, making thus the quality of the results coming out of this comparison questionable. As such, with <code>penalty</code> values closer to 0, more bias is introduced and we expect more biomarkers to be found. The default value of <span class="math inline">\(0.1\)</span> is a good rule-of-thumb choice for minimizing such biases. See more info on <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</p>
 <hr>
 <p>As a first result, we get the predicted synergies - i.e. the drug combinations that are a subset of the observed ones and were <strong>predicted by at least one</strong> of the models in the dataset:</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="no">tp.analysis.res</span>$<span class="no">predicted.synergies</span>, <span class="kw">vector.values.str</span> <span class="kw">=</span> <span class="st">"predicted synergies"</span>)</pre></body></html></div>
 <blockquote>
 <p>5 predicted synergies: AK-PD, BI-PD, BI-PI, PD-PI, PI-D1</p>
 </blockquote>
-<p>The percentage of true positive predicted synergies is thus 29.4%. Such a low number might be a sign that the models quality is poor (need for a different parameterization) or other reasons like incorrect assessement of the gold standard synergies, etc.</p>
+<p>The percentage of true positive predicted synergies is thus 29.4%. Such a low number might be a sign that the models quality is poor (need for a different parameterization) or other reasons like incorrect assessment of the gold standard synergies, etc.</p>
 <p>The next informative barplot shows the distribution of models according to their true positive predictions:</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/make_barplot_on_models_stats.html">make_barplot_on_models_stats</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">tp.analysis.res</span>$<span class="no">models.synergies.tp</span>),
   <span class="kw">title</span> <span class="kw">=</span> <span class="st">"True Positive Synergy Predictions"</span>,
@@ -434,6 +431,8 @@
 <li>The <strong>maximum number of predicted synergies by any individual model</strong> is 3</li>
 <li>There are only 2 models in total that could predict these 3 synergies</li>
 <li>Almost half of the models make no true positive predictions</li>
+<li>This model classification is largely <em>skewed</em>
+</li>
 </ul>
 <p>Next result we get is the <strong>average activity differences</strong> per network node for all group classifications:</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">tp.analysis.res</span>$<span class="no">diff.state.tp.mat</span> <span class="kw">%&gt;%</span>
@@ -642,8 +641,8 @@
   <span class="kw">num.of.mcc.classes</span> <span class="kw">=</span> <span class="fl">4</span>,
   <span class="kw">penalty</span> <span class="kw">=</span> <span class="fl">0.2</span>)</pre></body></html></div>
 <ul>
-<li>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em> (default value is 0.1). See more info about this on the TP-based analysis above and on the documentation of the function <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</li>
-<li>We can choose the number of model groups to be created (<code>num.of.mcc.classes</code> parameter, with default value 5). Internally, the function <code><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp()</a></code> is used to perform an optimal univariate <em>k-means</em> clustering on the models MCC scores, i.e. <strong>it groups the models to different MCC classes</strong>, with higher classes having higher MCC scores (corresponding thus to better performance models).</li>
+<li>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em> (default value is <span class="math inline">\(0.1\)</span>). See more info about this on the TP-based analysis above and on the documentation of the function <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</li>
+<li>We can choose the number of model groups to be created (<code>num.of.mcc.classes</code> parameter, with default value <span class="math inline">\(5\)</span>). Internally, the function <code><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp()</a></code> is used to perform an optimal univariate <em>k-means</em> clustering on the models MCC scores, i.e. <strong>it groups the models to different MCC classes</strong>, with higher classes having higher MCC scores (corresponding thus to better performance models).</li>
 </ul>
 <hr>
 <p>First result is the predicted synergies, which are the same as the ones found with the TP-based analysis (the model predictions did not change). As such, the drug combinations which were <strong>predicted by at least one of the models</strong> in the dataset are:</p>
@@ -660,7 +659,7 @@
 <li>There are no relatively bad models (MCC values close to <span class="math inline">\(-1\)</span>)</li>
 <li>Most of the models perform a little better than random prediction (<span class="math inline">\(MCC &gt; 0\)</span>)</li>
 </ul>
-<p>We can also plot the MCC-model histogram, which in addition shows the <em>density</em> (how many models) and <em>width</em> (MCC range) of each MCC class:</p>
+<p>We can also plot the <strong>MCC-model histogram</strong>, which in addition shows the estimated <em>density</em> (how many models) and <em>width</em> (MCC range) of each MCC class:</p>
 <div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">models.mcc</span> <span class="kw">=</span> <span class="no">mcc.analysis.res</span>$<span class="no">models.mcc</span>
 <span class="no">num.of.mcc.classes</span> <span class="kw">=</span> <span class="fl">4</span>
 
@@ -857,7 +856,7 @@
 <blockquote>
 <p>0 ‘AND’ biomarkers:</p>
 </blockquote>
-<p>We can also visualize every row of the average link operator differences matrix as follows:</p>
+<p>We can also visualize every row of the average link operator differences matrix as in the following example:</p>
 <div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_avg_link_operator_diff_graph.html">plot_avg_link_operator_diff_graph</a></span>(<span class="no">net</span>, <span class="no">mcc.analysis.res</span>$<span class="no">diff.link.mcc.mat</span>[<span class="st">"(1,4)"</span>,],
   <span class="kw">layout</span> <span class="kw">=</span> <span class="no">nice.layout</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Bad models (MCC Class 1) vs Good models (MCC Class 4)"</span>))</pre></body></html></div>
 <p><img src="emba_files/figure-html/mcc-analysis-10-1.png" width="672" style="display: block; margin: auto;"></p>
@@ -871,8 +870,8 @@
 <div id="synergy-biomarkers" class="section level1">
 <h1 class="hasAnchor">
 <a href="#synergy-biomarkers" class="anchor"></a>Synergy biomarkers</h1>
-<p><em>Synergy</em> biomarkers are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the manifestation of synergies. These nodes can be thus used as indicators of either activity or structural changes that make the models <strong>predict specific drug combinations as synergistic</strong>.</p>
-<p>The core idea behind the implementation is that the models are now classified to groups based on whether they <strong>predict or not each of the predicted synergies</strong> (which for the test dataset are the same 5 as found with the previous analyses). Thus, by comparing the average node activity or boolean model parameterization from the group that predicted a drug combination as a <strong>synergy</strong> vs the group that predicted it to be an <strong>antagonism</strong>, we can derive biomarkers for that drug combination.</p>
+<p><em>Synergy</em> biomarkers are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the manifestation of synergies. These nodes can be thus used as indicators of either <em>activity</em> or <em>structural</em> changes that make the models <strong>predict specific drug combinations as synergistic</strong>.</p>
+<p>The core idea behind the implementation is that the models are now classified to groups based on whether they <strong>predict or not each one of the predicted synergies</strong> (which for the test dataset are the same 5 as found with the previous analyses). Thus, by comparing the average node activity or boolean model parameterization from the group that predicted a drug combination as a <strong>synergy</strong> vs the group that predicted it to be an <strong>antagonism</strong>, we can derive biomarkers for that drug combination.</p>
 <p>The function used to perform such an analysis is the <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis()</a></code>:</p>
 <div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="no">synergy.analysis.res</span> <span class="kw">=</span> <span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/biomarker_synergy_analysis.html">biomarker_synergy_analysis</a></span>(
   <span class="no">model.predictions</span>,
@@ -883,13 +882,12 @@
   <span class="kw">calculate.subsets.stats</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
   <span class="kw">penalty</span> <span class="kw">=</span> <span class="fl">0.1</span>)</pre></body></html></div>
 <hr>
-<p>Now in addition to the predicted synergies, we get all the <strong>subsets</strong> for which a model predicted all drug combinations in that subset as <em>synergistic</em>. We can visualize this results with the <code><a href="../reference/make_barplot_on_synergy_subset_stats.html">emba::make_barplot_on_synergy_subset_stats()</a></code> function:</p>
+<p>Now in addition to the predicted synergies set, we get all the <strong>subsets</strong> for which a model predicted all drug combinations in that subset as <em>synergistic</em>. We can visualize this result with the <code><a href="../reference/make_barplot_on_synergy_subset_stats.html">emba::make_barplot_on_synergy_subset_stats()</a></code> function:</p>
 <div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/make_barplot_on_synergy_subset_stats.html">make_barplot_on_synergy_subset_stats</a></span>(
   <span class="no">synergy.analysis.res</span>$<span class="no">synergy.subset.stats</span>,
   <span class="kw">threshold.for.subset.removal</span> <span class="kw">=</span> <span class="fl">1</span>,
   <span class="kw">bottom.mar</span> <span class="kw">=</span> <span class="fl">9</span>))</pre></body></html></div>
 <p><img src="emba_files/figure-html/synergy-analysis-2-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>We observe that:</p>
 <ul>
 <li>Almost half of the models (<span class="math inline">\(3478\)</span>) predict none of the <em>gold standard</em> synergies</li>
 <li>The <code>PI-D1</code> synergy is predicted by almost all the rest of the models</li>
@@ -973,7 +971,7 @@
 <li>Every row refers to a different predicted synergy in the dataset. The columns are the network nodes.</li>
 <li>Every row is the result of <strong>comparing two model groups</strong>: the <em>synergistic group</em> (models that predicted the row-annotated drug combination as <strong>synergistic</strong>) vs the <em>antagonistic group</em> (models that predicted the row-annotated drug combination as <strong>antagonistic</strong>).</li>
 <li>All values are in the <span class="math inline">\([−1,1]\)</span> interval. The more negative (positive) the activity difference value, the more inhibited (active) the node is in the synergistic model group.</li>
-<li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
+<li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node for a specific synergy is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>Every row of the above matrix can be also network-plotted. We show for example the average state difference graph for the <code>PI-D1</code> synergy:</p>
 <div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="fu">pr</span>(<span class="kw pkg">emba</span><span class="kw ns">::</span><span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span>(<span class="no">net</span>,
@@ -1073,7 +1071,7 @@
 <span class="no">activity.biomarkers.new</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(
   <span class="no">synergy.analysis.res</span>$<span class="no">diff.state.synergies.mat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>),
   <span class="kw pkg">usefun</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/usefun/man/get_ternary_class_id.html">get_ternary_class_id</a></span>, <span class="no">my.thres</span>))</pre></body></html></div>
-<p>Note that there were predicted synergies (rows in the above matrix), for which we couldn’t find activity biomarkers (row was all zeros). This is justifiable, since the number of models in the synergistic and antagonistic model groups can be fairly unbalanced and the <code>penalty</code> term aim to correct this bias. For example, comparing the models that predict <code>AK-PD</code> as synergistic vs those that predict it as antagonistic, we have:</p>
+<p>Note that there were predicted synergies (rows in the above matrix), for which we couldn’t find activity biomarkers (row was all zeros). This is justifiable, since <strong>the number of models in the synergistic and antagonistic model groups can be fairly unbalanced</strong> and the <code>penalty</code> term is used to correct this bias. For example, comparing the models that predict <code>AK-PD</code> as synergistic vs those that predict it as antagonistic, we have:</p>
 <div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="no">drug.comb</span> <span class="kw">=</span> <span class="st">"AK-PD"</span>
 
 <span class="no">syn.models.num</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">model.predictions</span>[, <span class="no">drug.comb</span>] <span class="kw">==</span> <span class="fl">1</span> <span class="kw">&amp;</span> !<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">model.predictions</span>[, <span class="no">drug.comb</span>]))
@@ -1088,52 +1086,48 @@
 <div id="r-session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#r-session-info" class="anchor"></a>R Session Info</h1>
-<div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="kw pkg">xfun</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/xfun/man/session_info.html">session_info</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
 <pre><code>R version 3.6.3 (2020-02-29)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.4 LTS
 
-Locale:
-  LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-  LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-  LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-  LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-  LC_ADDRESS=C               LC_TELEPHONE=C            
-  LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
-Package version:
-  askpass_1.1         assertthat_0.2.1    backports_1.1.7    
-  base64enc_0.1.3     BH_1.72.0.3         bibtex_0.4.2.2     
-  callr_3.4.3         Ckmeans.1d.dp_4.3.2 cli_2.0.2          
-  clipr_0.7.0         compiler_3.6.3      crayon_1.3.4       
-  curl_4.3            desc_1.2.0          digest_0.6.25      
-  dplyr_0.8.5         ellipsis_0.3.1      emba_0.1.5         
-  evaluate_0.14       fansi_0.4.1         fs_1.4.1           
-  gbRd_0.4-11         glue_1.4.1          graphics_3.6.3     
-  grDevices_3.6.3     grid_3.6.3          highlight_0.5.0    
-  highr_0.8           hms_0.5.3           htmltools_0.4.0    
-  htmlwidgets_1.5.1   httr_1.4.1          igraph_1.2.5       
-  jsonlite_1.6.1      knitr_1.28          lattice_0.20.41    
-  lifecycle_0.2.0     magrittr_1.5        markdown_1.1       
-  MASS_7.3-51.6       Matrix_1.2.18       memoise_1.1.0      
-  methods_3.6.3       mime_0.9            openssl_1.4.1      
-  pillar_1.4.4        pkgconfig_2.0.3     pkgdown_1.5.1      
-  plogr_0.2.0         processx_3.4.2      ps_1.3.3           
-  purrr_0.3.4         R6_2.4.1            Rcpp_1.0.4.6       
-  Rdpack_0.11-1       readr_1.3.1         rematch2_2.1.2     
-  rje_1.10.15         rlang_0.4.6         rmarkdown_2.1      
-  rprojroot_1.3-2     rstudioapi_0.11     stats_3.6.3        
-  stringi_1.4.6       stringr_1.4.0       sys_3.3            
-  tibble_3.0.1        tidyr_1.1.0         tidyselect_1.1.0   
-  tinytex_0.23        tools_3.6.3         usefun_0.4.7       
-  utf8_1.1.4          utils_3.6.3         vctrs_0.3.0        
-  visNetwork_2.0.9    whisker_0.4         withr_2.2.0        
-  xfun_0.14           xml2_1.3.2          yaml_2.2.1         </code></pre>
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] Ckmeans.1d.dp_4.3.2 knitr_1.28          dplyr_0.8.5        
+[4] usefun_0.4.7        emba_0.1.5         
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.4.6      highr_0.8         compiler_3.6.3    pillar_1.4.4     
+ [5] tools_3.6.3       digest_0.6.25     jsonlite_1.6.1    evaluate_0.14    
+ [9] memoise_1.1.0     tibble_3.0.1      lifecycle_0.2.0   pkgconfig_2.0.3  
+[13] rlang_0.4.6       bibtex_0.4.2.2    igraph_1.2.5      rstudioapi_0.11  
+[17] yaml_2.2.1        pkgdown_1.5.1     xfun_0.14         stringr_1.4.0    
+[21] htmlwidgets_1.5.1 hms_0.5.3         desc_1.2.0        fs_1.4.1         
+[25] vctrs_0.3.0       gbRd_0.4-11       rprojroot_1.3-2   tidyselect_1.1.0 
+[29] rje_1.10.15       glue_1.4.1        R6_2.4.1          Rdpack_0.11-1    
+[33] rmarkdown_2.1     tidyr_1.1.0       purrr_0.3.4       readr_1.3.1      
+[37] magrittr_1.5      backports_1.1.7   htmltools_0.4.0   ellipsis_0.3.1   
+[41] MASS_7.3-51.6     assertthat_0.2.1  stringi_1.4.6     visNetwork_2.0.9 
+[45] crayon_1.3.4     </code></pre>
 </div>
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>Note that the assessement of these synergies based on experimental data (usually High-Throughput Screening data) is an analysis on its own<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>Note that the assessment of these synergies based on experimental data (usually High-Throughput Screening data) is an analysis on its own<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
