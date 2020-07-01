@@ -44,5 +44,8 @@ Imports:
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    circlize,
+    ComplexHeatmap,
+    xfun
 VignetteBuilder: knitr
