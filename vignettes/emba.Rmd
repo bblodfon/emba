@@ -36,6 +36,7 @@ library(knitr)
 library(Ckmeans.1d.dp)
 library(ComplexHeatmap)
 library(circlize)
+library(xfun)
 
 # wrapper to change print model to invisible
 pr = function(x) invisible(x)
@@ -468,7 +469,7 @@ drug.comb = "AK-PD"
 syn.models.num = sum(model.predictions[, drug.comb] == 1 & !is.na(model.predictions[, drug.comb]))
 ant.models.num  = sum(model.predictions[, drug.comb] == 0 & !is.na(model.predictions[, drug.comb]))
 
-pretty_print_string(paste0("Number of models (AK-PD): #Synergistic: ", syn.models.num, ", #Antagonistic: ", ant.models.num))
+usefun::pretty_print_string(paste0("Number of models (AK-PD): #Synergistic: ", syn.models.num, ", #Antagonistic: ", ant.models.num))
 ```
 
 Lastly, we get the **average link operator differences** per network node (whose boolean equation had a link operator) when comparing the predicted synergy vs antagonism model groups in the `synergy.analysis.res$diff.link.synergies.mat` matrix result.
