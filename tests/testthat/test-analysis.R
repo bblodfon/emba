@@ -106,44 +106,44 @@ test_that("it returns proper results", {
 context("Testing 'update_biomarker_files'")
 test_that("it returns proper results", {
   biomarkers.dir = system.file("extdata", "biomarkers", package = "emba", mustWork = TRUE)
-  biomarkers.active.prev = read.table(paste0(biomarkers.dir, "/A-B_biomarkers_active"),
-    stringsAsFactors = FALSE)
-  biomarkers.inhibited.prev = read.table(paste0(biomarkers.dir, "/A-B_biomarkers_inhibited"),
-    stringsAsFactors = FALSE)
 
+  # copy files to tmpdir() (so later changes will be reflected there)
+  biomarker.files = list.files(biomarkers.dir)
+  source = file.path(biomarkers.dir, biomarker.files)
+  temp.dir = tempdir()
+  file.copy(from = source, to = temp.dir)
+
+  # define new biomarkers
   biomarkers.active.new = c(0.8, 0.9)
   names(biomarkers.active.new) = c("A2", "B2")
-
   biomarkers.inhibited.new = c(-0.8, -0.99)
   names(biomarkers.inhibited.new) = c("B3", "B4")
 
-  # for not skipping the test
+  # for not skipping the test (the functions below just change files)
   expect_equal(unname(biomarkers.active.new), c(0.8, 0.9))
 
-  update_biomarker_files(biomarkers.dir = biomarkers.dir, drug.comb = "A-B",
+  update_biomarker_files(biomarkers.dir = temp.dir, drug.comb = "A-B",
     biomarkers.active.new = biomarkers.active.new,
     biomarkers.inhibited.new = biomarkers.inhibited.new, method = "replace")
-  update_biomarker_files(biomarkers.dir = biomarkers.dir, drug.comb = "A-B",
+  update_biomarker_files(biomarkers.dir = temp.dir, drug.comb = "A-B",
     biomarkers.active.new = biomarkers.active.new,
     biomarkers.inhibited.new = biomarkers.inhibited.new, method = "extend")
-  update_biomarker_files(biomarkers.dir = biomarkers.dir, drug.comb = "A-B",
+  update_biomarker_files(biomarkers.dir = temp.dir, drug.comb = "A-B",
     biomarkers.active.new = biomarkers.active.new[1],
     biomarkers.inhibited.new = biomarkers.inhibited.new[1], method = "prune.to.common")
   # no common biomarkers
-  update_biomarker_files(biomarkers.dir = biomarkers.dir, drug.comb = "A-B",
+  update_biomarker_files(biomarkers.dir = temp.dir, drug.comb = "A-B",
     biomarkers.active.new = biomarkers.inhibited.new[1],
     biomarkers.inhibited.new = biomarkers.active.new[1])
-  # remove files
-  file.remove(paste0(biomarkers.dir, "/A-B_biomarkers_active"))
-  file.remove(paste0(biomarkers.dir, "/A-B_biomarkers_inhibited"))
-  update_biomarker_files(biomarkers.dir = biomarkers.dir, drug.comb = "A-B",
+  # remove files: just save the new biomarkers
+  file.remove(paste0(temp.dir, "/A-B_biomarkers_active"))
+  file.remove(paste0(temp.dir, "/A-B_biomarkers_inhibited"))
+  update_biomarker_files(biomarkers.dir = temp.dir, drug.comb = "A-B",
     biomarkers.active.new = biomarkers.active.new,
     biomarkers.inhibited.new = biomarkers.inhibited.new)
 
-  # restore biomarkers files
-  usefun::save_vector_to_file(vector = biomarkers.active.prev,
-    file = paste0(biomarkers.dir, "/A-B_biomarkers_active"))
-  usefun::save_vector_to_file(vector = biomarkers.inhibited.prev,
-    file = paste0(biomarkers.dir, "/A-B_biomarkers_inhibited"))
+  # cleanup
+  file.remove(paste0(temp.dir, "/A-B_biomarkers_active"))
+  file.remove(paste0(temp.dir, "/A-B_biomarkers_inhibited"))
 })
 
