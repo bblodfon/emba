@@ -1,3 +1,7 @@
+# emba 0.1.6
+
+- Fixed test for the `update_biomarker_files` function (writes to `tmpdir()` instead of the user's library directory)
+
 # emba 0.1.5
 
 - Finally added tests to the package! **Coverage is now 97%**.
