@@ -24,11 +24,11 @@ affiliations:
    index: 1
  - name: Department of Clinical and Molecular Medicine, Norwegian University of Science and Technology (NTNU), Trondheim, Norway
    index: 2
-date: 30 June 2020
+date: 31 July 2020
 bibliography: paper.bib
 ---
 
-# Summary
+# Introduction
 
 Modeling of cellular systems has been one of the most powerful tools used to build interpretable knowledge of biological processes and help identify molecular mechanisms that drive diseases such as cancer [@Aldridge2006].
 In particular, the use of logical modeling has proven to be a substantially useful approach, since it allows the easy construction, simulation and analysis of predictive models, capable of providing a qualitative and insightful view on the extremely complex landscape of biological systems [@Abou-Jaoude2016; @Morris2010; @Wang2012].
@@ -48,6 +48,8 @@ Furthermore, in [@Dorier2016], a network optimization approach which topological
 This method resulted in an ensemble of boolean models which can be used to simulate response under drug perturbations in order to assess the underlying mechanisms and to generate new testable hypotheses.
 Such an aggregation of best-fit models (wisdom of the crowds) has been shown to be quite robust and effective for model prediction performance [@Marbach2012].
 
+# Statement of need
+
 There is a plethora of software tools devoted to the qualitative modeling and analysis of biological networks.
 The Consortium for the development of Logical Models and Tools (CoLoMoTo) is a community effort which aims to standardize the representation of logical networks and provide a common repository of methods and tools to analyze these networks [@Naldi2015].
 Furthermore, to facilitate the access to several software logical modeling tools and enable reproducible computational workflows, the CoLoMoTo Interactive Notebook was introduced as a unified computational framework [@Naldi2018a].
@@ -57,6 +59,9 @@ Despite the diverse and multi-purpose logical modeling tools that exist, there i
 The `emba` R package aims to fill that gap and provide a first implementation of such a novel software.
 Initially, it was designed as a complementary software tool, to help the analysis of the parameterized boolean model ensembles which were produced by modules from the DrugLogics NTNU software pipeline (see respective documentation [@dl-doc]).
 Later, we generalized most of the functions in the package and modularized them to package-essential (that form the core of the `emba` package) and various general-purpose yet useful functions (that are now part of the dependency package `usefun` [@R-usefun]).
+
+# Summary
+
 The main functionality of the `emba` R package is to find *performance* and *synergy* biomarkers.
 Performance biomarkers are nodes in the input boolean networks whose activity state and/or model parameterization affects the prediction performance of those models.
 The prediction performance can be assessed via the number of true positive predictions or the more robust Matthews correlation coefficient score. 
