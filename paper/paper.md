@@ -18,22 +18,24 @@ authors:
     affiliation: 1
   - name: Åsmund Flobak
     orcid: 0000-0002-3357-425X
-    affiliation: 2
+    affiliation: 2,3
 affiliations:
  - name: Department of Biology, Norwegian University of Science and Technology (NTNU), Trondheim, Norway
    index: 1
  - name: Department of Clinical and Molecular Medicine, Norwegian University of Science and Technology (NTNU), Trondheim, Norway
    index: 2
+ - name: The Cancer Clinic, St. Olav’s Hospital, Trondheim, Norway
+   index: 3
 date: 31 July 2020
 bibliography: paper.bib
 ---
 
 # Introduction
 
-Modeling of cellular systems has been one of the most powerful tools used to build interpretable knowledge of biological processes and help identify molecular mechanisms that drive diseases such as cancer [@Aldridge2006].
+Computational modeling of cellular systems has been one of the most powerful tools used to build interpretable knowledge of biological processes and help identify molecular mechanisms that drive diseases such as cancer [@Aldridge2006].
 In particular, the use of logical modeling has proven to be a substantially useful approach, since it allows the easy construction, simulation and analysis of predictive models, capable of providing a qualitative and insightful view on the extremely complex landscape of biological systems [@Abou-Jaoude2016; @Morris2010; @Wang2012].
-Such mechanistic models, with the systematic integration of prior knowledge and experimental data, have been extensively used to better understand what drives the deregulation of signal transduction, the outcome of which is the manifestation of diseases [@Traynard2017].
-Furthermore, their explanatory power has been used to provide insights into a drug’s mode of action, investigate the mechanisms of resistance to drugs [@Eduati2017] and suggest new therapeutic combination target candidates, among others [@Flobak2015].
+Such mechanistic models, with the systematic integration of prior knowledge and experimental data, have been extensively used to better understand what drives deregulation of signal transduction, the outcome of which is the manifestation of diseases [@Traynard2017].
+Furthermore, their explanatory power has been used to provide insights into a drug’s mode of action, investigate the mechanisms of resistance to drugs [@Eduati2017] and suggest new therapeutic combination candidates, among others [@Flobak2015].
 
 One of the major challenges in systems medicine, has been the identification of scientifically validated, predictive biomarkers that correlate with patient response to given therapies.
 The analysis of biological predictive markers of pharmacologic response can not only further our understanding of the systemic processes involved in diseases but can also help to classify patients into groups with similar responses to specific therapeutic interventions, advancing personalized medicine [@Senft2017].
@@ -63,8 +65,8 @@ Later, we generalized most of the functions in the package and modularized them 
 # Summary
 
 The main functionality of the `emba` R package is to find *performance* and *synergy* biomarkers.
-Performance biomarkers are nodes in the input boolean networks whose activity state and/or model parameterization affects the prediction performance of those models.
-The prediction performance can be assessed via the number of true positive predictions or the more robust Matthews correlation coefficient score.
+Performance biomarkers are nodes in the input boolean networks whose activity state and/or model parameterization affects the predictive performance of those models.
+The prediction performance can be assessed via the number of true positive predictions or the Matthews correlation coefficient score which is more robust to class imbalances [@Chicco2020].
 On the other hand, synergy biomarkers are nodes which provide hints for the mechanisms behind the complex process of synergy manifestation in drug combination datasets.
 
 For more information, see our “Get started guide” and the reference manual in the package website [@emba-site].
@@ -73,6 +75,6 @@ Future developments will include the implementation of a method for the identifi
 
 # Acknowledgements
 
-This work was supported by ERACoSysMed grant COLOSYS [81771175] (JZ, MK, AF).
+This work was supported by ERACoSysMed grant *COLOSYS* (JZ, MK) and The NTNU Strategic Research Area *NTNU Health* (AF).
 
 # References
