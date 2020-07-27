@@ -12,13 +12,13 @@ tags:
 authors:
   - name: John Zobolas
     orcid: 0000-0002-3609-8674
-    affiliation: 1
+    affiliation: 1, 2
   - name: Martin Kuiper
     orcid: 0000-0002-1171-9876
     affiliation: 1
   - name: Åsmund Flobak
     orcid: 0000-0002-3357-425X
-    affiliation: 2,3
+    affiliation: 2, 3
 affiliations:
  - name: Department of Biology, Norwegian University of Science and Technology (NTNU), Trondheim, Norway
    index: 1
