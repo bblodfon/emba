@@ -24,7 +24,7 @@ install.packages("emba")
 
 Development version:
 ```
-devtools::install_github("bblodfon/emba")
+remotes::install_github("bblodfon/emba")
 ```
 
 ## Usage
