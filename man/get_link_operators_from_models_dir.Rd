@@ -32,9 +32,8 @@ of boolean equations in the form \eqn{Target *= (Activator or Activator or...)
 and not (Inhibitor or Inhibitor or...)"}. The \strong{link operator} can be
 either \emph{and not}, \emph{or not} or non-existent if the target has only
 activating regulators or only inhibiting ones (the \emph{not} remains in the
-latter case). The models are loaded from
-\emph{.gitsbe} files that can be found inside the given \code{models.dir}
-directory.
+latter case). The models are loaded from \emph{.gitsbe} files (and only these)
+that can be found inside the given \code{models.dir} directory.
 }
 \examples{
 

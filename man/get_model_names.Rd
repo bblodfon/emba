@@ -7,7 +7,8 @@
 get_model_names(models.dir)
 }
 \arguments{
-\item{models.dir}{string. A dir with \emph{.gitsbe} files/models}
+\item{models.dir}{string. A directory with \emph{.gitsbe} files/models
+(non-gitsbe files are disregarded).}
 }
 \value{
 a character vector of the model names, corresponding to the names

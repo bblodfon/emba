@@ -7,13 +7,13 @@
 get_node_names(models.dir)
 }
 \arguments{
-\item{models.dir}{string. A dir with \emph{.gitsbe} files/models}
+\item{models.dir}{string. A directory with at least one \emph{.gitsbe} file/model.}
 }
 \value{
 a character vector of the node names (protein and/or gene names)
 }
 \description{
-This function uses the first .gitsbe file that it finds inside the given
+This function uses the first \emph{.gitsbe} file that it finds inside the given
 directory to output a vector of the network node names (which should be the
 same for every model)
 }

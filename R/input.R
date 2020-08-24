@@ -79,8 +79,9 @@ get_observed_synergies =
 #' \code{data.frame} object. The models stable states are loaded from \emph{.gitsbe}
 #' files that can be found inside the given \code{models.dir} directory.
 #'
-#' @param models.dir string. A dir with \emph{.gitsbe} files/models.
+#' @param models.dir string. A directory with \emph{.gitsbe} files/models.
 #' \strong{Do not} include the ending path character in the string (\emph{/}).
+#' Only files that include the string \emph{gitsbe} are parsed.
 #'
 #' @return a \code{data.frame} (nxm) with n models and m nodes. The row names
 #' specify the models' names whereas the column names specify the name of the
@@ -101,7 +102,7 @@ get_observed_synergies =
 #'
 #' @export
 get_stable_state_from_models_dir = function(models.dir) {
-  files = list.files(models.dir)
+  files = list.files(models.dir, pattern = "gitsbe")
   ss_vec = character(length(files))
   files_to_keep = character(length(files))
 
@@ -149,9 +150,8 @@ get_stable_state_from_models_dir = function(models.dir) {
 #' and not (Inhibitor or Inhibitor or...)"}. The \strong{link operator} can be
 #' either \emph{and not}, \emph{or not} or non-existent if the target has only
 #' activating regulators or only inhibiting ones (the \emph{not} remains in the
-#' latter case). The models are loaded from
-#' \emph{.gitsbe} files that can be found inside the given \code{models.dir}
-#' directory.
+#' latter case). The models are loaded from \emph{.gitsbe} files (and only these)
+#' that can be found inside the given \code{models.dir} directory.
 #'
 #' @param models.dir string. A directory path with \emph{.gitsbe} files/models.
 #' \strong{Do not} include the ending path character in the string (\emph{/}).
@@ -176,7 +176,7 @@ get_stable_state_from_models_dir = function(models.dir) {
 #' @export
 get_link_operators_from_models_dir =
   function(models.dir, remove.equations.without.link.operator = TRUE) {
-    files = list.files(models.dir)
+    files = list.files(models.dir, pattern = "gitsbe")
 
     model.names = sapply(files, function(x) {
       sub(pattern = ".gitsbe", replacement = "", x)
@@ -220,7 +220,8 @@ get_link_operators_from_models_dir =
 #' vector (the fitness score is a value between 0 and 1 and denotes how close
 #' was the model fitted to one or more training data observations). Each model's
 #' fitness value is loaded from the respective \emph{.gitsbe} file that can be
-#' found inside the given \code{models.dir} directory.
+#' found inside the given \code{models.dir} directory (other kind of files are
+#' discarded).
 #'
 #' @param models.dir string. A dir with \emph{.gitsbe} files/models
 #'
@@ -234,7 +235,7 @@ get_link_operators_from_models_dir =
 #'
 #' @export
 get_fitness_from_models_dir = function(models.dir) {
-  files = list.files(models.dir)
+  files = list.files(models.dir, pattern = "gitsbe")
 
   model.names = sapply(files, function(x) {
     sub(pattern = ".gitsbe", replacement = "", x)
@@ -257,11 +258,11 @@ get_fitness_from_models_dir = function(models.dir) {
 
 #' Get the node names
 #'
-#' This function uses the first .gitsbe file that it finds inside the given
+#' This function uses the first \emph{.gitsbe} file that it finds inside the given
 #' directory to output a vector of the network node names (which should be the
 #' same for every model)
 #'
-#' @param models.dir string. A dir with \emph{.gitsbe} files/models
+#' @param models.dir string. A directory with at least one \emph{.gitsbe} file/model.
 #'
 #' @return a character vector of the node names (protein and/or gene names)
 #'
@@ -273,7 +274,7 @@ get_fitness_from_models_dir = function(models.dir) {
 #' @export
 get_node_names = function(models.dir) {
   # use the first .gitsbe model file to derive the node names
-  file.lines = readLines(paste0(models.dir, "/", list.files(models.dir)[1]))
+  file.lines = readLines(paste0(models.dir, "/", list.files(models.dir, pattern = "gitsbe")[1]))
   node.names = gsub("mapping: (.*) =.*", "\\1",
                     grep("mapping:", file.lines, value = TRUE))
   return(node.names)
@@ -281,7 +282,8 @@ get_node_names = function(models.dir) {
 
 #' Get the model names
 #'
-#' @param models.dir string. A dir with \emph{.gitsbe} files/models
+#' @param models.dir string. A directory with \emph{.gitsbe} files/models
+#' (non-gitsbe files are disregarded).
 #'
 #' @return a character vector of the model names, corresponding to the names
 #' of the \emph{.gitsbe} files (the extension is pruned).
@@ -293,7 +295,7 @@ get_node_names = function(models.dir) {
 #'
 #' @export
 get_model_names = function(models.dir) {
-  model_names = sapply(list.files(models.dir), function(x) {
+  model_names = sapply(list.files(models.dir, pattern = "gitsbe"), function(x) {
     sub(pattern = ".gitsbe", replacement = "", x)
   }, USE.NAMES = FALSE)
   return(model_names)

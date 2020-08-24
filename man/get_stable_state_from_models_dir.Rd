@@ -7,8 +7,9 @@
 get_stable_state_from_models_dir(models.dir)
 }
 \arguments{
-\item{models.dir}{string. A dir with \emph{.gitsbe} files/models.
-\strong{Do not} include the ending path character in the string (\emph{/}).}
+\item{models.dir}{string. A directory with \emph{.gitsbe} files/models.
+\strong{Do not} include the ending path character in the string (\emph{/}).
+Only files that include the string \emph{gitsbe} are parsed.}
 }
 \value{
 a \code{data.frame} (nxm) with n models and m nodes. The row names

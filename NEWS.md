@@ -1,3 +1,8 @@
+# emba 0.1.7
+
+- Input functions that read model directories with `.gitsbe` files, now disregard other kind of files that might be inside these directories.
+- add minimum package dependencies in `DESCRIPTION` file
+
 # emba 0.1.6
 
 - Fixed test for the `update_biomarker_files` function (writes to `tmpdir()` instead of the user's library directory)

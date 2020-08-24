@@ -18,7 +18,8 @@ Use this function to merge the fitness scores from all models into a single
 vector (the fitness score is a value between 0 and 1 and denotes how close
 was the model fitted to one or more training data observations). Each model's
 fitness value is loaded from the respective \emph{.gitsbe} file that can be
-found inside the given \code{models.dir} directory.
+found inside the given \code{models.dir} directory (other kind of files are
+discarded).
 }
 \examples{
 
