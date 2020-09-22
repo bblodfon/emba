@@ -2,6 +2,7 @@
 
 - Input functions that read model directories with `.gitsbe` files, now disregard other kind of files that might be inside these directories.
 - add minimum package dependencies in `DESCRIPTION` file
+- add JOSS paper
 
 # emba 0.1.6
 
