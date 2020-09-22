@@ -73,7 +73,7 @@ the table function to a numeric vector" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emba</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -126,14 +126,14 @@ the <a href='https://rdrr.io/r/base/table.html'>table</a> function to a numeric 
     </div>
 
     <pre class="usage"><span class='fu'>make_barplot_on_models_stats</span>(
-  <span class='no'>models.stats</span>,
-  <span class='kw'>cell.line</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>title</span>,
-  <span class='no'>xlab</span>,
-  <span class='no'>ylab</span>,
-  <span class='kw'>cont.values</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>ylim.add</span> <span class='kw'>=</span> <span class='fl'>0</span>
+  <span class='kw'>models.stats</span>,
+  cell.line = <span class='kw'>NULL</span>,
+  <span class='kw'>title</span>,
+  <span class='kw'>xlab</span>,
+  <span class='kw'>ylab</span>,
+  cont.values = <span class='fl'>FALSE</span>,
+  threshold = <span class='fl'>0</span>,
+  ylim.add = <span class='fl'>0</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -184,10 +184,11 @@ across the whole plot. Default value is 0.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='fl'>100</span>), <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>2</span>,<span class='fl'>423</span>), <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>3</span>,<span class='fl'>231</span>), <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>NaN</span>,<span class='fl'>531</span>))
-<span class='fu'>make_barplot_on_models_stats</span>(<span class='kw'>models.stats</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='no'>x</span>, <span class='kw'>useNA</span> <span class='kw'>=</span> <span class='st'>"ifany"</span>),
-<span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"True Positives Distribution across models"</span>,
-<span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Number of TP values"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Number of models"</span>)</div><div class='img'><img src='make_barplot_on_models_stats-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='fl'>100</span>), <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>2</span>,<span class='fl'>423</span>), <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>3</span>,<span class='fl'>231</span>), <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>NaN</span>,<span class='fl'>531</span>))
+<span class='fu'>make_barplot_on_models_stats</span>(models.stats = <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='kw'>x</span>, useNA = <span class='st'>"ifany"</span>),
+title = <span class='st'>"True Positives Distribution across models"</span>,
+xlab = <span class='st'>"Number of TP values"</span>, ylab = <span class='st'>"Number of models"</span>)
+</div><div class='img'><img src='make_barplot_on_models_stats-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -204,7 +205,7 @@ across the whole plot. Default value is 0.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

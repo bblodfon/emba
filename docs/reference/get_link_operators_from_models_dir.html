@@ -46,9 +46,8 @@ of boolean equations in the form \(Target *= (Activator or Activator or...)
 and not (Inhibitor or Inhibitor or...)&quot;\). The link operator can be
 either and not, or not or non-existent if the target has only
 activating regulators or only inhibiting ones (the not remains in the
-latter case). The models are loaded from
-.gitsbe files that can be found inside the given models.dir
-directory." />
+latter case). The models are loaded from .gitsbe files (and only these)
+that can be found inside the given models.dir directory." />
 
 
 
@@ -80,7 +79,7 @@ directory." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emba</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -134,14 +133,13 @@ of boolean equations in the form \(Target *= (Activator or Activator or...)
 and not (Inhibitor or Inhibitor or...)"\). The <strong>link operator</strong> can be
 either <em>and not</em>, <em>or not</em> or non-existent if the target has only
 activating regulators or only inhibiting ones (the <em>not</em> remains in the
-latter case). The models are loaded from
-<em>.gitsbe</em> files that can be found inside the given <code>models.dir</code>
-directory.</p>
+latter case). The models are loaded from <em>.gitsbe</em> files (and only these)
+that can be found inside the given <code>models.dir</code> directory.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_link_operators_from_models_dir</span>(
-  <span class='no'>models.dir</span>,
-  <span class='kw'>remove.equations.without.link.operator</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>models.dir</span>,
+  remove.equations.without.link.operator = <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -171,10 +169,12 @@ both activating and inhibiting regulators (no link operator).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>models.dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"models"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"emba"</span>, <span class='kw'>mustWork</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='no'>models.link.operator</span> <span class='kw'>=</span> <span class='fu'>get_link_operators_from_models_dir</span>(<span class='no'>models.dir</span>)
-<span class='no'>models.link.operator.with.extra.nodes</span> <span class='kw'>=</span>
-  <span class='fu'>get_link_operators_from_models_dir</span>(<span class='no'>models.dir</span>, <span class='fl'>FALSE</span>)</div></pre>
+<span class='kw'>models.dir</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"models"</span>, package = <span class='st'>"emba"</span>, mustWork = <span class='fl'>TRUE</span>)
+<span class='kw'>models.link.operator</span> <span class='op'>=</span> <span class='fu'>get_link_operators_from_models_dir</span>(<span class='kw'>models.dir</span>)
+<span class='kw'>models.link.operator.with.extra.nodes</span> <span class='op'>=</span>
+  <span class='fu'>get_link_operators_from_models_dir</span>(<span class='kw'>models.dir</span>, <span class='fl'>FALSE</span>)
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -190,7 +190,7 @@ both activating and inhibiting regulators (no link operator).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

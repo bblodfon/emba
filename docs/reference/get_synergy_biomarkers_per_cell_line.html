@@ -74,7 +74,7 @@ directory." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emba</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -127,7 +127,7 @@ The biomarkers must be stored in a single file inside each given cell line-speci
 directory.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_synergy_biomarkers_per_cell_line</span>(<span class='no'>biomarkers.dirs</span>)</pre>
+    <pre class="usage"><span class='fu'>get_synergy_biomarkers_per_cell_line</span>(<span class='kw'>biomarkers.dirs</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -161,8 +161,10 @@ element in each cell line-specific <code>data.frame</code> are either <em>1</em>
 (<em>inhibited state</em> biomarker) or <em>0</em> (not a biomarker).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"AGS"</span>, <span class='st'>"bio"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"emba"</span>, <span class='kw'>mustWork</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='no'>res_list</span> <span class='kw'>=</span> <span class='fu'>get_synergy_biomarkers_per_cell_line</span>(<span class='kw'>biomarkers.dirs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>dir</span>))</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>dir</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"AGS"</span>, <span class='st'>"bio"</span>, package = <span class='st'>"emba"</span>, mustWork = <span class='fl'>TRUE</span>)
+<span class='kw'>res_list</span> <span class='op'>=</span> <span class='fu'>get_synergy_biomarkers_per_cell_line</span>(biomarkers.dirs = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>dir</span>))
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -178,7 +180,7 @@ element in each cell line-specific <code>data.frame</code> are either <em>1</em>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

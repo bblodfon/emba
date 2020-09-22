@@ -44,7 +44,8 @@
 vector (the fitness score is a value between 0 and 1 and denotes how close
 was the model fitted to one or more training data observations). Each model's
 fitness value is loaded from the respective .gitsbe file that can be
-found inside the given models.dir directory." />
+found inside the given models.dir directory (other kind of files are
+discarded)." />
 
 
 
@@ -76,7 +77,7 @@ found inside the given models.dir directory." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emba</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -128,10 +129,11 @@ found inside the given models.dir directory." />
 vector (the fitness score is a value between 0 and 1 and denotes how close
 was the model fitted to one or more training data observations). Each model's
 fitness value is loaded from the respective <em>.gitsbe</em> file that can be
-found inside the given <code>models.dir</code> directory.</p>
+found inside the given <code>models.dir</code> directory (other kind of files are
+discarded).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_fitness_from_models_dir</span>(<span class='no'>models.dir</span>)</pre>
+    <pre class="usage"><span class='fu'>get_fitness_from_models_dir</span>(<span class='kw'>models.dir</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,8 +151,10 @@ models included in the <em>names</em> attribute.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>models.dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"models"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"emba"</span>, <span class='kw'>mustWork</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='no'>models.fitness</span> <span class='kw'>=</span> <span class='fu'>get_fitness_from_models_dir</span>(<span class='no'>models.dir</span>)</div></pre>
+<span class='kw'>models.dir</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"models"</span>, package = <span class='st'>"emba"</span>, mustWork = <span class='fl'>TRUE</span>)
+<span class='kw'>models.fitness</span> <span class='op'>=</span> <span class='fu'>get_fitness_from_models_dir</span>(<span class='kw'>models.dir</span>)
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -166,7 +170,7 @@ models included in the <em>names</em> attribute.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

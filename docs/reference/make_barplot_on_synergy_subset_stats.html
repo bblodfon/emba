@@ -73,7 +73,7 @@ that predicted each synergy subset out of the set of all observed synergies." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emba</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -126,11 +126,11 @@ that predicted each synergy subset out of the set of all observed synergies.</p>
     </div>
 
     <pre class="usage"><span class='fu'>make_barplot_on_synergy_subset_stats</span>(
-  <span class='no'>synergy.subset.stats</span>,
-  <span class='no'>threshold.for.subset.removal</span>,
-  <span class='no'>bottom.margin</span>,
-  <span class='kw'>ylim.add</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>cell.line</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>synergy.subset.stats</span>,
+  <span class='kw'>threshold.for.subset.removal</span>,
+  <span class='kw'>bottom.margin</span>,
+  ylim.add = <span class='fl'>0</span>,
+  cell.line = <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -176,10 +176,11 @@ added to the title).</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>synergy.subset.stats</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>2</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>synergy.subset.stats</span>) <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"A-B"</span>, <span class='st'>"B-C"</span>, <span class='st'>"C-A"</span>, <span class='st'>"C-D"</span>)
-<span class='fu'>make_barplot_on_synergy_subset_stats</span>(<span class='no'>synergy.subset.stats</span>,
-<span class='kw'>threshold.for.subset.removal</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>bottom.margin</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>ylim.add</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='img'><img src='make_barplot_on_synergy_subset_stats-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='kw'>synergy.subset.stats</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>4</span>,<span class='fl'>3</span>,<span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>synergy.subset.stats</span>) <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"A-B"</span>, <span class='st'>"B-C"</span>, <span class='st'>"C-A"</span>, <span class='st'>"C-D"</span>)
+<span class='fu'>make_barplot_on_synergy_subset_stats</span>(<span class='kw'>synergy.subset.stats</span>,
+threshold.for.subset.removal = <span class='fl'>0</span>, bottom.margin = <span class='fl'>4</span>, ylim.add = <span class='fl'>0.5</span>)
+</div><div class='img'><img src='make_barplot_on_synergy_subset_stats-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -196,7 +197,7 @@ added to the title).</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

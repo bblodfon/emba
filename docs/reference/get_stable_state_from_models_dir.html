@@ -74,7 +74,7 @@ files that can be found inside the given models.dir directory." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emba</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -127,15 +127,16 @@ files that can be found inside the given models.dir directory." />
 files that can be found inside the given <code>models.dir</code> directory.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_stable_state_from_models_dir</span>(<span class='no'>models.dir</span>)</pre>
+    <pre class="usage"><span class='fu'>get_stable_state_from_models_dir</span>(<span class='kw'>models.dir</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>models.dir</th>
-      <td><p>string. A dir with <em>.gitsbe</em> files/models.
-<strong>Do not</strong> include the ending path character in the string (<em>/</em>).</p></td>
+      <td><p>string. A directory with <em>.gitsbe</em> files/models.
+<strong>Do not</strong> include the ending path character in the string (<em>/</em>).
+Only files that include the string <em>gitsbe</em> are parsed.</p></td>
     </tr>
     </table>
 
@@ -151,8 +152,9 @@ be included in the returned <code>data.frame</code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>models.dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"models"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"emba"</span>, <span class='kw'>mustWork</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='no'>models.stable.state</span> <span class='kw'>=</span> <span class='fu'>get_stable_state_from_models_dir</span>(<span class='no'>models.dir</span>)</div><div class='output co'>#&gt; <span class='message'>Number of stable states different than 1 for model: test4.gitsbe</span></div><div class='input'>
+<span class='kw'>models.dir</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"models"</span>, package = <span class='st'>"emba"</span>, mustWork = <span class='fl'>TRUE</span>)
+<span class='kw'>models.stable.state</span> <span class='op'>=</span> <span class='fu'>get_stable_state_from_models_dir</span>(<span class='kw'>models.dir</span>)
+</div><div class='output co'>#&gt; <span class='message'>Number of stable states different than 1 for model: test4.gitsbe</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -169,7 +171,7 @@ be included in the returned <code>data.frame</code> object.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
