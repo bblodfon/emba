@@ -34,6 +34,28 @@ Check the [Get Started guide](https://bblodfon.github.io/emba/articles/emba.html
 
 For an earlier example usage of this package (version `0.1.1`), see this [analysis](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) performed on multiple boolean model datasets.
 
+## Cite
+
+- Formatted citation:
+
+Zobolas et al., (2020). emba: R package for analysis and visualization of biomarkers in boolean model ensembles. Journal of Open Source Software, 5(53), 2583, https://doi.org/10.21105/joss.02583
+
+- BibTeX citation:
+```
+@article{Zobolas2020,
+  doi = {10.21105/joss.02583},
+  url = {https://doi.org/10.21105/joss.02583},
+  year = {2020},
+  publisher = {The Open Journal},
+  volume = {5},
+  number = {53},
+  pages = {2583},
+  author = {John Zobolas and Martin Kuiper and Åsmund Flobak},
+  title = {emba: R package for analysis and visualization of biomarkers in boolean model ensembles},
+  journal = {Journal of Open Source Software}
+}
+```
+
 ## Code of Conduct
 
 Please note that the emba project is released with a [Contributor Code of Conduct](https://bblodfon.github.io/emba/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
