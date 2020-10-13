@@ -1,3 +1,7 @@
+# emba 0.1.8
+
+- add option `all.ss` in function `get_stable_state_from_models_dir()` to include all stable states in the returned `tibble` object
+
 # emba 0.1.7
 
 - Input functions that read model directories with `.gitsbe` files, now disregard other kind of files that might be inside these directories.
