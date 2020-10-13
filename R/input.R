@@ -75,71 +75,118 @@ get_observed_synergies =
 
 #' Load the models stable state data
 #'
-#' Use this function to merge the stable states from all models into a single
+#' Use this function to merge the stable states from all boolean models into a single
 #' \code{data.frame} object. The models stable states are loaded from \emph{.gitsbe}
 #' files that can be found inside the given \code{models.dir} directory.
 #'
 #' @param models.dir string. A directory with \emph{.gitsbe} files/models.
 #' \strong{Do not} include the ending path character in the string (\emph{/}).
 #' Only files that include the string \emph{gitsbe} are parsed.
+#' @param all.ss logical. Should all stable states be included in the returned
+#' object? Default value is \emph{FALSE} (only the 1 stable state models are included).
 #'
-#' @return a \code{data.frame} (nxm) with n models and m nodes. The row names
-#' specify the models' names whereas the column names specify the name of the
-#' network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
-#' element} are either \emph{0} (inactive node) or \emph{1} (active node). If a
-#' \emph{.gitsbe} file/model has zero (0) or more than 1 stable states, a diagnostic
-#' message is printed and the corresponding model is discarded, i.e. it will not
-#' be included in the returned \code{data.frame} object.
+#' @return The format of the returned object depends on the \code{all.ss} value.
+#' If:
+#' \itemize{
+#'   \item \code{all.ss} is \emph{FALSE} (default): a \code{data.frame} (nxm)
+#'   with n models and m nodes. The row names
+#'   specify the models names (taken from the file names without the \emph{gitsbe}
+#'   extension) whereas the column names specify the name of the
+#'   network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
+#'   element} are either \emph{0} (inactive node) or \emph{1} (active node). If a
+#'   \emph{.gitsbe} file/model has zero (0) or more than 1 stable states, a diagnostic
+#'   message is printed and the corresponding model is discarded, i.e. it will not
+#'   be included in the returned \code{data.frame} object.
+#'   \item \code{all.ss} is \emph{TRUE}: a \code{tibble} object where each row
+#'   stores a separate stable state and the columns correspond to network nodes
+#'   (as before) with an extra last column that has the name of the model that
+#'   produced that stable state. As such, models that have multiple stable states
+#'   will occupy several rows with the last column having the same name/model.
+#'   Models with no stable states are discarded.
+#' }
 #'
 #' @examples
 #'
 #' models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
 #' models.stable.state = get_stable_state_from_models_dir(models.dir)
+#' models.stable.state = get_stable_state_from_models_dir(models.dir, all.ss = TRUE)
 #'
-#' @importFrom stringr str_count
+#' @importFrom stringr str_count str_replace
 #' @importFrom tidyr %>% separate
-#' @importFrom dplyr mutate_if
+#' @importFrom dplyr mutate mutate_if bind_cols bind_rows across
 #'
 #' @export
-get_stable_state_from_models_dir = function(models.dir) {
+get_stable_state_from_models_dir = function(models.dir, all.ss = FALSE) {
   files = list.files(models.dir, pattern = "gitsbe")
-  ss_vec = character(length(files))
-  files_to_keep = character(length(files))
 
-  node_names = get_node_names(models.dir)
+  if (all.ss == TRUE) { # keep all models with > 0 stable states
+    node_names = get_node_names(models.dir)
 
-  index = 1
-  for (file in files) {
-    lines = readLines(paste0(models.dir, "/", file))
-    res = stringr::str_count(string = lines, pattern = "stablestate:")
-    if (sum(res) == 1) {
-      ss_index = which(res == 1)
-      ss_vec[index] = gsub(pattern = "stablestate: ", replacement = "",
-        x = lines[ss_index])
-      files_to_keep[index] = files[index]
-    } else {
-      message('Number of stable states different than 1 for model: ', file)
+    ss_list = list()
+    index = 1
+    for (file in files) {
+      # read the file lines
+      lines = readLines(paste0(models.dir, "/", file))
+
+      # which ones have the stable state vector?
+      ss_indexes = stringr::str_count(string = lines, pattern = "stablestate:")
+
+      # in case of non-zero stable states
+      if (sum(ss_indexes) > 0) {
+        ss = stringr::str_replace(string = lines[which(ss_indexes == 1)],
+          pattern = "stablestate: ", replacement = "")
+        ss_list[[index]] = dplyr::bind_cols(ss = ss,
+          model_name = stringr::str_replace(string = file, pattern = ".gitsbe", replacement = ""))
+        index = index + 1
+      }
     }
-    index = index + 1
+
+    df_ss = dplyr::bind_rows(ss_list)
+    # split stable state vector to multiple columns (one per node)
+    df_ss = df_ss %>%
+      tidyr::separate(col = ss, into = node_names, sep = 1:length(node_names)) %>%
+      dplyr::mutate(dplyr::across(-all_of("model_name"), as.numeric))
+
+    return(df_ss)
+  } else { # discard models with different than 1 stable state
+    ss_vec = character(length(files))
+    files_to_keep = character(length(files))
+
+    node_names = get_node_names(models.dir)
+
+    index = 1
+    for (file in files) {
+      lines = readLines(paste0(models.dir, "/", file))
+      res = stringr::str_count(string = lines, pattern = "stablestate:")
+      if (sum(res) == 1) {
+        ss_index = which(res == 1)
+        ss_vec[index] = gsub(pattern = "stablestate: ", replacement = "",
+          x = lines[ss_index])
+        files_to_keep[index] = files[index]
+      } else {
+        message('Number of stable states different than 1 for model: ', file)
+      }
+      index = index + 1
+    }
+
+    ss_vec = ss_vec[ss_vec != ""]
+    files = files_to_keep[files_to_keep != ""]
+
+    df = data.frame(ss_vec)
+
+    df = df %>%
+      tidyr::separate(col = ss_vec, into = node_names, sep = 1:length(node_names)) %>%
+      dplyr::mutate_if(is.character, as.numeric)
+
+    # remove .gitsbe extension from files
+    model_names = sapply(files, function(x) {
+      sub(pattern = ".gitsbe", replacement = "", x)
+    }, USE.NAMES = FALSE)
+
+    rownames(df) = model_names
+
+    return(df)
   }
-
-  ss_vec = ss_vec[ss_vec != ""]
-  files = files_to_keep[files_to_keep != ""]
-
-  df = data.frame(ss_vec)
-
-  df = df %>%
-    separate(col = ss_vec, into = node_names, sep = 1:length(node_names)) %>%
-    mutate_if(is.character, as.numeric)
-
-  # remove .gitsbe extension from files
-  model_names = sapply(files, function(x) {
-    sub(pattern = ".gitsbe", replacement = "", x)
-  }, USE.NAMES = FALSE)
-
-  rownames(df) = model_names
-
-  return(df)
 }
 
 #' Load the models boolean equation link operator data

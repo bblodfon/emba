@@ -4,24 +4,39 @@
 \alias{get_stable_state_from_models_dir}
 \title{Load the models stable state data}
 \usage{
-get_stable_state_from_models_dir(models.dir)
+get_stable_state_from_models_dir(models.dir, all.ss = FALSE)
 }
 \arguments{
 \item{models.dir}{string. A directory with \emph{.gitsbe} files/models.
 \strong{Do not} include the ending path character in the string (\emph{/}).
 Only files that include the string \emph{gitsbe} are parsed.}
+
+\item{all.ss}{logical. Should all stable states be included in the returned
+object? Default value is \emph{FALSE} (only the 1 stable state models are included).}
 }
 \value{
-a \code{data.frame} (nxm) with n models and m nodes. The row names
-specify the models' names whereas the column names specify the name of the
-network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
-element} are either \emph{0} (inactive node) or \emph{1} (active node). If a
-\emph{.gitsbe} file/model has zero (0) or more than 1 stable states, a diagnostic
-message is printed and the corresponding model is discarded, i.e. it will not
-be included in the returned \code{data.frame} object.
+The format of the returned object depends on the \code{all.ss} value.
+If:
+\itemize{
+  \item \code{all.ss} is \emph{FALSE} (default): a \code{data.frame} (nxm)
+  with n models and m nodes. The row names
+  specify the models names (taken from the file names without the \emph{gitsbe}
+  extension) whereas the column names specify the name of the
+  network nodes (gene, proteins, etc.). Possible values for each \emph{model-node
+  element} are either \emph{0} (inactive node) or \emph{1} (active node). If a
+  \emph{.gitsbe} file/model has zero (0) or more than 1 stable states, a diagnostic
+  message is printed and the corresponding model is discarded, i.e. it will not
+  be included in the returned \code{data.frame} object.
+  \item \code{all.ss} is \emph{TRUE}: a \code{tibble} object where each row
+  stores a separate stable state and the columns correspond to network nodes
+  (as before) with an extra last column that has the name of the model that
+  produced that stable state. As such, models that have multiple stable states
+  will occupy several rows with the last column having the same name/model.
+  Models with no stable states are discarded.
+}
 }
 \description{
-Use this function to merge the stable states from all models into a single
+Use this function to merge the stable states from all boolean models into a single
 \code{data.frame} object. The models stable states are loaded from \emph{.gitsbe}
 files that can be found inside the given \code{models.dir} directory.
 }
@@ -29,5 +44,6 @@ files that can be found inside the given \code{models.dir} directory.
 
 models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
 models.stable.state = get_stable_state_from_models_dir(models.dir)
+models.stable.state = get_stable_state_from_models_dir(models.dir, all.ss = TRUE)
 
 }

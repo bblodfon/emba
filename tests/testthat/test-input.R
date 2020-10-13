@@ -47,6 +47,7 @@ test_that("it returns proper results", {
   models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
   models.ss = get_stable_state_from_models_dir(models.dir)
 
+  # `test4` has 2 stable states and is not included (neither `test5` with 0 stable states)
   expect_equal(sort(rownames(models.ss)), c("test", "test2", "test3"))
   expect_equal(ncol(models.ss), 139)
   expect_equal(colnames(models.ss)[1], "MAP3K7")
@@ -54,6 +55,18 @@ test_that("it returns proper results", {
   expect_equal(models.ss["test", "CASP9"], 0)
   expect_equal(models.ss["test2", "CASP9"], 1)
   expect_equal(models.ss["test3", "CASP9"], 1)
+
+  # now `test4` will be included in the returned result
+  models.ss.all = get_stable_state_from_models_dir(models.dir, all.ss = TRUE)
+  expect_equal(models.ss.all %>% pull(model_name) %>% sort(),
+    c("test", "test2", "test3", "test4", "test4"))
+  expect_equal(ncol(models.ss.all), 140) # one extra column for the model names
+  expect_equal(colnames(models.ss.all)[1], "MAP3K7")
+  expect_equal(colnames(models.ss.all)[139], "CASP9")
+  expect_equal(models.ss.all %>% filter(model_name == "test") %>% pull(CASP9), 0)
+  expect_equal(models.ss.all %>% filter(model_name == "test2") %>% pull(CASP9), 1)
+  expect_equal(models.ss.all %>% filter(model_name == "test3") %>% pull(CASP9), 1)
+  expect_equal(models.ss.all %>% filter(model_name == "test4") %>% pull(CASP9), c(1 ,0))
 })
 
 context("Testing 'get_link_operators_from_models_dir'")
