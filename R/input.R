@@ -142,10 +142,14 @@ get_stable_state_from_models_dir = function(models.dir, all.ss = FALSE) {
     }
 
     df_ss = dplyr::bind_rows(ss_list)
-    # split stable state vector to multiple columns (one per node)
-    df_ss = df_ss %>%
-      tidyr::separate(col = ss, into = node_names, sep = 1:length(node_names)) %>%
-      dplyr::mutate(dplyr::across(-all_of("model_name"), as.numeric))
+
+    # when there is at least one stable state
+    if (nrow(df_ss) > 0) {
+      # split stable state vector to multiple columns (one per node)
+      df_ss = df_ss %>%
+        tidyr::separate(col = ss, into = node_names, sep = 1:length(node_names)) %>%
+        dplyr::mutate(dplyr::across(-all_of("model_name"), as.numeric))
+    }
 
     return(df_ss)
   } else { # discard models with different than 1 stable state
