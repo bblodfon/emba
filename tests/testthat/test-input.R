@@ -47,7 +47,7 @@ test_that("it returns proper results", {
   models.dir = system.file("extdata", "models", package = "emba", mustWork = TRUE)
   models.ss = get_stable_state_from_models_dir(models.dir)
 
-  # `test4` has 2 stable states and is not included (neither `test5` with 0 stable states)
+  # `test4` has 2 stable states and is not included
   expect_equal(sort(rownames(models.ss)), c("test", "test2", "test3"))
   expect_equal(ncol(models.ss), 139)
   expect_equal(colnames(models.ss)[1], "MAP3K7")
