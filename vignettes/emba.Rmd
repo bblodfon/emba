@@ -23,8 +23,8 @@ Biomarkers will be assessed and visualized using a test dataset generated from t
 
 The complementary R package [usefun](https://github.com/bblodfon/usefun) has various helpful functions that are used both inside the *emba* package and during the analysis below.
 
-For further analyses using this package on boolean model ensemble datasets see this [GitHub repository](https://github.com/bblodfon/gitsbe-model-analysis/).
-See also [an example](https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) that demonstrates all the intermediate steps included in the *general analysis* functions as well as other miscellaneous usages that this guide does not cover.
+For further analyses using this package on boolean model ensemble datasets see this [GitHub repository](https://github.com/druglogics/gitsbe-model-analysis/).
+See also [an example](https://druglogics.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/) that demonstrates all the intermediate steps included in the *general analysis* functions as well as other miscellaneous usages that this guide does not cover.
 Lastly, you might also want to check a [nice presentation](https://bblodfon.github.io/r-pres/digital_life_2019.html#12) I made for a conference about this package.
 
 # Setup
@@ -51,7 +51,7 @@ It helps to think of each boolean model as a **network of nodes** where the edge
 The models have been assessed for synergy against a total of $153$ drug combinations.
 
 ```{r input-1}
-data.list = readRDS(url("https://github.com/bblodfon/emba/blob/master/vignettes/data.rds?raw=true"))
+data.list = readRDS(url("https://github.com/bblodfon/emba/blob/main/vignettes/data.rds?raw=true"))
 
 model.predictions = data.list$model.predictions
 models.stable.state = data.list$models.stable.state
