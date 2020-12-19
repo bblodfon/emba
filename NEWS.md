@@ -1,6 +1,7 @@
 # emba 0.1.8
 
 - add option `all.ss` in function `get_stable_state_from_models_dir()` to include all stable states in the returned `tibble` object
+- fix bug in `get_stable_state_from_models_dir()` (return empty tibble when no models had stable state)
 
 # emba 0.1.7
 
