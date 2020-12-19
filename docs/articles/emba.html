@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emba</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -56,7 +56,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/bblodfon/emba/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -70,7 +70,7 @@
 
       
 
-      </header><script src="emba_files/header-attrs-2.3/header-attrs.js"></script><script src="emba_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="emba_files/header-attrs-2.6/header-attrs.js"></script><script src="emba_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>emba</h1>
@@ -90,22 +90,21 @@
 <p>Given a list of <em>gold-standard</em> (lab-observed/verified) <strong>synergies</strong> <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, this package enables the easy grouping of the models into different classes based on a specific performance metric evaluation. This model classification enables the discovery and visualization of <strong>biomarkers</strong> - nodes whose <em>activity</em> and/or boolean model <em>parameterization</em> might affect either the prediction performance of those models or the manifestation of the predicted synergies.</p>
 <p>In the next sections we will describe the main inputs and outputs of the <em>general analysis</em> functions (which group a lot of functionality into one) and provide some insights on the implementation behind. Biomarkers will be assessed and visualized using a test dataset generated from the DrugLogics software mentioned above.</p>
 <p>The complementary R package <a href="https://github.com/bblodfon/usefun">usefun</a> has various helpful functions that are used both inside the <em>emba</em> package and during the analysis below.</p>
-<p>For further analyses using this package on boolean model ensemble datasets see this <a href="https://github.com/bblodfon/gitsbe-model-analysis/">GitHub repository</a>. See also <a href="https://bblodfon.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/">an example</a> that demonstrates all the intermediate steps included in the <em>general analysis</em> functions as well as other miscellaneous usages that this guide does not cover. Lastly, you might also want to check a <a href="https://bblodfon.github.io/r-pres/digital_life_2019.html#12">nice presentation</a> I made for a conference about this package.</p>
+<p>For further analyses using this package on boolean model ensemble datasets see this <a href="https://github.com/druglogics/gitsbe-model-analysis/">GitHub repository</a>. See also <a href="https://druglogics.github.io/gitsbe-model-analysis/atopo/cell-lines-2500/">an example</a> that demonstrates all the intermediate steps included in the <em>general analysis</em> functions as well as other miscellaneous usages that this guide does not cover. Lastly, you might also want to check a <a href="https://bblodfon.github.io/r-pres/digital_life_2019.html#12">nice presentation</a> I made for a conference about this package.</p>
 </div>
 <div id="setup" class="section level1">
 <h1 class="hasAnchor">
 <a href="#setup" class="anchor"></a>Setup</h1>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># libraries</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://bblodfon.github.io/emba">emba</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/bblodfon/usefun">usefun</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org">dplyr</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://yihui.org/knitr">knitr</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">Ckmeans.1d.dp</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># libraries</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bblodfon.github.io/emba/">emba</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bblodfon/usefun">usefun</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Ckmeans.1d.dp</span><span class="op">)</span>
 
 <span class="co"># wrapper to change printing to invisible</span>
-<span class="kw">pr</span> <span class="op">=</span> <span class="fu">function</span>(<span class="kw">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span>(<span class="kw">x</span>)
-</pre></div>
+<span class="va">pr</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="input" class="section level1">
 <h1 class="hasAnchor">
@@ -115,28 +114,27 @@
 <a href="#test-dataset" class="anchor"></a>Test dataset</h2>
 <p>The test dataset we will use has <span class="math inline">\(7500\)</span> boolean models with <span class="math inline">\(139\)</span> nodes each. It helps to think of each boolean model as a <strong>network of nodes</strong> where the edges represent either activation or inhibition of the corresponding target and the nodes activity can be either active (1) or inactive (0).</p>
 <p>The models have been assessed for synergy against a total of <span class="math inline">\(153\)</span> drug combinations.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">data.list</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span>(<span class="st">"https://github.com/bblodfon/emba/blob/master/vignettes/data.rds?raw=true"</span>))
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data.list</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span><span class="op">(</span><span class="st">"https://github.com/bblodfon/emba/blob/main/vignettes/data.rds?raw=true"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="kw">model.predictions</span> <span class="op">=</span> <span class="kw">data.list</span><span class="op">$</span><span class="kw">model.predictions</span>
-<span class="kw">models.stable.state</span> <span class="op">=</span> <span class="kw">data.list</span><span class="op">$</span><span class="kw">models.stable.state</span>
-<span class="kw">models.link.operator</span> <span class="op">=</span> <span class="kw">data.list</span><span class="op">$</span><span class="kw">models.equations</span>
-<span class="kw">observed.synergies</span> <span class="op">=</span> <span class="kw">data.list</span><span class="op">$</span><span class="kw">observed.synergies</span>
+<span class="va">model.predictions</span> <span class="op">=</span> <span class="va">data.list</span><span class="op">$</span><span class="va">model.predictions</span>
+<span class="va">models.stable.state</span> <span class="op">=</span> <span class="va">data.list</span><span class="op">$</span><span class="va">models.stable.state</span>
+<span class="va">models.link.operator</span> <span class="op">=</span> <span class="va">data.list</span><span class="op">$</span><span class="va">models.equations</span>
+<span class="va">observed.synergies</span> <span class="op">=</span> <span class="va">data.list</span><span class="op">$</span><span class="va">observed.synergies</span>
 
 <span class="co"># (x,y) coordinates for visualization</span>
-<span class="kw">nice.layout</span> <span class="op">=</span> <span class="kw">data.list</span><span class="op">$</span><span class="kw">nice.layout</span>
+<span class="va">nice.layout</span> <span class="op">=</span> <span class="va">data.list</span><span class="op">$</span><span class="va">nice.layout</span>
 <span class="co"># model network as an igraph object</span>
-<span class="kw">net</span> <span class="op">=</span> <span class="kw">data.list</span><span class="op">$</span><span class="kw">net</span>
+<span class="va">net</span> <span class="op">=</span> <span class="va">data.list</span><span class="op">$</span><span class="va">net</span>
 
 <span class="co"># drug combinations</span>
-<span class="kw">drug.combos</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="kw">model.predictions</span>)
+<span class="va">drug.combos</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">model.predictions</span><span class="op">)</span>
 
 <span class="co"># change model names (shorter names for readability)</span>
-<span class="kw">model.names</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"model"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">7500</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="kw">model.predictions</span>) <span class="op">=</span> <span class="kw">model.names</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="kw">models.stable.state</span>) <span class="op">=</span> <span class="kw">model.names</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="kw">models.link.operator</span>) <span class="op">=</span> <span class="kw">model.names</span>
-</pre></div>
+<span class="va">model.names</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"model"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">7500</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">model.predictions</span><span class="op">)</span> <span class="op">=</span> <span class="va">model.names</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">models.stable.state</span><span class="op">)</span> <span class="op">=</span> <span class="va">model.names</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">models.link.operator</span><span class="op">)</span> <span class="op">=</span> <span class="va">model.names</span></code></pre></div>
 </div>
 <div id="model-predictions" class="section level2">
 <h2 class="hasAnchor">
@@ -148,9 +146,8 @@
 <li>
 <code>NA</code> (in case the model couldn’t be assessed for synergy, e.g. there were no stable states in either the drug combination perturbed model or in any of the two single-drug perturbed models).</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">model.predictions</span>[<span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">77</span><span class="op">:</span><span class="fl">84</span>] <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Model predictions example"</span>)
-</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model.predictions</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">77</span><span class="op">:</span><span class="fl">84</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Model predictions example"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Model predictions example</caption>
 <thead><tr class="header">
@@ -227,9 +224,8 @@
 <h2 class="hasAnchor">
 <a href="#model-stable-states" class="anchor"></a>Model stable states</h2>
 <p>Each <strong>model</strong> must have a <em>stable state configuration</em> where the <strong>nodes</strong> have fixed to either 0 (inactive state) or 1 (active state). In other words, a <strong>fixpoint attractor</strong>. Of course, if a model has multiple attractors or other methods are used to derive a solution to the system of boolean equations that is the model itself, then <em>continuous</em> activity state values (in the <span class="math inline">\([0,1]\)</span> interval) are also supported.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">models.stable.state</span>[<span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">:</span><span class="fl">11</span>] <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Model stable states example"</span>)
-</pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">models.stable.state</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">:</span><span class="fl">11</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Model stable states example"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Model stable states example</caption>
 <thead><tr class="header">
@@ -308,9 +304,8 @@
 <li>1 (<code>OR NOT</code> link operator)</li>
 <li>0.5 (if the target node does not have <em>both</em> activating and inhibiting regulators and thus the corresponding boolean equation has <strong>no link operator</strong>)</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">models.link.operator</span>[<span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>] <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Models link operator example"</span>)
-</pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">models.link.operator</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Models link operator example"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Models link operator example</caption>
 <thead><tr class="header">
@@ -400,9 +395,8 @@
 <h2 class="hasAnchor">
 <a href="#observed-gs-synergies" class="anchor"></a>Observed (GS) synergies</h2>
 <p>A list of <em>gold standard (GS)</em> drug combinations which have been termed as <strong>synergistic</strong> via experimental and/or other computational methods. These drug combinations must be a subset of the ones tested in the models (the column names of the <code>model.predictions</code> data).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">observed.synergies</span>, vector.values.str = <span class="st">"observed synergies"</span>)
-</pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">observed.synergies</span>, vector.values.str <span class="op">=</span> <span class="st">"observed synergies"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>17 observed synergies: AK-60, AK-BI, AK-D1, PI-D1, PD-G2, AK-G4, D1-G4, PI-JN, BI-P5, PD-P5, PI-P5, AK-PD, BI-PD, AK-PI, BI-PI, PD-PI, PK-ST</p>
 </blockquote>
@@ -418,32 +412,29 @@
 <h2 class="hasAnchor">
 <a href="#tp-based-analysis" class="anchor"></a>TP-based analysis</h2>
 <p>We use the <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis()</a></code> function with the specified inputs:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="kw">tp.analysis.res</span> <span class="op">=</span> <span class="kw">emba</span>::<span class="fu"><a href="../reference/biomarker_tp_analysis.html">biomarker_tp_analysis</a></span>(
-  <span class="kw">model.predictions</span>, 
-  <span class="kw">models.stable.state</span>, 
-  <span class="kw">models.link.operator</span>, 
-  <span class="kw">observed.synergies</span>, 
-  penalty = <span class="fl">0.1</span>,
-  threshold = <span class="fl">0.55</span>)
-</pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tp.analysis.res</span> <span class="op">=</span> <span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/biomarker_tp_analysis.html">biomarker_tp_analysis</a></span><span class="op">(</span>
+  <span class="va">model.predictions</span>, 
+  <span class="va">models.stable.state</span>, 
+  <span class="va">models.link.operator</span>, 
+  <span class="va">observed.synergies</span>, 
+  penalty <span class="op">=</span> <span class="fl">0.1</span>,
+  threshold <span class="op">=</span> <span class="fl">0.55</span><span class="op">)</span></code></pre></div>
 <p>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em>. For example, if I were to compare the average activity of nodes between two groups of models, with respective group sizes 5 and 1000, then the result would be heavily biased towards the group with the larger size, making thus the quality of the results coming out of this comparison questionable. As such, with <code>penalty</code> values closer to 0, more bias is introduced and we expect more biomarkers to be found. The default value of <span class="math inline">\(0.1\)</span> is a good rule-of-thumb choice for minimizing such biases. See more info on <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</p>
 <hr>
 <p>As a first result, we get the predicted synergies - i.e. the drug combinations that are a subset of the observed ones and were <strong>predicted by at least one</strong> of the models in the dataset:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">predicted.synergies</span>, vector.values.str = <span class="st">"predicted synergies"</span>)
-</pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">predicted.synergies</span>, vector.values.str <span class="op">=</span> <span class="st">"predicted synergies"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>5 predicted synergies: AK-PD, BI-PD, BI-PI, PD-PI, PI-D1</p>
 </blockquote>
 <p>The percentage of true positive predicted synergies is thus 29.4%. Such a low number might be a sign that the models quality is poor (need for a different parameterization) or other reasons like incorrect assessment of the gold standard synergies, etc.</p>
 <p>The next informative barplot shows the distribution of models according to their true positive predictions:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/make_barplot_on_models_stats.html">make_barplot_on_models_stats</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">models.synergies.tp</span>), 
-  title = <span class="st">"True Positive Synergy Predictions"</span>,
-  xlab = <span class="st">"Number of maximum correctly predicted synergies"</span>,
-  ylab = <span class="st">"Number of models"</span>))
-</pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/make_barplot_on_models_stats.html">make_barplot_on_models_stats</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">models.synergies.tp</span><span class="op">)</span>, 
+  title <span class="op">=</span> <span class="st">"True Positive Synergy Predictions"</span>,
+  xlab <span class="op">=</span> <span class="st">"Number of maximum correctly predicted synergies"</span>,
+  ylab <span class="op">=</span> <span class="st">"Number of models"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/tp-analysis-3-1.png" width="672" style="display: block; margin: auto;"></p>
 <ul>
 <li>The <strong>maximum number of predicted synergies by any individual model</strong> is 3</li>
@@ -453,12 +444,11 @@
 </li>
 </ul>
 <p>Next result we get is the <strong>average activity differences</strong> per network node for all group classifications:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">diff.state.tp.mat</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"STAT3"</span>,<span class="st">"CEBPA"</span>)) <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Average Activity Difference Matrix"</span>)
-</pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">diff.state.tp.mat</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"STAT3"</span>,<span class="st">"CEBPA"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Average Activity Difference Matrix"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Average Activity Difference Matrix</caption>
 <thead><tr class="header">
@@ -526,56 +516,50 @@
 <li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.55</code> and thus <code>CEBPA</code> and <code>PSEN1</code> are returned as active biomarkers:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">biomarkers.tp.active</span>,
-  vector.values.str = <span class="st">"active biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">biomarkers.tp.active</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"active biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>2 active biomarkers: PSEN1, CEBPA</p>
 </blockquote>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">biomarkers.tp.inhibited</span>,
-  vector.values.str = <span class="st">"inhibited biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">biomarkers.tp.inhibited</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"inhibited biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>0 inhibited biomarkers:</p>
 </blockquote>
 <p>With the models initial network as an <a href="https://igraph.org/r/">igraph</a> object (see <code><a href="../reference/construct_network.html">emba::construct_network()</a></code> on how to create such a <code>net</code> object), we can visualize every row of the above matrix as follows:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span>(<span class="kw">net</span>, <span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">diff.state.tp.mat</span>[<span class="st">"(2,3)"</span>,], 
-  layout = <span class="kw">nice.layout</span>, title = <span class="st">"Bad models (2 TP) vs Good models (3 TP)"</span>))
-</pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span><span class="op">(</span><span class="va">net</span>, <span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">diff.state.tp.mat</span><span class="op">[</span><span class="st">"(2,3)"</span>,<span class="op">]</span>, 
+  layout <span class="op">=</span> <span class="va">nice.layout</span>, title <span class="op">=</span> <span class="st">"Bad models (2 TP) vs Good models (3 TP)"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/tp-analysis-6-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Note that with less <code>penalty</code>, more bias would be introduced and thus more biomarkers would be found (even for a higher chosen <code>threshold</code>):</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="kw">tp.analysis.res.biased</span> <span class="op">=</span> <span class="kw">emba</span>::<span class="fu"><a href="../reference/biomarker_tp_analysis.html">biomarker_tp_analysis</a></span>(
-  <span class="kw">model.predictions</span>, 
-  <span class="kw">models.stable.state</span>, 
-  <span class="kw">models.link.operator</span>, 
-  <span class="kw">observed.synergies</span>, 
-  penalty = <span class="fl">0</span>,
-  threshold = <span class="fl">0.7</span>)
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tp.analysis.res.biased</span> <span class="op">=</span> <span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/biomarker_tp_analysis.html">biomarker_tp_analysis</a></span><span class="op">(</span>
+  <span class="va">model.predictions</span>, 
+  <span class="va">models.stable.state</span>, 
+  <span class="va">models.link.operator</span>, 
+  <span class="va">observed.synergies</span>, 
+  penalty <span class="op">=</span> <span class="fl">0</span>,
+  threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>
 
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">tp.analysis.res.biased</span><span class="op">$</span><span class="kw">biomarkers.tp.active</span>,
-  vector.values.str = <span class="st">"active biomarkers"</span>)
-</pre></div>
+<span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">tp.analysis.res.biased</span><span class="op">$</span><span class="va">biomarkers.tp.active</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"active biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>13 active biomarkers: PSEN1, CEBPA, MAPK8IP1, MAPK9, JAK1, TYK2, JAK3, IFNGR2/INFGR1, IFNGR1, PTPN11, IFNGR2, IL2RB, IL10RA</p>
 </blockquote>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">tp.analysis.res.biased</span><span class="op">$</span><span class="kw">biomarkers.tp.inhibited</span>,
-  vector.values.str = <span class="st">"inhibited biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">tp.analysis.res.biased</span><span class="op">$</span><span class="va">biomarkers.tp.inhibited</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"inhibited biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>17 inhibited biomarkers: MAP3K7, MAP2K6, MAP2K3, NLK, IKBKG, STAT3, RXRA, SOCS3, TGFB1, HSPA1A, SALL4, ROCK1, TGFBR1, TRAF6, RHOA, PIK3R1, CASP9</p>
 </blockquote>
 <p>Last result we get is the <strong>average link operator differences</strong> per network node (whose boolean equation had a link operator) for all group classifications:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">diff.link.tp.mat</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"STAT3"</span>,<span class="st">"CEBPA"</span>)) <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Average Link Operator Difference Matrix"</span>)
-</pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">diff.link.tp.mat</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"STAT3"</span>,<span class="st">"CEBPA"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Average Link Operator Difference Matrix"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Average Link Operator Difference Matrix</caption>
 <thead><tr class="header">
@@ -643,25 +627,22 @@
 <li>Based on the given <code>threshold</code> level, a node is declared as a <strong>link operator biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.55</code> and thus <code>CEBPA</code> is returned as an <code>OR</code> link operator biomarker:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">biomarkers.tp.or</span>,
-  vector.values.str = <span class="st">"'OR' biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">biomarkers.tp.or</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"'OR' biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>1 ‘OR’ biomarker: CEBPA</p>
 </blockquote>
-<div class="sourceCode" id="cb18"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">biomarkers.tp.and</span>,
-  vector.values.str = <span class="st">"'AND' biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">biomarkers.tp.and</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"'AND' biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>0 ‘AND’ biomarkers:</p>
 </blockquote>
 <p>We can also visualize every row of the average link operator differences matrix as follows:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/plot_avg_link_operator_diff_graph.html">plot_avg_link_operator_diff_graph</a></span>(<span class="kw">net</span>, <span class="kw">tp.analysis.res</span><span class="op">$</span><span class="kw">diff.link.tp.mat</span>[<span class="st">"(2,3)"</span>,], 
-  layout = <span class="kw">nice.layout</span>, title = <span class="st">"Bad models (2 TP) vs Good models (3 TP)"</span>))
-</pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_avg_link_operator_diff_graph.html">plot_avg_link_operator_diff_graph</a></span><span class="op">(</span><span class="va">net</span>, <span class="va">tp.analysis.res</span><span class="op">$</span><span class="va">diff.link.tp.mat</span><span class="op">[</span><span class="st">"(2,3)"</span>,<span class="op">]</span>, 
+  layout <span class="op">=</span> <span class="va">nice.layout</span>, title <span class="op">=</span> <span class="st">"Bad models (2 TP) vs Good models (3 TP)"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/tp-analysis-10-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Interpreting the result regarding the <code>CEBPA</code> biomarker, we look back at its boolean equation and we see that the higher performance models must have the <code>OR NOT</code> link operator in order for <code>CEBPA</code> to be in an active (ON) state (an <code>AND NOT</code> results mostly on an inhibited state for <code>CEBPA</code>):</p>
 <p><code>CEBPA = (GSK3B OR MAP2K1 OR MEK1/2) OR NOT CTNNB1</code></p>
@@ -670,57 +651,52 @@
 <h2 class="hasAnchor">
 <a href="#mcc-based-analysis" class="anchor"></a>MCC-based analysis</h2>
 <p>We use the <code><a href="../reference/biomarker_mcc_analysis.html">emba::biomarker_mcc_analysis()</a></code> function with the specified inputs:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit">
-<span class="kw">mcc.analysis.res</span> <span class="op">=</span> <span class="kw">emba</span>::<span class="fu"><a href="../reference/biomarker_mcc_analysis.html">biomarker_mcc_analysis</a></span>(
-  <span class="kw">model.predictions</span>, 
-  <span class="kw">models.stable.state</span>, 
-  <span class="kw">models.link.operator</span>, 
-  <span class="kw">observed.synergies</span>, 
-  threshold = <span class="fl">0.65</span>,
-  num.of.mcc.classes = <span class="fl">4</span>,
-  penalty = <span class="fl">0.2</span>)
-</pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mcc.analysis.res</span> <span class="op">=</span> <span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/biomarker_mcc_analysis.html">biomarker_mcc_analysis</a></span><span class="op">(</span>
+  <span class="va">model.predictions</span>, 
+  <span class="va">models.stable.state</span>, 
+  <span class="va">models.link.operator</span>, 
+  <span class="va">observed.synergies</span>, 
+  threshold <span class="op">=</span> <span class="fl">0.65</span>,
+  num.of.mcc.classes <span class="op">=</span> <span class="fl">4</span>,
+  penalty <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>The <code>penalty</code> term is used to reduce the bias when model groups have different <em>sizes</em> (default value is <span class="math inline">\(0.1\)</span>). See more info about this on the TP-based analysis above and on the documentation of the function <code><a href="../reference/get_vector_diff.html">emba::get_vector_diff()</a></code>.</li>
 <li>We can choose the number of model groups to be created (<code>num.of.mcc.classes</code> parameter, with default value <span class="math inline">\(5\)</span>). Internally, the function <code><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp()</a></code> is used to perform an optimal univariate <em>k-means</em> clustering on the models MCC scores, i.e. <strong>it groups the models to different MCC classes</strong>, with higher classes having higher MCC scores (corresponding thus to better performance models).</li>
 </ul>
 <hr>
 <p>First result is the predicted synergies, which are the same as the ones found with the TP-based analysis (the model predictions did not change). As such, the drug combinations which were <strong>predicted by at least one of the models</strong> in the dataset are:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">predicted.synergies</span>, vector.values.str = <span class="st">"predicted synergies"</span>)
-</pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">predicted.synergies</span>, vector.values.str <span class="op">=</span> <span class="st">"predicted synergies"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>5 predicted synergies: AK-PD, BI-PD, BI-PI, PD-PI, PI-D1</p>
 </blockquote>
 <p>We can get a first idea of the range and distribution of the models MCC scores with the next barplot:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit">
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/make_barplot_on_models_stats.html">make_barplot_on_models_stats</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">models.mcc</span>), 
-  title = <span class="st">"MCC scores"</span>, xlab = <span class="st">"MCC value"</span>, 
-  ylab = <span class="st">"Number of models"</span>, cont.values = <span class="fl">TRUE</span>))
-</pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/make_barplot_on_models_stats.html">make_barplot_on_models_stats</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">models.mcc</span><span class="op">)</span>, 
+  title <span class="op">=</span> <span class="st">"MCC scores"</span>, xlab <span class="op">=</span> <span class="st">"MCC value"</span>, 
+  ylab <span class="op">=</span> <span class="st">"Number of models"</span>, cont.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/mcc-analysis-3-1.png" width="672" style="display: block; margin: auto;"></p>
 <ul>
 <li>There are no relatively bad models (MCC values close to <span class="math inline">\(-1\)</span>)</li>
 <li>Most of the models perform a little better than random prediction (<span class="math inline">\(MCC &gt; 0\)</span>)</li>
 </ul>
 <p>We can also plot the <strong>MCC-model histogram</strong>, which in addition shows the estimated <em>density</em> (how many models) and <em>width</em> (MCC range) of each MCC class:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit">
-<span class="kw">models.mcc</span> <span class="op">=</span> <span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">models.mcc</span>
-<span class="kw">num.of.mcc.classes</span> <span class="op">=</span> <span class="fl">4</span>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">models.mcc</span> <span class="op">=</span> <span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">models.mcc</span>
+<span class="va">num.of.mcc.classes</span> <span class="op">=</span> <span class="fl">4</span>
 
-<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp</a></span>(x = <span class="kw">models.mcc</span>, k = <span class="kw">num.of.mcc.classes</span>)
-<span class="kw">models.cluster.ids</span> <span class="op">=</span> <span class="kw">res</span><span class="op">$</span><span class="kw">cluster</span>
+<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/Ckmeans.1d.dp/man/Ckmeans.1d.dp.html">Ckmeans.1d.dp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">models.mcc</span>, k <span class="op">=</span> <span class="va">num.of.mcc.classes</span><span class="op">)</span>
+<span class="va">models.cluster.ids</span> <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">cluster</span>
 
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/plot_mcc_classes_hist.html">plot_mcc_classes_hist</a></span>(<span class="kw">models.mcc</span>, <span class="kw">models.cluster.ids</span>, <span class="kw">num.of.mcc.classes</span>))
-</pre></div>
+<span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_mcc_classes_hist.html">plot_mcc_classes_hist</a></span><span class="op">(</span><span class="va">models.mcc</span>, <span class="va">models.cluster.ids</span>, <span class="va">num.of.mcc.classes</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/mcc-analysis-4-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Next result we get is the <strong>average activity differences</strong> per network node for all group classifications:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit">
-<span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">diff.state.mcc.mat</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PPM1A"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"PTK2"</span>,<span class="st">"CEBPA"</span>)) <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Average Activity Difference Matrix"</span>)
-</pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">diff.state.mcc.mat</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AKT"</span>,<span class="st">"PPM1A"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"PTK2"</span>,<span class="st">"CEBPA"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Average Activity Difference Matrix"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Average Activity Difference Matrix</caption>
 <thead><tr class="header">
@@ -795,17 +771,15 @@
 <li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.65</code> and thus <code>PTEN</code> and <code>PPM1A</code> are returned as active biomarkers and <code>PTK2</code> as an inhibited biomarker:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">biomarkers.mcc.active</span>,
-  vector.values.str = <span class="st">"active biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">biomarkers.mcc.active</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"active biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>2 active biomarkers: PTEN, PPM1A</p>
 </blockquote>
-<div class="sourceCode" id="cb26"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">biomarkers.mcc.inhibited</span>,
-  vector.values.str = <span class="st">"inhibited biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">biomarkers.mcc.inhibited</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"inhibited biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>1 inhibited biomarker: PTK2</p>
 </blockquote>
@@ -816,18 +790,16 @@
 </ul>
 <p>we conclude that <strong>the only activity biomarker of interest</strong> is <code>PTEN</code> as it’s the only regulator whose state directly influences the <code>PPM1A</code> and <code>PTK2</code> nodes.</p>
 <p>With the models initial network as an <a href="https://igraph.org/r/">igraph</a> object (see <code><a href="../reference/construct_network.html">emba::construct_network()</a></code> on how to create such a <code>net</code> object), we can visualize every row of the above matrix as follows:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit">
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span>(<span class="kw">net</span>, <span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">diff.state.mcc.mat</span>[<span class="st">"(1,4)"</span>,], 
-  layout = <span class="kw">nice.layout</span>, title = <span class="st">"Bad models (MCC Class 1) vs Good models (MCC Class 4)"</span>))
-</pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span><span class="op">(</span><span class="va">net</span>, <span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">diff.state.mcc.mat</span><span class="op">[</span><span class="st">"(1,4)"</span>,<span class="op">]</span>, 
+  layout <span class="op">=</span> <span class="va">nice.layout</span>, title <span class="op">=</span> <span class="st">"Bad models (MCC Class 1) vs Good models (MCC Class 4)"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/mcc-analysis-7-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Last result we get is the <strong>average link operator differences</strong> per network node (whose boolean equation had a link operator) for all group classifications:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit">
-<span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">diff.link.mcc.mat</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"CEBPA"</span>,<span class="st">"STAT3"</span>,<span class="st">"JAK1"</span>)) <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Average Link Operator Difference Matrix"</span>)
-</pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">diff.link.mcc.mat</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AKT"</span>,<span class="st">"PTEN"</span>,<span class="st">"PSEN1"</span>,<span class="st">"CEBPA"</span>,<span class="st">"STAT3"</span>,<span class="st">"JAK1"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Average Link Operator Difference Matrix"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Average Link Operator Difference Matrix</caption>
 <thead><tr class="header">
@@ -902,25 +874,22 @@
 <li>Based on the given <code>threshold</code> level, a node is declared as a <strong>link operator biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>In our case, <code>threshold = 0.65</code> and thus <code>PTEN</code> is returned as an <code>OR</code> link operator biomarker:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">biomarkers.mcc.or</span>,
-  vector.values.str = <span class="st">"'OR' biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">biomarkers.mcc.or</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"'OR' biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>1 ‘OR’ biomarker: PTEN</p>
 </blockquote>
-<div class="sourceCode" id="cb30"><pre class="downlit">
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span>(<span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">biomarkers.mcc.and</span>,
-  vector.values.str = <span class="st">"'AND' biomarkers"</span>)
-</pre></div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_vector_values.html">pretty_print_vector_values</a></span><span class="op">(</span><span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">biomarkers.mcc.and</span>,
+  vector.values.str <span class="op">=</span> <span class="st">"'AND' biomarkers"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>0 ‘AND’ biomarkers:</p>
 </blockquote>
 <p>We can also visualize every row of the average link operator differences matrix as in the following example:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit">
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/plot_avg_link_operator_diff_graph.html">plot_avg_link_operator_diff_graph</a></span>(<span class="kw">net</span>, <span class="kw">mcc.analysis.res</span><span class="op">$</span><span class="kw">diff.link.mcc.mat</span>[<span class="st">"(1,4)"</span>,], 
-  layout = <span class="kw">nice.layout</span>, title = <span class="st">"Bad models (MCC Class 1) vs Good models (MCC Class 4)"</span>))
-</pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_avg_link_operator_diff_graph.html">plot_avg_link_operator_diff_graph</a></span><span class="op">(</span><span class="va">net</span>, <span class="va">mcc.analysis.res</span><span class="op">$</span><span class="va">diff.link.mcc.mat</span><span class="op">[</span><span class="st">"(1,4)"</span>,<span class="op">]</span>, 
+  layout <span class="op">=</span> <span class="va">nice.layout</span>, title <span class="op">=</span> <span class="st">"Bad models (MCC Class 1) vs Good models (MCC Class 4)"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/mcc-analysis-10-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="comparing-the-2-methods" class="section level2">
@@ -935,24 +904,22 @@
 <p><em>Synergy</em> biomarkers are nodes in our studied networks (boolean models) whose activity state and/or boolean model parameterization (link operator) affects the manifestation of synergies. These nodes can be thus used as indicators of either <em>activity</em> or <em>structural</em> changes that make the models <strong>predict specific drug combinations as synergistic</strong>.</p>
 <p>The core idea behind the implementation is that the models are now classified to groups based on whether they <strong>predict or not each one of the predicted synergies</strong> (which for the test dataset are the same 5 as found with the previous analyses). Thus, by comparing the average node activity or boolean model parameterization from the group that predicted a drug combination as a <strong>synergy</strong> vs the group that predicted it to be an <strong>antagonism</strong>, we can derive biomarkers for that drug combination.</p>
 <p>The function used to perform such an analysis is the <code><a href="../reference/biomarker_tp_analysis.html">emba::biomarker_tp_analysis()</a></code>:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit">
-<span class="kw">synergy.analysis.res</span> <span class="op">=</span> <span class="kw">emba</span>::<span class="fu"><a href="../reference/biomarker_synergy_analysis.html">biomarker_synergy_analysis</a></span>(
-  <span class="kw">model.predictions</span>,
-  <span class="kw">models.stable.state</span>,
-  <span class="kw">models.link.operator</span>,
-  <span class="kw">observed.synergies</span>,
-  threshold = <span class="fl">0.5</span>,
-  calculate.subsets.stats = <span class="fl">TRUE</span>,
-  penalty = <span class="fl">0.1</span>)
-</pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">synergy.analysis.res</span> <span class="op">=</span> <span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/biomarker_synergy_analysis.html">biomarker_synergy_analysis</a></span><span class="op">(</span>
+  <span class="va">model.predictions</span>,
+  <span class="va">models.stable.state</span>,
+  <span class="va">models.link.operator</span>,
+  <span class="va">observed.synergies</span>,
+  threshold <span class="op">=</span> <span class="fl">0.5</span>,
+  calculate.subsets.stats <span class="op">=</span> <span class="cn">TRUE</span>,
+  penalty <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></code></pre></div>
 <hr>
 <p>Now in addition to the predicted synergies set, we get all the <strong>subsets</strong> for which a model predicted all drug combinations in that subset as <em>synergistic</em>. We can visualize this result with the <code><a href="../reference/make_barplot_on_synergy_subset_stats.html">emba::make_barplot_on_synergy_subset_stats()</a></code> function:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit">
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/make_barplot_on_synergy_subset_stats.html">make_barplot_on_synergy_subset_stats</a></span>(
-  <span class="kw">synergy.analysis.res</span><span class="op">$</span><span class="kw">synergy.subset.stats</span>,
-  threshold.for.subset.removal = <span class="fl">1</span>, 
-  bottom.mar = <span class="fl">9</span>))
-</pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/make_barplot_on_synergy_subset_stats.html">make_barplot_on_synergy_subset_stats</a></span><span class="op">(</span>
+  <span class="va">synergy.analysis.res</span><span class="op">$</span><span class="va">synergy.subset.stats</span>,
+  threshold.for.subset.removal <span class="op">=</span> <span class="fl">1</span>, 
+  bottom.mar <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/synergy-analysis-2-1.png" width="672" style="display: block; margin: auto;"></p>
 <ul>
 <li>Almost half of the models (<span class="math inline">\(3478\)</span>) predict none of the <em>gold standard</em> synergies</li>
@@ -960,10 +927,9 @@
 <li>There were only <span class="math inline">\(2\)</span> models that predicted <span class="math inline">\(3\)</span> gold standard synergies, i.e. the set <code>BI-PD,PD-PI,PI-D1</code> which is the maximum number of predicted synergies by an individual model</li>
 </ul>
 <p>Next result is the matrix of <em>activity state differences</em> vectors, one for each of the predicted synergies:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit">
-<span class="kw">synergy.analysis.res</span><span class="op">$</span><span class="kw">diff.state.synergies.mat</span>[,<span class="fl">1</span><span class="op">:</span><span class="fl">8</span>] <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Average State Differences per Synergy Predicted"</span>, digits = <span class="fl">3</span>)
-</pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">synergy.analysis.res</span><span class="op">$</span><span class="va">diff.state.synergies.mat</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Average State Differences per Synergy Predicted"</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Average State Differences per Synergy Predicted</caption>
 <thead><tr class="header">
@@ -1042,21 +1008,19 @@
 <li>Based on a <strong>user-given</strong> <code>threshold</code> level, a node for a specific synergy is declared as an <strong>activity biomarker</strong> if it’s highest absolute value surpasses that threshold (see <code><a href="../reference/get_biomarkers.html">emba::get_biomarkers()</a></code> for more info).</li>
 </ul>
 <p>Every row of the above matrix can be also network-plotted. We show for example the average state difference graph for the <code>PI-D1</code> synergy:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit">
-<span class="fu">pr</span>(<span class="kw">emba</span>::<span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span>(<span class="kw">net</span>,
-  <span class="kw">synergy.analysis.res</span><span class="op">$</span><span class="kw">diff.state.synergies.mat</span>[<span class="st">"PI-D1"</span>,],
-  layout = <span class="kw">nice.layout</span>, title = <span class="st">"Prediction of PI-D1 (Good Models: synergy, Bad Models: antagonism)"</span>))
-</pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">pr</span><span class="op">(</span><span class="fu">emba</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_avg_state_diff_graph.html">plot_avg_state_diff_graph</a></span><span class="op">(</span><span class="va">net</span>,
+  <span class="va">synergy.analysis.res</span><span class="op">$</span><span class="va">diff.state.synergies.mat</span><span class="op">[</span><span class="st">"PI-D1"</span>,<span class="op">]</span>,
+  layout <span class="op">=</span> <span class="va">nice.layout</span>, title <span class="op">=</span> <span class="st">"Prediction of PI-D1 (Good Models: synergy, Bad Models: antagonism)"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="emba_files/figure-html/synergy-analysis-4-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Given the <strong>user-defined</strong> <code>threshold</code> (<span class="math inline">\(0.5\)</span>) we also get as a result the activity state biomarkers:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit">
-<span class="co"># prune nodes (columns) that were not found as biomarkers for any predicted synergy</span>
-<span class="kw">biomarker.act.mat</span> <span class="op">=</span> <span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/prune_columns_from_df.html">prune_columns_from_df</a></span>(
-  df = <span class="kw">synergy.analysis.res</span><span class="op">$</span><span class="kw">activity.biomarkers</span>, value = <span class="fl">0</span>)
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># prune nodes (columns) that were not found as biomarkers for any predicted synergy</span>
+<span class="va">biomarker.act.mat</span> <span class="op">=</span> <span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/prune_columns_from_df.html">prune_columns_from_df</a></span><span class="op">(</span>
+  df <span class="op">=</span> <span class="va">synergy.analysis.res</span><span class="op">$</span><span class="va">activity.biomarkers</span>, value <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 
-<span class="kw">biomarker.act.mat</span>[, <span class="fl">4</span><span class="op">:</span><span class="fl">12</span>] <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Activity State Biomarkers Per Synergy Predicted"</span>)
-</pre></div>
+<span class="va">biomarker.act.mat</span><span class="op">[</span>, <span class="fl">4</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="co"># show only part of the matrix</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Activity State Biomarkers Per Synergy Predicted"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Activity State Biomarkers Per Synergy Predicted</caption>
 <thead><tr class="header">
@@ -1138,22 +1102,20 @@
 <li>In the above matrix, <span class="math inline">\(1\)</span> means <em>active state biomarker</em>, <span class="math inline">\(-1\)</span> <em>inhibited state biomarker</em> and <span class="math inline">\(0\)</span> means not a biomarker.</li>
 <li>Using the following code, you can filter and derive your own activity biomarkers matrix:</li>
 </ul>
-<div class="sourceCode" id="cb37"><pre class="downlit">
-<span class="co"># define your own threshold</span>
-<span class="kw">my.thres</span> <span class="op">=</span> <span class="fl">0.76</span>
-<span class="kw">activity.biomarkers.new</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(
-  <span class="kw">synergy.analysis.res</span><span class="op">$</span><span class="kw">diff.state.synergies.mat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>), 
-  <span class="kw">usefun</span>::<span class="kw"><a href="https://rdrr.io/pkg/usefun/man/get_ternary_class_id.html">get_ternary_class_id</a></span>, <span class="kw">my.thres</span>))
-</pre></div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># define your own threshold</span>
+<span class="va">my.thres</span> <span class="op">=</span> <span class="fl">0.76</span>
+<span class="va">activity.biomarkers.new</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span>
+  <span class="va">synergy.analysis.res</span><span class="op">$</span><span class="va">diff.state.synergies.mat</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, 
+  <span class="fu">usefun</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/usefun/man/get_ternary_class_id.html">get_ternary_class_id</a></span>, <span class="va">my.thres</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Note that there were predicted synergies (rows in the above matrix), for which we couldn’t find activity biomarkers (row was all zeros). This is justifiable, since <strong>the number of models in the synergistic and antagonistic model groups can be fairly unbalanced</strong> and the <code>penalty</code> term is used to correct this bias. For example, comparing the models that predict <code>AK-PD</code> as synergistic vs those that predict it as antagonistic, we have:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit">
-<span class="kw">drug.comb</span> <span class="op">=</span> <span class="st">"AK-PD"</span>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">drug.comb</span> <span class="op">=</span> <span class="st">"AK-PD"</span>
 
-<span class="kw">syn.models.num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">model.predictions</span>[, <span class="kw">drug.comb</span>] <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">model.predictions</span>[, <span class="kw">drug.comb</span>]))
-<span class="kw">ant.models.num</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">model.predictions</span>[, <span class="kw">drug.comb</span>] <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">model.predictions</span>[, <span class="kw">drug.comb</span>]))
+<span class="va">syn.models.num</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">model.predictions</span><span class="op">[</span>, <span class="va">drug.comb</span><span class="op">]</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">model.predictions</span><span class="op">[</span>, <span class="va">drug.comb</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="va">ant.models.num</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">model.predictions</span><span class="op">[</span>, <span class="va">drug.comb</span><span class="op">]</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">model.predictions</span><span class="op">[</span>, <span class="va">drug.comb</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
 
-<span class="kw">usefun</span>::<span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_string.html">pretty_print_string</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Number of models (AK-PD): #Synergistic: "</span>, <span class="kw">syn.models.num</span>, <span class="st">", #Antagonistic: "</span>, <span class="kw">ant.models.num</span>))
-</pre></div>
+<span class="fu">usefun</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/usefun/man/pretty_print_string.html">pretty_print_string</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Number of models (AK-PD): #Synergistic: "</span>, <span class="va">syn.models.num</span>, <span class="st">", #Antagonistic: "</span>, <span class="va">ant.models.num</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>Number of models (AK-PD): #Synergistic: 3, #Antagonistic: 6214</p>
 </blockquote>
@@ -1162,16 +1124,15 @@
 <div id="r-session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#r-session-info" class="anchor"></a>R Session Info</h1>
-<div class="sourceCode" id="cb39"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-</pre></div>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>R version 3.6.3 (2020-02-29)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 18.04.5 LTS
+Running under: Ubuntu 20.04.1 LTS
 
 Matrix products: default
-BLAS:   /home/john/soft/R-3.6.3/lib/libRblas.so
-LAPACK: /home/john/soft/R-3.6.3/lib/libRlapack.so
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1185,22 +1146,22 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] Ckmeans.1d.dp_4.3.3 knitr_1.29          dplyr_1.0.2        
-[4] usefun_0.4.8        emba_0.1.7         
+[1] Ckmeans.1d.dp_4.3.3 knitr_1.30          dplyr_1.0.2        
+[4] usefun_0.4.8        emba_0.1.8         
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.5        cpp11_0.2.1       highr_0.8         compiler_3.6.3   
- [5] pillar_1.4.6      tools_3.6.3       digest_0.6.25     jsonlite_1.7.1   
- [9] evaluate_0.14     memoise_1.1.0     lifecycle_0.2.0   tibble_3.0.3     
-[13] pkgconfig_2.0.3   rlang_0.4.7       bibtex_0.4.2.2    igraph_1.2.5     
-[17] rstudioapi_0.11   yaml_2.2.1        pkgdown_1.6.1     xfun_0.17        
-[21] stringr_1.4.0     htmlwidgets_1.5.1 hms_0.5.3         desc_1.2.0       
-[25] generics_0.0.2    fs_1.5.0          vctrs_0.3.4       systemfonts_0.3.1
-[29] gbRd_0.4-11       rprojroot_1.3-2   tidyselect_1.1.0  rje_1.10.16      
-[33] glue_1.4.2        R6_2.4.1          Rdpack_1.0.0      rmarkdown_2.3    
-[37] tidyr_1.1.2       readr_1.3.1       purrr_0.3.4       magrittr_1.5     
-[41] backports_1.1.9   htmltools_0.5.0   ellipsis_0.3.1    assertthat_0.2.1 
-[45] ragg_0.3.1        stringi_1.5.3     visNetwork_2.0.9  crayon_1.3.4     </code></pre>
+ [1] Rcpp_1.0.5        highr_0.8         compiler_3.6.3    pillar_1.4.7     
+ [5] tools_3.6.3       digest_0.6.27     jsonlite_1.7.2    evaluate_0.14    
+ [9] memoise_1.1.0     lifecycle_0.2.0   tibble_3.0.4      pkgconfig_2.0.3  
+[13] rlang_0.4.9       igraph_1.2.6      rstudioapi_0.13   yaml_2.2.1       
+[17] pkgdown_1.6.1     xfun_0.19         stringr_1.4.0     htmlwidgets_1.5.3
+[21] hms_0.5.3         desc_1.2.0        generics_0.1.0    fs_1.5.0         
+[25] vctrs_0.3.5       systemfonts_0.3.2 gbRd_0.4-11       rprojroot_2.0.2  
+[29] tidyselect_1.1.0  rje_1.10.16       glue_1.4.2        R6_2.5.0         
+[33] textshaping_0.2.1 Rdpack_2.1        rmarkdown_2.6     tidyr_1.1.2      
+[37] readr_1.4.0       purrr_0.3.4       magrittr_2.0.1    htmltools_0.5.0  
+[41] ellipsis_0.3.1    rbibutils_2.0     assertthat_0.2.1  ragg_0.4.0       
+[45] stringi_1.5.3     visNetwork_2.0.9  crayon_1.3.4     </code></pre>
 </div>
 <div class="footnotes">
 <hr>

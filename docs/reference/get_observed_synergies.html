@@ -75,7 +75,7 @@ the observed synergies are indeed a subset of the tested drug combinations." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emba</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ the observed synergies are indeed a subset of the tested drug combinations." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -100,7 +100,7 @@ the observed synergies are indeed a subset of the tested drug combinations." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/bblodfon/emba/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -129,7 +129,7 @@ is NULL (the default), no data validation is done, otherwise we check that
 the observed synergies are indeed a subset of the tested drug combinations.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_observed_synergies</span>(<span class='kw'>file</span>, drug.combinations.tested = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_observed_synergies</span><span class='op'>(</span><span class='va'>file</span>, drug.combinations.tested <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,9 +152,9 @@ as elements. Default value: NULL.</p></td>
 that were found as synergistic</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>observed.synergies.file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"observed_synergies"</span>,
-  package = <span class='st'>"emba"</span>, mustWork = <span class='fl'>TRUE</span>)
-<span class='kw'>observed.synergies</span> <span class='op'>=</span> <span class='fu'>get_observed_synergies</span>(<span class='kw'>observed.synergies.file</span>)
+    <pre class="examples"><div class='input'><span class='va'>observed.synergies.file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"observed_synergies"</span>,
+  package <span class='op'>=</span> <span class='st'>"emba"</span>, mustWork <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>observed.synergies</span> <span class='op'>=</span> <span class='fu'>get_observed_synergies</span><span class='op'>(</span><span class='va'>observed.synergies.file</span><span class='op'>)</span>
 
 </div></pre>
   </div>
