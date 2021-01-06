@@ -323,8 +323,8 @@ calculate_models_synergies_tn = function(unobserved.model.predictions) {
 #' @return a numeric vector of MCC values, each value being in the [-1,1]
 #' interval. If any of the four sums of the MCC formula are zero, then we return
 #' an MCC score of zero, which can be shown to be the correct limiting value (model
-#' is no better than a random predictor, see
-#' \href{https://doi.org/10.1186/s12864-019-6413-7}{Chicco et al. (2020)}).
+#' is no better than a random predictor, see Chicco et al. (2020),
+#' \doi{10.1186/s12864-019-6413-7}).
 #'
 #' @family confusion matrix calculation functions
 #'
