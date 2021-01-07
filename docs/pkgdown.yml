@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   emba: emba.html
-last_built: 2020-12-19T19:35Z
+last_built: 2021-01-07T17:09Z
 urls:
   reference: https://bblodfon.github.io/emba/reference
   article: https://bblodfon.github.io/emba/articles
