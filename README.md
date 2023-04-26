@@ -3,7 +3,6 @@
 <!-- badges: start -->
 [![R build status](https://github.com/bblodfon/emba/workflows/R-CMD-check/badge.svg)](https://github.com/bblodfon/emba/actions)
 [![codecov](https://codecov.io/gh/bblodfon/emba/branch/master/graph/badge.svg)](https://codecov.io/gh/bblodfon/emba)
-[![CRAN status](https://www.r-pkg.org/badges/version/emba)](https://cran.r-project.org/package=emba)
 [![Downloads](https://cranlogs.r-pkg.org/badges/emba)](https://cran.r-project.org/package=emba)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.02583/status.svg)](https://doi.org/10.21105/joss.02583)
 <!-- badges: end -->
@@ -18,10 +17,7 @@ Lastly, if the boolean models have a [specific equation form](https://druglogics
 
 ## Install
 
-CRAN version:
-```
-install.packages("emba")
-```
+Download the latest CRAN archived version [here](https://cran.r-project.org/src/contrib/Archive/emba/)
 
 Development version:
 ```
