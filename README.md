@@ -17,7 +17,7 @@ Lastly, if the boolean models have a [specific equation form](https://druglogics
 
 ## Install
 
-Download the latest CRAN archived version [here](https://cran.r-project.org/src/contrib/Archive/emba/)
+Download the latest [CRAN archived version](https://cran.r-project.org/src/contrib/Archive/emba/).
 
 Development version:
 ```
